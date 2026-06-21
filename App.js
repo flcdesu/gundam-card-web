@@ -320,7 +320,7 @@ const CardGridItem = ({ item, dynamicCardWidth, language, onPress }) => {
       onPress={() => onPress(item)} activeOpacity={0.9} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}
     >
       <View style={[styles.imageWrapper, { height: dynamicCardWidth * 1.39 }]}>
-        {cardImages[item.id] ? <Image source={cardImages[item.id]} style={styles.gridImage} resizeMode="cover" /> : <View style={styles.gridNoImage}><Text style={styles.gridNoImageText}>圖片準備中</Text></View>}
+        {cardImages[item.id] ? <Image source={{ uri: cardImages[item.id] }} style={styles.gridImage} resizeMode="cover" /> : <View style={styles.gridNoImage}><Text style={styles.gridNoImageText}>圖片準備中</Text></View>}
       </View>
       <View style={[styles.gridCardInfo, { backgroundColor: infoBackgroundColor }]}>
         <View style={styles.gridIdRow}>
@@ -1797,7 +1797,7 @@ export default function App() {
               <ScrollView contentContainerStyle={styles.modalScrollBody} showsVerticalScrollIndicator={false}>
                 <View style={styles.modalFlexRow}>
                   <View style={styles.modalLeftColumn}>
-                    {cardImages[selectedCard.id] ? <Image source={cardImages[selectedCard.id]} style={styles.cardImage} resizeMode="contain" /> : <View style={[styles.cardImage, styles.noImagePlaceholder]}><Text style={styles.noImageText}>圖片準備中</Text></View>}
+                    {cardImages[selectedCard.id] ? <Image source={{ uri: cardImages[selectedCard.id] }} style={styles.cardImage} resizeMode="contain" /> : <View style={[styles.cardImage, styles.noImagePlaceholder]}><Text style={styles.noImageText}>圖片準備中</Text></View>}
                   </View>
                   <View style={styles.modalRightColumn}>
                     <Text style={styles.officialNameMain}>{selectedCard[`name_${language}`]}</Text>
