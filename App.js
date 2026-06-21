@@ -308,7 +308,7 @@ const IS_SELF_COMPLEX_REGEX = new RegExp(`^${SELF_COMPLEX_COND_STR}$`, 'i');
 const IS_STAT_COND_REGEX = new RegExp(`^${STAT_COND}$`, 'i');
 const IS_PLAYER_LV_REGEX = new RegExp(`^${PLAYER_LV_COND}$`, 'i'); 
 
-const CardGridItem = ({ item, dynamicCardWidth, language, onPress }) => {
+const CardGridItem = ({ item, dynamicCardWidth, language, onPress, isMobile }) => {
   const [isHovered, setIsHovered] = useState(false);
   const displayName = item[`name_${language}`] || '名稱未定';
   const infoBackgroundColor = item.color === 'Blue' ? '#e6f3ff' : item.color === 'Red' ? '#fff1f1' : item.color === 'Green' ? '#f0fff4' : '#fff'; 
@@ -316,24 +316,24 @@ const CardGridItem = ({ item, dynamicCardWidth, language, onPress }) => {
 
   return (
     <TouchableOpacity 
-      style={[styles.gridCard, { width: dynamicCardWidth }, isHovered && styles.gridCardHovered]} 
+      style={[styles.gridCard, { width: dynamicCardWidth }, isMobile && { margin: 3 }, isHovered && styles.gridCardHovered]} 
       onPress={() => onPress(item)} activeOpacity={0.9} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}
     >
       <View style={[styles.imageWrapper, { height: dynamicCardWidth * 1.39 }]}>
         {cardImages[item.id] ? <Image source={{ uri: cardImages[item.id] }} style={styles.gridImage} resizeMode="cover" /> : <View style={styles.gridNoImage}><Text style={styles.gridNoImageText}>圖片準備中</Text></View>}
       </View>
-      <View style={[styles.gridCardInfo, { backgroundColor: infoBackgroundColor }]}>
+      <View style={[styles.gridCardInfo, { backgroundColor: infoBackgroundColor, padding: isMobile ? 4 : 6 }]}>
         <View style={styles.gridIdRow}>
-          <Text style={styles.gridCardId} numberOfLines={1}>{displayId}</Text>
+          <Text style={[styles.gridCardId, isMobile && { fontSize: 9 }]} numberOfLines={1}>{displayId}</Text>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            {item.isBetaCard && <Text style={styles.gridBetaBadge}>BETA</Text>}
-            {item.isLimitedCard && <Text style={[styles.gridLimitedBadge, item.isBetaCard && { marginLeft: 4 }]}>LIMITED</Text>}
-            {item.isPromoCard && <Text style={[styles.gridPromoBadge, (item.isBetaCard || item.isLimitedCard) && { marginLeft: 4 }]}>PROMO</Text>}
-            {item._isReprint && <Text style={[styles.gridReprintBadge, (item.isBetaCard || item.isLimitedCard || item.isPromoCard) && { marginLeft: 4 }]}>重印</Text>}
-            {item._isAltArt && <Text style={[styles.gridAltBadge, (item._isReprint || item.isBetaCard || item.isLimitedCard || item.isPromoCard) && { marginLeft: 4 }]}>異畫</Text>}
+            {item.isBetaCard && <Text style={[styles.gridBetaBadge, isMobile && { fontSize: 7, paddingHorizontal: 2 }]}>BETA</Text>}
+            {item.isLimitedCard && <Text style={[styles.gridLimitedBadge, isMobile && { fontSize: 7, paddingHorizontal: 2 }, item.isBetaCard && { marginLeft: 4 }]}>LTD</Text>}
+            {item.isPromoCard && <Text style={[styles.gridPromoBadge, isMobile && { fontSize: 7, paddingHorizontal: 2 }, (item.isBetaCard || item.isLimitedCard) && { marginLeft: 4 }]}>PR</Text>}
+            {item._isReprint && <Text style={[styles.gridReprintBadge, isMobile && { fontSize: 7, paddingHorizontal: 2 }, (item.isBetaCard || item.isLimitedCard || item.isPromoCard) && { marginLeft: 4 }]}>RE</Text>}
+            {item._isAltArt && <Text style={[styles.gridAltBadge, isMobile && { fontSize: 7, paddingHorizontal: 2 }, (item._isReprint || item.isBetaCard || item.isLimitedCard || item.isPromoCard) && { marginLeft: 4 }]}>異</Text>}
           </View>
         </View>
-        <Text style={styles.gridCardName} numberOfLines={1}>{displayName}</Text>
+        <Text style={[styles.gridCardName, isMobile && { fontSize: 10 }]} numberOfLines={1}>{displayName}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -433,8 +433,12 @@ export default function App() {
   // 🌟 魔法加持：偵測是否為手機螢幕 (小於 768px)
   const isMobile = screenWidth < 768;
 
-  const numColumns = Math.max(2, Math.floor(screenWidth / OPTIMAL_CARD_WIDTH));
-  const dynamicCardWidth = (screenWidth - 20 - (numColumns * 10)) / numColumns;
+  // 🌟 魔法加持：手機強制 4 欄 (4 Columns) 排版
+  const numColumns = isMobile ? 4 : Math.max(2, Math.floor(screenWidth / OPTIMAL_CARD_WIDTH));
+  // 手機版微調了左右 Padding 與 Margin 以確保 4 欄能完美塞入
+  const paddingSpace = isMobile ? 10 : 20;
+  const marginSpace = isMobile ? (numColumns * 6) : (numColumns * 10);
+  const dynamicCardWidth = (screenWidth - paddingSpace - marginSpace) / numColumns;
 
   const handleResetSearch = () => {
     setSearchText(''); setSelectedSet('all');
@@ -1103,13 +1107,6 @@ export default function App() {
     setSelectedSet(setStr);
   };
 
-  const renderLangButtons = () => (
-    <View style={styles.langButtonGroup}>
-      <TouchableOpacity style={[styles.langBtn, language === 'hk' ? styles.langBtnActive : styles.langBtnInactive]} onPress={() => setLanguage('hk')} activeOpacity={0.8}><Text style={styles.langBtnText}>港譯</Text></TouchableOpacity>
-      <TouchableOpacity style={[styles.langBtn, language === 'tw' ? styles.langBtnActive : styles.langBtnInactive]} onPress={() => setLanguage('tw')} activeOpacity={0.8}><Text style={styles.langBtnText}>台譯</Text></TouchableOpacity>
-    </View>
-  );
-
   const renderKeywordChip = (opt) => {
     const isActive = selectedKeywords.includes(opt.value);
     const isInputKw = opt.value === '支援' || opt.value === '突破' || opt.value === '修復';
@@ -1471,23 +1468,25 @@ export default function App() {
         </View>
       </View>
 
-      <View style={styles.searchBarSection}>
+      {/* 🌟 修改 1：搜尋區塊響應式瘦身 */}
+      <View style={[styles.searchBarSection, isMobile && { paddingVertical: 10, paddingHorizontal: 12 }]}>
         <View style={styles.mainControlContainer}>
           
-          {/* 🌟 修改重點：頂部搜尋列的響應式排列 */}
-          <View style={[styles.topSearchSection, isMobile && { flexDirection: 'column', alignItems: 'stretch', gap: 15 }]}>
+          <View style={[styles.topSearchSection, isMobile && { flexDirection: 'column', alignItems: 'stretch', gap: 8, paddingVertical: 10, paddingHorizontal: 15 }]}>
             
-            {/* 標題與分隔線 (手機隱藏分隔線) */}
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: isMobile ? 'center' : 'flex-start' }}>
-               <Text style={styles.searchBarMainTitle}>卡牌搜索</Text>
-               {!isMobile && <View style={styles.verticalDivider} />}
-            </View>
+            {/* 電腦版顯示標題，手機版隱藏以節省高度 */}
+            {!isMobile && (
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                 <Text style={styles.searchBarMainTitle}>卡牌搜索</Text>
+                 <View style={styles.verticalDivider} />
+              </View>
+            )}
             
-            {/* 搜尋輸入區塊 (手機版自動 100% 寬) */}
-            <View style={[styles.topSearchInputs, isMobile && { flexDirection: 'column', alignItems: 'stretch', width: '100%' }]}>
+            {/* 搜尋框與選單緊湊排版 */}
+            <View style={[styles.topSearchInputs, isMobile && { flexDirection: 'row', flexWrap: 'wrap', width: '100%', gap: 8 }]}>
               
-              <View style={[styles.dropdownWrapper, { zIndex: 10001 }, isMobile && { width: '100%' }]}>
-                <TouchableOpacity style={[styles.dropdownBtn, isMobile && { width: '100%' }]} onPress={() => setIsSetDropdownOpen(!isSetDropdownOpen)} activeOpacity={0.8}>
+              <View style={[styles.dropdownWrapper, { zIndex: 10001 }, isMobile && { flex: 1, minWidth: '40%' }]}>
+                <TouchableOpacity style={[styles.dropdownBtn, isMobile && { width: '100%', height: 34 }]} onPress={() => setIsSetDropdownOpen(!isSetDropdownOpen)} activeOpacity={0.8}>
                   <Text style={styles.dropdownBtnText} numberOfLines={1}>{selectedSet === 'all' ? '收錄彈' : selectedSet}</Text>
                   <Text style={styles.dropdownArrow}>▼</Text>
                 </TouchableOpacity>
@@ -1507,29 +1506,29 @@ export default function App() {
                 )}
               </View>
 
-              <View style={[styles.searchInputWrapper, isMobile && { maxWidth: '100%', width: '100%' }]}>
-                <TextInput style={styles.officialSearchInput} placeholder="卡牌編號、卡牌名稱" placeholderTextColor="#8899a6" value={searchText} onChangeText={setSearchText} onSubmitEditing={processSmartSearch} />
-                <TouchableOpacity style={styles.searchIconButton} activeOpacity={0.8} onPress={processSmartSearch}><Text style={styles.searchIconText}>搜尋</Text></TouchableOpacity>
-              </View>
-
-              <TouchableOpacity style={[styles.officialResetButton, isMobile && { width: '100%', marginTop: 5 }]} activeOpacity={0.8} onPress={handleResetSearch}>
+              <TouchableOpacity style={[styles.officialResetButton, isMobile && { flex: 1, minWidth: '20%', height: 34 }]} activeOpacity={0.8} onPress={handleResetSearch}>
                 <Text style={styles.officialResetButtonText}>重置</Text>
               </TouchableOpacity>
 
+              <View style={[styles.searchInputWrapper, isMobile && { flexBasis: '100%', height: 36 }]}>
+                <TextInput style={styles.officialSearchInput} placeholder="卡牌編號、卡牌名稱" placeholderTextColor="#8899a6" value={searchText} onChangeText={setSearchText} onSubmitEditing={processSmartSearch} />
+                <TouchableOpacity style={[styles.searchIconButton, isMobile && { height: 26 }]} activeOpacity={0.8} onPress={processSmartSearch}><Text style={styles.searchIconText}>搜尋</Text></TouchableOpacity>
+              </View>
+
             </View>
             
-            {/* 重置面板區塊 (手機版置中) */}
-            <View style={[styles.masterResetContainer, isMobile && { marginLeft: 0, justifyContent: 'center', marginTop: 10, width: '100%' }]}>
+            {/* 下方控制按鈕列 */}
+            <View style={[styles.masterResetContainer, isMobile && { marginLeft: 0, justifyContent: 'space-between', width: '100%', gap: 6 }]}>
               {lastState && (
-                <TouchableOpacity style={styles.backToCardBtn} onPress={restoreHistoryState} activeOpacity={0.8}>
-                  <Text style={styles.backToCardBtnText}>🔙 返回 ({lastState.card.displayId || lastState.card.id})</Text>
+                <TouchableOpacity style={[styles.backToCardBtn, isMobile && { height: 32, paddingHorizontal: 10 }]} onPress={restoreHistoryState} activeOpacity={0.8}>
+                  <Text style={[styles.backToCardBtnText, isMobile && { fontSize: 11 }]}>🔙 返回 ({lastState.card.displayId || lastState.card.id})</Text>
                 </TouchableOpacity>
               )}
-              <TouchableOpacity style={styles.scrollToTopBtn} onPress={() => flatListRef.current?.scrollToOffset({ offset: 0, animated: true })}>
-                <Text style={styles.scrollToTopBtnText}>⬆ 回頂端</Text>
+              <TouchableOpacity style={[styles.scrollToTopBtn, isMobile && { height: 32, paddingHorizontal: 12, flex: 1 }]} onPress={() => flatListRef.current?.scrollToOffset({ offset: 0, animated: true })}>
+                <Text style={[styles.scrollToTopBtnText, isMobile && { fontSize: 11 }]}>⬆ 回頂端</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.masterResetBtn} onPress={handleResetEverything}>
-                <Text style={styles.masterResetBtnText}>重置全部</Text>
+              <TouchableOpacity style={[styles.masterResetBtn, isMobile && { height: 32, paddingHorizontal: 12, flex: 1 }]} onPress={handleResetEverything}>
+                <Text style={[styles.masterResetBtnText, isMobile && { fontSize: 11 }]}>重置全部</Text>
               </TouchableOpacity>
             </View>
 
@@ -1760,60 +1759,97 @@ export default function App() {
         </View>
       </View>
 
-      <View style={styles.content}>
+      {/* 🌟 修改 2：卡牌網格渲染，導入 isMobile 屬性 */}
+      <View style={[styles.content, isMobile && { padding: 5 }]}>
         <FlatList
           ref={flatListRef}
           onScroll={(e) => setCurrentScrollY(e.nativeEvent.contentOffset.y)}
           scrollEventThrottle={16}
           key={numColumns} data={filteredCards} keyExtractor={(item, index) => item.id || index.toString()}
-          renderItem={({ item }) => <CardGridItem item={item} dynamicCardWidth={dynamicCardWidth} language={language} onPress={(i) => { setLastState(null); setSelectedCard(i); }} />}
+          renderItem={({ item }) => <CardGridItem item={item} dynamicCardWidth={dynamicCardWidth} language={language} onPress={(i) => { setLastState(null); setSelectedCard(i); }} isMobile={isMobile} />}
           numColumns={numColumns} ListEmptyComponent={<Text style={styles.emptyText}>找不到符合的卡片</Text>} contentContainerStyle={{ paddingBottom: 20 }}
         />
       </View>
 
+      {/* 🌟 修改 3：防爆彈窗佈局重構 */}
       <Modal visible={selectedCard !== null} animationType="fade" transparent={true}>
         {selectedCard && (
-          <View style={styles.modalOverlay}>
-            <TouchableOpacity style={[styles.floatingArrowButton, styles.leftArrowPosition, !hasPrev && styles.arrowDisabled]} onPress={handlePrevCard} disabled={!hasPrev}><Text style={styles.floatingArrowText}>&lt;&lt;</Text></TouchableOpacity>
-            <TouchableOpacity activeOpacity={1} style={styles.modalContentBox}>
-              <View style={styles.modalTopBar}>
-                <View style={styles.langButtonGroup}>
-                  <TouchableOpacity style={[styles.langBtn, language === 'hk' ? styles.langBtnActive : styles.langBtnInactive]} onPress={() => setLanguage('hk')} activeOpacity={0.8}><Text style={styles.langBtnText}>港譯</Text></TouchableOpacity>
-                  <TouchableOpacity style={[styles.langBtn, language === 'tw' ? styles.langBtnActive : styles.langBtnInactive]} onPress={() => setLanguage('tw')} activeOpacity={0.8}><Text style={styles.langBtnText}>台譯</Text></TouchableOpacity>
-                </View>
-                <View style={styles.modalHeaderIdBox}>
-                  <Text style={styles.modalHeaderId}>{selectedCard.displayId}</Text>
-                  <Text style={styles.modalHeaderRarity}>{selectedCard.rarity || 'C'}</Text>
-                  {selectedCard.isBetaCard && <Text style={styles.modalHeaderBetaBadge}>BETA</Text>}
-                  {selectedCard.isLimitedCard && <Text style={styles.modalHeaderLimitedBadge}>LIMITED</Text>}
-                  {selectedCard.isPromoCard && <Text style={styles.modalHeaderPromoBadge}>PROMO</Text>}
-                  {selectedCard._isReprint && <Text style={styles.modalHeaderReprintBadge}>重印</Text>}
-                  {selectedCard._isAltArt && <Text style={styles.modalHeaderAltBadge}>異畫</Text>}
-                </View>
+          <View style={[styles.modalOverlay, isMobile && { padding: 10 }]}>
+            
+            {/* 電腦版側邊大按鈕 */}
+            {!isMobile && <TouchableOpacity style={[styles.floatingArrowButton, styles.leftArrowPosition, !hasPrev && styles.arrowDisabled]} onPress={handlePrevCard} disabled={!hasPrev}><Text style={styles.floatingArrowText}>&lt;&lt;</Text></TouchableOpacity>}
+            
+            <TouchableOpacity activeOpacity={1} style={[styles.modalContentBox, isMobile && { maxHeight: '96%' }]}>
+              
+              {/* 彈窗頂部控制列 */}
+              <View style={[styles.modalTopBar, isMobile && { paddingHorizontal: 12, paddingVertical: 10, flexWrap: 'wrap', gap: 10 }]}>
                 
-                {/* 🌟 核心升級：右上角控制中心 */}
+                {/* 左上角：手機版導航與語系 */}
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                  {isMobile && (
+                    <View style={{ flexDirection: 'row', gap: 4, marginRight: 4 }}>
+                      <TouchableOpacity style={styles.mobileNavBtn} onPress={handlePrevCard} disabled={!hasPrev}><Text style={[styles.mobileNavBtnText, !hasPrev && styles.arrowDisabled]}>◀</Text></TouchableOpacity>
+                      <TouchableOpacity style={styles.mobileNavBtn} onPress={handleNextCard} disabled={!hasNext}><Text style={[styles.mobileNavBtnText, !hasNext && styles.arrowDisabled]}>▶</Text></TouchableOpacity>
+                    </View>
+                  )}
+                  <View style={styles.langButtonGroup}>
+                    <TouchableOpacity style={[styles.langBtn, language === 'hk' ? styles.langBtnActive : styles.langBtnInactive]} onPress={() => setLanguage('hk')} activeOpacity={0.8}><Text style={styles.langBtnText}>港譯</Text></TouchableOpacity>
+                    <TouchableOpacity style={[styles.langBtn, language === 'tw' ? styles.langBtnActive : styles.langBtnInactive]} onPress={() => setLanguage('tw')} activeOpacity={0.8}><Text style={styles.langBtnText}>台譯</Text></TouchableOpacity>
+                  </View>
+                </View>
+
+                {/* 電腦版顯示的編號列 (手機版移到下方以防破版) */}
+                {!isMobile && (
+                  <View style={styles.modalHeaderIdBox}>
+                    <Text style={styles.modalHeaderId}>{selectedCard.displayId}</Text>
+                    <Text style={styles.modalHeaderRarity}>{selectedCard.rarity || 'C'}</Text>
+                    {selectedCard.isBetaCard && <Text style={styles.modalHeaderBetaBadge}>BETA</Text>}
+                    {selectedCard.isLimitedCard && <Text style={styles.modalHeaderLimitedBadge}>LIMITED</Text>}
+                    {selectedCard.isPromoCard && <Text style={styles.modalHeaderPromoBadge}>PROMO</Text>}
+                    {selectedCard._isReprint && <Text style={styles.modalHeaderReprintBadge}>重印</Text>}
+                    {selectedCard._isAltArt && <Text style={styles.modalHeaderAltBadge}>異畫</Text>}
+                  </View>
+                )}
+                
+                {/* 右上角：講座按鈕與關閉 */}
                 <View style={styles.modalTopRightControls}>
                   {selectedCard.youtube_url && (
-                    <TouchableOpacity 
-                      style={styles.ytPromoButton} 
-                      onPress={() => Linking.openURL(selectedCard.youtube_url)}
-                      activeOpacity={0.8}
-                    >
+                    <TouchableOpacity style={[styles.ytPromoButton, isMobile && { paddingHorizontal: 10, paddingVertical: 5 }]} onPress={() => Linking.openURL(selectedCard.youtube_url)} activeOpacity={0.8}>
                       <Text style={styles.ytPromoIcon}>▶</Text>
-                      <Text style={styles.ytPromoText}>卡牌講座</Text>
+                      <Text style={[styles.ytPromoText, isMobile && { fontSize: 11 }]}>卡牌講座</Text>
                     </TouchableOpacity>
                   )}
                   <TouchableOpacity style={styles.closeButton} onPress={() => { setLastState(null); setSelectedCard(null); }}><Text style={styles.closeButtonText}>X</Text></TouchableOpacity>
                 </View>
 
               </View>
-              <ScrollView contentContainerStyle={styles.modalScrollBody} showsVerticalScrollIndicator={false}>
-                <View style={styles.modalFlexRow}>
-                  <View style={styles.modalLeftColumn}>
-                    {cardImages[selectedCard.id] ? <Image source={{ uri: cardImages[selectedCard.id] }} style={styles.cardImage} resizeMode="contain" /> : <View style={[styles.cardImage, styles.noImagePlaceholder]}><Text style={styles.noImageText}>圖片準備中</Text></View>}
+
+              {/* 手機版將過長的徽章列放置在安全區域 */}
+              {isMobile && (
+                <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingBottom: 8, borderBottomWidth: 1, borderBottomColor: '#eee', backgroundColor: '#fafafa', flexWrap: 'wrap', gap: 6 }}>
+                  <Text style={styles.modalHeaderId}>{selectedCard.displayId}</Text>
+                  <Text style={styles.modalHeaderRarity}>{selectedCard.rarity || 'C'}</Text>
+                  {selectedCard.isBetaCard && <Text style={[styles.modalHeaderBetaBadge, { marginLeft: 0 }]}>BETA</Text>}
+                  {selectedCard.isLimitedCard && <Text style={[styles.modalHeaderLimitedBadge, { marginLeft: 0 }]}>LIMITED</Text>}
+                  {selectedCard.isPromoCard && <Text style={[styles.modalHeaderPromoBadge, { marginLeft: 0 }]}>PROMO</Text>}
+                  {selectedCard._isReprint && <Text style={[styles.modalHeaderReprintBadge, { marginLeft: 0 }]}>重印</Text>}
+                  {selectedCard._isAltArt && <Text style={[styles.modalHeaderAltBadge, { marginLeft: 0 }]}>異畫</Text>}
+                </View>
+              )}
+
+              <ScrollView contentContainerStyle={[styles.modalScrollBody, isMobile && { padding: 16 }]} showsVerticalScrollIndicator={true}>
+                <View style={[styles.modalFlexRow, isMobile && { flexDirection: 'column', alignItems: 'center' }]}>
+                  
+                  {/* 左側圖片區 */}
+                  <View style={[styles.modalLeftColumn, isMobile && { marginRight: 0, marginBottom: 15 }]}>
+                    {cardImages[selectedCard.id] ? 
+                      <Image source={{ uri: cardImages[selectedCard.id] }} style={[styles.cardImage, isMobile && { width: 250, height: 347 }]} resizeMode="contain" /> 
+                      : <View style={[styles.cardImage, styles.noImagePlaceholder, isMobile && { width: 250, height: 347 }]}><Text style={styles.noImageText}>圖片準備中</Text></View>}
                   </View>
-                  <View style={styles.modalRightColumn}>
-                    <Text style={styles.officialNameMain}>{selectedCard[`name_${language}`]}</Text>
+
+                  {/* 右側文字區：解除手機上的 minWidth 鎖定，防爆出螢幕 */}
+                  <View style={[styles.modalRightColumn, isMobile && { minWidth: '100%' }]}>
+                    <Text style={[styles.officialNameMain, isMobile && { fontSize: 22 }]}>{selectedCard[`name_${language}`]}</Text>
                     
                     <View style={styles.officialSpecsRow}>
                       <Text style={styles.specItem}><Text style={styles.specLabel}>Lv.</Text> {selectedCard.lv || '-'}</Text>
@@ -1910,7 +1946,9 @@ export default function App() {
                 </View>
               </ScrollView>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.floatingArrowButton, styles.rightArrowPosition, !hasNext && styles.arrowDisabled]} onPress={handleNextCard} disabled={!hasNext}><Text style={styles.floatingArrowText}>&gt;&gt;</Text></TouchableOpacity>
+            
+            {/* 電腦版側邊大按鈕 */}
+            {!isMobile && <TouchableOpacity style={[styles.floatingArrowButton, styles.rightArrowPosition, !hasNext && styles.arrowDisabled]} onPress={handleNextCard} disabled={!hasNext}><Text style={styles.floatingArrowText}>&gt;&gt;</Text></TouchableOpacity>}
           </View>
         )}
       </Modal>
@@ -2039,13 +2077,21 @@ const styles = StyleSheet.create({
   gridCardName: { fontSize: 13, fontWeight: 'bold', color: '#111', cursor: 'default' },
   
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.4)', backdropFilter: 'blur(10px)', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: 20, position: 'relative' },
-  modalContentBox: { backgroundColor: '#fff', width: '100%', maxWidth: 920, maxHeight: '92%', borderRadius: 12, overflow: 'hidden', shadowColor: '#000', shadowOpacity: 0.25, shadowRadius: 15, elevation: 10, mx: 20 },
+  
+  // 🌟 彈窗防爆核心設定
+  modalContentBox: { backgroundColor: '#fff', width: '100%', maxWidth: 920, maxHeight: '92%', borderRadius: 12, overflow: 'hidden', shadowColor: '#000', shadowOpacity: 0.25, shadowRadius: 15, elevation: 10, mx: 20, display: 'flex', flexDirection: 'column', flexShrink: 1 },
+  
   floatingArrowButton: { position: 'absolute', top: '50%', marginTop: -27, width: 54, height: 54, borderRadius: 27, backgroundColor: 'rgba(0, 0, 0, 0.6)', justifyContent: 'center', alignItems: 'center', cursor: 'pointer', zIndex: 999999 },
   leftArrowPosition: { left: 40 },
   rightArrowPosition: { right: 40 },
   floatingArrowText: { color: '#ffffff', fontSize: 16, fontWeight: 'bold', letterSpacing: -1 },
   arrowDisabled: { opacity: 0.15, cursor: 'default' },
-  modalTopBar: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#eee', backgroundColor: '#fafafa' },
+  
+  modalTopBar: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#eee', backgroundColor: '#fafafa', flexShrink: 0 },
+  
+  mobileNavBtn: { paddingHorizontal: 12, paddingVertical: 6, backgroundColor: '#e2e8f0', borderRadius: 8 },
+  mobileNavBtnText: { fontSize: 14, color: '#475569', fontWeight: 'bold' },
+  
   modalHeaderIdBox: { flexDirection: 'row', alignItems: 'center' },
   modalHeaderId: { fontSize: 14, color: '#666', marginRight: 10, fontFamily: 'monospace', cursor: 'default' },
   modalHeaderRarity: { fontSize: 12, fontWeight: 'bold', backgroundColor: '#e5e7eb', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4, color: '#374151', cursor: 'default' },
@@ -2062,7 +2108,8 @@ const styles = StyleSheet.create({
   
   closeButton: { width: 34, height: 34, backgroundColor: '#e5e7eb', borderRadius: 17, justifyContent: 'center', alignItems: 'center', cursor: 'pointer' },
   closeButtonText: { fontSize: 16, fontWeight: 'bold', color: '#4b5563' },
-  modalScrollBody: { padding: 30 },
+  
+  modalScrollBody: { padding: 30, flexGrow: 1 },
   modalFlexRow: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' },
   modalLeftColumn: { marginRight: 35, alignItems: 'center', marginBottom: 20 },
   modalRightColumn: { flex: 1, minWidth: 320 },
