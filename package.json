@@ -1,0 +1,24 @@
+{
+  "name": "gundam-card-web",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "@expo/metro-runtime": "~56.0.15",
+    "expo": "~56.0.12",
+    "expo-status-bar": "~56.0.4",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "react-native": "0.85.3",
+    "react-native-web": "^0.21.2",
+    "sharp": "^0.35.1",
+    "xlsx": "^0.18.5"
+  },
+  "scripts": {
+  "update-data": "node excelToJson.js && node cleanImages.js && node generateDict.js",
+  "start": "npm run update-data && expo start",
+  "android": "npm run update-data && expo start --android",
+  "ios": "npm run update-data && expo start --ios",
+  "web": "npm run update-data && expo start --web"
+},
+  "private": true
+}
