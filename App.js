@@ -158,7 +158,7 @@ const STATUS_COLORS_JSON = Object.freeze({
 });
 const STATUS_THEME_STYLES = Object.freeze({
   "status_bg_pink": { bg: '#cd6e99' }, "status_bg_yellow": { bg: '#faee01' }, "status_bg_lightblue": { bg: '#77b8bb' }, 
-  "status_bg_blue": { bg: '#68ade1' }, "status_bg_red": { bg: '#a2131d' }, "status_bg_orange": { bg: '#d78604' }, "status_bg_DEFAULT": { bg: '#f1f5f9' }    
+  "status_bg_blue": { bg: '#68ade1' }, "status_bg_red": { bg: '#a2131d' }, "status_bg_orange": { bg: '#d78604' }, "status_bg_DEFAULT": { bg: '#f1f5f9' }   
 });
 
 const COLOR_OPTIONS = Object.freeze([
@@ -196,10 +196,10 @@ const RARITY_OPTIONS = Object.freeze([
 const VERSION_OPTIONS = Object.freeze([
   { label: '全部', value: 'all', activeBg: '#334155', activeText: '#fff' },
   { label: '普畫', value: 'Normal', activeBg: '#2563eb', activeText: '#fff' }, 
-  { label: '異畫 (全開)', value: 'Alt', activeBg: '#d97706', activeText: '#fff' },    
-  { label: '異畫 +', value: 'Alt_Plus', activeBg: '#b45309', activeText: '#fff' },    
-  { label: '異畫 ++', value: 'Alt_PlusPlus', activeBg: '#92400e', activeText: '#fff' },    
-  { label: '異畫 (SP)', value: 'Alt_SP', activeBg: '#78350f', activeText: '#fff' },    
+  { label: '異畫 (全開)', value: 'Alt', activeBg: '#d97706', activeText: '#fff' },   
+  { label: '異畫 +', value: 'Alt_Plus', activeBg: '#b45309', activeText: '#fff' },   
+  { label: '異畫 ++', value: 'Alt_PlusPlus', activeBg: '#92400e', activeText: '#fff' },   
+  { label: '異畫 (SP)', value: 'Alt_SP', activeBg: '#78350f', activeText: '#fff' },   
 ]);
 
 const RESONANCE_OPTIONS = Object.freeze([
@@ -411,7 +411,7 @@ export default function App() {
   const [selectedKeywords, setSelectedKeywords] = useState(['all']); 
   const [selectedTimings, setSelectedTimings] = useState(['all']); 
 
-  const [supportValue, setSupportValue] = useState('');      
+  const [supportValue, setSupportValue] = useState('');     
   const [breakthroughValue, setBreakthroughValue] = useState(''); 
   const [repairValue, setRepairValue] = useState(''); 
   const [traitSearchText, setTraitSearchText] = useState(''); 
@@ -429,6 +429,9 @@ export default function App() {
     const subscription = Dimensions.addEventListener('change', ({ window }) => setScreenWidth(window.width));
     return () => subscription?.remove();
   }, []);
+
+  // 🌟 魔法加持：偵測是否為手機螢幕 (小於 768px)
+  const isMobile = screenWidth < 768;
 
   const numColumns = Math.max(2, Math.floor(screenWidth / OPTIMAL_CARD_WIDTH));
   const dynamicCardWidth = (screenWidth - 20 - (numColumns * 10)) / numColumns;
@@ -1471,18 +1474,25 @@ export default function App() {
       <View style={styles.searchBarSection}>
         <View style={styles.mainControlContainer}>
           
-          <View style={styles.topSearchSection}>
-            <Text style={styles.searchBarMainTitle}>卡牌搜索</Text>
-            <View style={styles.verticalDivider} />
+          {/* 🌟 修改重點：頂部搜尋列的響應式排列 */}
+          <View style={[styles.topSearchSection, isMobile && { flexDirection: 'column', alignItems: 'stretch', gap: 15 }]}>
             
-            <View style={styles.topSearchInputs}>
-              <View style={[styles.dropdownWrapper, { zIndex: 10001 }]}>
-                <TouchableOpacity style={styles.dropdownBtn} onPress={() => setIsSetDropdownOpen(!isSetDropdownOpen)} activeOpacity={0.8}>
+            {/* 標題與分隔線 (手機隱藏分隔線) */}
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: isMobile ? 'center' : 'flex-start' }}>
+               <Text style={styles.searchBarMainTitle}>卡牌搜索</Text>
+               {!isMobile && <View style={styles.verticalDivider} />}
+            </View>
+            
+            {/* 搜尋輸入區塊 (手機版自動 100% 寬) */}
+            <View style={[styles.topSearchInputs, isMobile && { flexDirection: 'column', alignItems: 'stretch', width: '100%' }]}>
+              
+              <View style={[styles.dropdownWrapper, { zIndex: 10001 }, isMobile && { width: '100%' }]}>
+                <TouchableOpacity style={[styles.dropdownBtn, isMobile && { width: '100%' }]} onPress={() => setIsSetDropdownOpen(!isSetDropdownOpen)} activeOpacity={0.8}>
                   <Text style={styles.dropdownBtnText} numberOfLines={1}>{selectedSet === 'all' ? '收錄彈' : selectedSet}</Text>
                   <Text style={styles.dropdownArrow}>▼</Text>
                 </TouchableOpacity>
                 {isSetDropdownOpen && (
-                  <View style={styles.dropdownList}>
+                  <View style={[styles.dropdownList, isMobile && { width: '100%' }]}>
                     <ScrollView style={{ maxHeight: 250 }} nestedScrollEnabled={true} keyboardShouldPersistTaps="handled">
                       {AVAILABLE_SETS.map((setOpt) => (
                         <TouchableOpacity 
@@ -1497,29 +1507,32 @@ export default function App() {
                 )}
               </View>
 
-              <View style={styles.searchInputWrapper}>
+              <View style={[styles.searchInputWrapper, isMobile && { maxWidth: '100%', width: '100%' }]}>
                 <TextInput style={styles.officialSearchInput} placeholder="卡牌編號、卡牌名稱" placeholderTextColor="#8899a6" value={searchText} onChangeText={setSearchText} onSubmitEditing={processSmartSearch} />
                 <TouchableOpacity style={styles.searchIconButton} activeOpacity={0.8} onPress={processSmartSearch}><Text style={styles.searchIconText}>搜尋</Text></TouchableOpacity>
               </View>
 
-              <TouchableOpacity style={styles.officialResetButton} activeOpacity={0.8} onPress={handleResetSearch}>
+              <TouchableOpacity style={[styles.officialResetButton, isMobile && { width: '100%', marginTop: 5 }]} activeOpacity={0.8} onPress={handleResetSearch}>
                 <Text style={styles.officialResetButtonText}>重置</Text>
               </TouchableOpacity>
+
             </View>
             
-            <View style={styles.masterResetContainer}>
+            {/* 重置面板區塊 (手機版置中) */}
+            <View style={[styles.masterResetContainer, isMobile && { marginLeft: 0, justifyContent: 'center', marginTop: 10, width: '100%' }]}>
               {lastState && (
                 <TouchableOpacity style={styles.backToCardBtn} onPress={restoreHistoryState} activeOpacity={0.8}>
-                  <Text style={styles.backToCardBtnText}>🔙 返回瀏覽 ({lastState.card.displayId || lastState.card.id})</Text>
+                  <Text style={styles.backToCardBtnText}>🔙 返回 ({lastState.card.displayId || lastState.card.id})</Text>
                 </TouchableOpacity>
               )}
               <TouchableOpacity style={styles.scrollToTopBtn} onPress={() => flatListRef.current?.scrollToOffset({ offset: 0, animated: true })}>
-                <Text style={styles.scrollToTopBtnText}>⬆ 回到頂端</Text>
+                <Text style={styles.scrollToTopBtnText}>⬆ 回頂端</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.masterResetBtn} onPress={handleResetEverything}>
                 <Text style={styles.masterResetBtnText}>重置全部</Text>
               </TouchableOpacity>
             </View>
+
           </View>
 
           <View style={[styles.bottomFilterSection, !isFilterPanelOpen && { paddingBottom: 16 }]}>
@@ -1672,13 +1685,13 @@ export default function App() {
                 <View style={styles.filterRightColumn}>
                   <View style={styles.panelRow}>
                     <Text style={styles.panelLabel}>特徵</Text>
-                    <View style={{flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap'}}>
-                      <TextInput style={[styles.traitShortInput, { width: 160 }]} placeholder="輸入特徵 (例：地球聯邦)" placeholderTextColor="#94a3b8" value={traitSearchText} onChangeText={setTraitSearchText} />
+                    <View style={{flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 6}}>
+                      <TextInput style={[styles.traitShortInput, { width: 160, marginRight: 0 }]} placeholder="輸入特徵 (例：地球聯邦)" placeholderTextColor="#94a3b8" value={traitSearchText} onChangeText={setTraitSearchText} />
                       <TouchableOpacity style={styles.traitResetButton} activeOpacity={0.8} onPress={() => { setTraitSearchText(''); setIsTraitExactMatch(false); }}>
                         <Text style={styles.traitResetButtonText}>重置</Text>
                       </TouchableOpacity>
                       <TouchableOpacity 
-                        style={[styles.exactMatchBtn, isTraitExactMatch && styles.exactMatchBtnActive]} 
+                        style={[styles.exactMatchBtn, isTraitExactMatch && styles.exactMatchBtnActive, {marginLeft: 0}]} 
                         onPress={() => setIsTraitExactMatch(!isTraitExactMatch)}
                         activeOpacity={0.8}
                       >
@@ -2042,7 +2055,6 @@ const styles = StyleSheet.create({
   modalHeaderLimitedBadge: { fontSize: 12, fontWeight: 'bold', backgroundColor: '#374151', color: '#e5e7eb', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4, marginLeft: 6, cursor: 'default' },
   modalHeaderPromoBadge: { fontSize: 12, fontWeight: 'bold', backgroundColor: '#7e22ce', color: '#fef08a', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4, marginLeft: 6, cursor: 'default' },
   
-  // 🌟 新增的右上角控制中心
   modalTopRightControls: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   ytPromoButton: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#ef4444', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20, shadowColor: '#ef4444', shadowOpacity: 0.4, shadowRadius: 6, elevation: 3, cursor: 'pointer' },
   ytPromoIcon: { color: '#ffffff', fontSize: 12, fontWeight: 'bold', marginRight: 6 },
@@ -2058,7 +2070,6 @@ const styles = StyleSheet.create({
   noImagePlaceholder: { backgroundColor: '#e5e7eb', justifyContent: 'center', alignItems: 'center' },
   noImageText: { color: '#9ca3af', fontSize: 18, fontWeight: 'bold', cursor: 'default' },
   
-  // 🌟 名稱還原為獨立顯示
   officialNameMain: { fontSize: 28, fontWeight: 'bold', color: '#111214', marginBottom: 15, letterSpacing: 0.5, cursor: 'default' },
   
   officialSpecsRow: { flexDirection: 'row', paddingBottom: 15, borderBottomWidth: 1, borderBottomColor: '#d1d5db', marginBottom: 15 },
