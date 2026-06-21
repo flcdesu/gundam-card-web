@@ -283,7 +283,7 @@ const FACTION_COND = "(?:(?:我方|對方|雙方|友方|敵方)\\s*)";
 const EXCLUDE_COND = `(?:(?:[^，。、]+此(?:機體|角色|卡|卡牌)以外[的且]|${TARGET_TYPES}以外[的且])\\s*)`; 
 const RIDING_COND = "(?:搭乘(?:此|該)(?:機體|角色|卡牌|卡)的\\s*)";
 
-const PLAYER_LV_COND = "(?:若)?(?:我方|對方)(?:的等級)?(?:為)?\\s*(?:Lv\\.?\\s*)?\\d+\\s*(?:或更高等級|或高等級|或更高|或更低|或以下|或以上|以下|以上)?";
+const PLAYER_LV_COND = "(?:若)?(?:我方|對方)(?:的等級)?(?:為)?\\s*(?:Lv\\.?\\s*)?\\d+\\s*(?:或更高等級|或高等級|幻想更低|或更低|或以下|或以上|以下|以上)?";
 
 const SMART_PREFIX = `(?:(?:${TRAIT_GROUP}\\s*的?\\s*)?${STAT_COND}\\s*(?:的\\s*)?|${NAME_COND}|${KEYWORD_COND}|${STATUS_WORD_COND}|${COLOR_COND}|${FACTION_COND}|${RIDING_COND}|${TRAIT_GROUP}\\s*(?:的\\s*)?|${EXCLUDE_COND})`;
 const SMART_COND_STR = `(?:${SMART_PREFIX}+${TARGET_TYPES}(?:共鳴)?)`;
@@ -390,7 +390,7 @@ export default function App() {
   const [lastState, setLastState] = useState(null);
 
   const flatListRef = useRef(null);
-  const modalScrollRef = useRef(null); // 🌟 新增：用於控制彈窗回頂部
+  const modalScrollRef = useRef(null); 
   const [currentScrollY, setCurrentScrollY] = useState(0);
   const [pendingScrollY, setPendingScrollY] = useState(null);
 
@@ -431,7 +431,6 @@ export default function App() {
     return () => subscription?.remove();
   }, []);
 
-  // 🌟 偵測是否為手機螢幕
   const isMobile = screenWidth < 768;
 
   const numColumns = isMobile ? 4 : Math.max(2, Math.floor(screenWidth / OPTIMAL_CARD_WIDTH));
@@ -439,7 +438,6 @@ export default function App() {
   const marginSpace = isMobile ? (numColumns * 6) : (numColumns * 10);
   const dynamicCardWidth = (screenWidth - paddingSpace - marginSpace) / numColumns;
 
-  // 🌟 新增：當選擇的卡片改變時，強制彈窗滑動回頂端
   useEffect(() => {
     if (selectedCard && modalScrollRef.current) {
       modalScrollRef.current.scrollTo({ y: 0, animated: false });
@@ -472,20 +470,6 @@ export default function App() {
     if (flatListRef.current) {
       flatListRef.current.scrollToOffset({ offset: 0, animated: true });
     }
-  };
-
-  const saveHistoryAndReset = () => {
-    if (selectedCard) {
-      setLastState({
-        card: selectedCard, searchText, selectedSet, selectedColors, selectedTypes, selectedRarity, 
-        selectedVersions, includeRegular, includeBeta, includeReprint, includeLimited, includePromo, selectedResonance, resonanceMatchId, 
-        selectedKeywords, selectedTimings, supportValue, breakthroughValue, repairValue, traitSearchText, isTraitExactMatch, lvRange, costRange, apRange, hpRange,
-        scrollY: currentScrollY 
-      });
-    }
-    handleResetSearch();
-    handleResetFilters();
-    setSelectedCard(null);
   };
 
   const restoreHistoryState = () => {
@@ -579,7 +563,7 @@ export default function App() {
 
       if (op) {
          if (['或更低', '或以下', '不大於', '不高於', '不超過', '<=', '小於等於', '以下', '<', '小於'].some(o => op.includes(o))) { min = 0; max = num; if (['<', '小於'].includes(op)) max = num - 1; }
-         else if (['或更高', '或更高等級', '或高等級', '或以上', '不小於', '不低於', '>=', '大於等於', '以上', '>', '大於'].some(o => op.includes(o))) { min = num; max = 9; if (['>', '大於'].includes(op)) min = num + 1; }
+         else if (['Memory of Advance', '或更高等級', '或高等級', '或以上', '不小於', '不低於', '>=', '大於等於', '以上', '>', '大於'].some(o => op.includes(o))) { min = num; max = 9; if (['>', '大於'].includes(op)) min = num + 1; }
          else { min = num; max = num; }
       } else { min = num; max = num; }
 
@@ -1113,13 +1097,16 @@ export default function App() {
     setSelectedSet(setStr);
   };
 
-  // 🌟 新增：手機版橫向滑動輔助組件，保護電腦版不變
   const MobileScrollWrapper = ({ children, style }) => {
     if (isMobile) {
       return (
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={[style, styles.mobileHorizontalScroll]}>
-          {children}
-        </ScrollView>
+        <View style={styles.mobileGradientContainer}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={[style, styles.mobileHorizontalScroll]}>
+            {children}
+          </ScrollView>
+          <View style={styles.leftFade} />
+          <View style={styles.rightFade} />
+        </View>
       );
     }
     return <View style={style}>{children}</View>;
@@ -1313,7 +1300,7 @@ export default function App() {
                   );
               }
               if (/^〔[^〕]+〕$/.test(bp) || /^「[^」]+」$/.test(bp)) {
-                  return <Text key={i} style={{ color: textColor, fontWeight: '900', cursor: 'pointer' }} onPress={() => handleTokenClick(bp.replace(/[〔〕長」]/g, '').replace(/[〔〕「」]/g, '').trim(), bp.startsWith('〔'))}>{bp}</Text>;
+                  return <Text key={i} style={{ color: textColor, fontWeight: '900', cursor: 'pointer' }} onPress={() => handleTokenClick(bp.replace(/[〔〕長裝」]/g, '').replace(/[〔〕「」]/g, '').trim(), bp.startsWith('〔'))}>{bp}</Text>;
               }
               return <Text key={i}>{bp}</Text>;
             });
@@ -1354,7 +1341,7 @@ export default function App() {
               return (
                   <Text key={index}>
                       {subParts.map((sub, i) => {
-                          if (/^《[^》]+》$/.test(sub)) {
+                          if (/^《[^》]+>$/.test(sub)) {
                               const cleanText = sub.replace(/[《》]/g, '').trim();
                               return (
                                 <TouchableOpacity key={i} style={styles.hexWrapperText} onPress={() => handleKeywordHexClick(cleanText)} activeOpacity={0.7}>
@@ -1474,24 +1461,25 @@ export default function App() {
         </TouchableWithoutFeedback>
       )}
 
+      {/* 🌟 修正 1：修復語系按鈕在各種寬度下的防擠壓結構 */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.titleContainer} onPress={() => Linking.openURL('https://www.youtube.com/@FLCdesu')} activeOpacity={0.8}>
-          <Text style={styles.titleTextMain}>GUNDAM CARD GAME中文卡效資料庫 by </Text>
+          <Text style={styles.titleTextMain} numberOfLines={1} adjustsFontSizeToFit>GUNDAM CARD GAME中文卡效資料庫 by </Text>
           <Text style={styles.titleLink}>FLC</Text>
           <Image source={{ uri: 'https://cdn-icons-png.flaticon.com/512/1384/1384060.png' }} style={styles.youtubeLogo} resizeMode="contain" />
         </TouchableOpacity>
-        <View style={styles.langButtonGroup}>
-          <TouchableOpacity style={[styles.langBtn, language === 'hk' ? styles.langBtnActive : styles.langBtnInactive]} onPress={() => setLanguage('hk')} activeOpacity={0.8}><Text style={styles.langBtnText}>港譯</Text></TouchableOpacity>
-          <TouchableOpacity style={[styles.langBtn, language === 'tw' ? styles.langBtnActive : styles.langBtnInactive]} onPress={() => setLanguage('tw')} activeOpacity={0.8}><Text style={styles.langBtnText}>台譯</Text></TouchableOpacity>
+        <View style={styles.headerLangContainer}>
+          <View style={styles.langButtonGroup}>
+            <TouchableOpacity style={[styles.langBtn, language === 'hk' ? styles.langBtnActive : styles.langBtnInactive]} onPress={() => setLanguage('hk')} activeOpacity={0.8}><Text style={styles.langBtnText}>港譯</Text></TouchableOpacity>
+            <TouchableOpacity style={[styles.langBtn, language === 'tw' ? styles.langBtnActive : styles.langBtnInactive]} onPress={() => setLanguage('tw')} activeOpacity={0.8}><Text style={styles.langBtnText}>台譯</Text></TouchableOpacity>
+          </View>
         </View>
       </View>
 
-      {/* 🌟 修正 1：提升 zIndex，縮小重置按鈕 */}
-      <View style={[styles.searchBarSection, isMobile && { paddingVertical: 10, paddingHorizontal: 12 }]}>
+      <View style={styles.searchBarSection}>
         <View style={styles.mainControlContainer}>
           
           <View style={[styles.topSearchSection, isMobile && { flexDirection: 'column', alignItems: 'stretch', gap: 8, paddingVertical: 10, paddingHorizontal: 15 }]}>
-            
             {!isMobile && (
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                  <Text style={styles.searchBarMainTitle}>卡牌搜索</Text>
@@ -1499,9 +1487,8 @@ export default function App() {
               </View>
             )}
             
-            <View style={[styles.topSearchInputs, isMobile && { flexDirection: 'row', flexWrap: 'wrap', width: '100%', gap: 8, zIndex: 100 }]}>
-              
-              <View style={[styles.dropdownWrapper, isMobile && { flex: 1, zIndex: 10001 }]}>
+            <View style={[styles.topSearchInputs, isMobile && { flexDirection: 'row', flexWrap: 'wrap', width: '100%', gap: 8, zIndex: 10005 }]}>
+              <View style={[styles.dropdownWrapper, isMobile && { flex: 1, zIndex: 10006 }]}>
                 <TouchableOpacity style={[styles.dropdownBtn, isMobile && { width: '100%', height: 34 }]} onPress={() => setIsSetDropdownOpen(!isSetDropdownOpen)} activeOpacity={0.8}>
                   <Text style={styles.dropdownBtnText} numberOfLines={1}>{selectedSet === 'all' ? '收錄彈' : selectedSet}</Text>
                   <Text style={styles.dropdownArrow}>▼</Text>
@@ -1522,7 +1509,7 @@ export default function App() {
                 )}
               </View>
 
-              <TouchableOpacity style={[styles.officialResetButton, isMobile && { width: 70, height: 34 }]} activeOpacity={0.8} onPress={handleResetSearch}>
+              <TouchableOpacity style={[styles.officialResetButton, isMobile && { width: 65, height: 34 }]} activeOpacity={0.8} onPress={handleResetSearch}>
                 <Text style={styles.officialResetButtonText}>重置</Text>
               </TouchableOpacity>
 
@@ -1530,7 +1517,6 @@ export default function App() {
                 <TextInput style={styles.officialSearchInput} placeholder="卡牌編號、卡牌名稱" placeholderTextColor="#8899a6" value={searchText} onChangeText={setSearchText} onSubmitEditing={processSmartSearch} />
                 <TouchableOpacity style={[styles.searchIconButton, isMobile && { height: 26 }]} activeOpacity={0.8} onPress={processSmartSearch}><Text style={styles.searchIconText}>搜尋</Text></TouchableOpacity>
               </View>
-
             </View>
             
             <View style={[styles.masterResetContainer, isMobile && { marginLeft: 0, justifyContent: 'space-between', width: '100%', gap: 6, zIndex: 1 }]}>
@@ -1546,12 +1532,11 @@ export default function App() {
                 <Text style={[styles.masterResetBtnText, isMobile && { fontSize: 11 }]}>重置全部</Text>
               </TouchableOpacity>
             </View>
-
           </View>
 
-          {/* 🌟 修正 2：過長面板實裝水平滑動 */}
+          {/* 🌟 修正 2：過長面板限制最高高度，允許手機上下滑動滾動 */}
           <View style={[styles.bottomFilterSection, !isFilterPanelOpen && { paddingBottom: 16 }]}>
-            <View style={[styles.panelHeaderRow, isFilterPanelOpen && { marginBottom: 16 }]}>
+            <View style={[styles.panelHeaderRow, isFilterPanelOpen && { marginBottom: 12 }]}>
               <TouchableOpacity 
                 style={styles.panelTitleToggleClickable} 
                 onPress={() => setIsFilterPanelOpen(!isFilterPanelOpen)}
@@ -1569,206 +1554,135 @@ export default function App() {
             </View>
 
             {isFilterPanelOpen && (
-              <View style={styles.filterColumnsContainer}>
-                <View style={[styles.filterLeftColumn, screenWidth > 800 && styles.filterLeftColumnBorder]}>
-                  <View style={styles.panelRow}>
-                    <Text style={styles.panelLabel}>顏色</Text>
-                    <MobileScrollWrapper style={styles.chipContainerRow}>
-                      {COLOR_OPTIONS.map((opt) => (
-                        <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedColors.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleSelection(opt.value, selectedColors, setSelectedColors)}>
-                          <Text style={[styles.chipText, selectedColors.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
-                        </TouchableOpacity>
-                      ))}
-                    </MobileScrollWrapper>
-                  </View>
+              <ScrollView style={isMobile ? styles.mobilePanelVerticalContainer : null} nestedScrollEnabled={true} showsVerticalScrollIndicator={true}>
+                <View style={styles.filterColumnsContainer}>
+                  <View style={[styles.filterLeftColumn, screenWidth > 900 && styles.filterLeftColumnBorder]}>
+                    <View style={styles.panelRow}>
+                      <Text style={styles.panelLabel}>顏色</Text>
+                      <MobileScrollWrapper style={styles.chipContainerRow}>
+                        {COLOR_OPTIONS.map((opt) => (
+                          <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedColors.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleSelection(opt.value, selectedColors, setSelectedColors)}>
+                            <Text style={[styles.chipText, selectedColors.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+                          </TouchableOpacity>
+                        ))}
+                      </MobileScrollWrapper>
+                    </View>
 
-                  <View style={styles.panelRow}>
-                    <Text style={styles.panelLabel}>種類</Text>
-                    {isMobile ? (
-                      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.mobileHorizontalScroll}>
+                    <View style={styles.panelRow}>
+                      <Text style={styles.panelLabel}>種類</Text>
+                      <MobileScrollWrapper style={styles.chipContainerRow}>
                         {TYPE_OPTIONS.map((opt) => (
                           <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedTypes.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleSelection(opt.value, selectedTypes, setSelectedTypes)}>
                             <Text style={[styles.chipText, selectedTypes.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
                           </TouchableOpacity>
                         ))}
-                      </ScrollView>
-                    ) : (
-                      <View style={styles.typeRowsContainer}>
-                        <View style={[styles.chipContainerRow, { marginBottom: 6 }]}>
-                          {TYPE_OPTIONS.slice(0, 5).map((opt) => (
-                            <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedTypes.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleSelection(opt.value, selectedTypes, setSelectedTypes)}>
-                              <Text style={[styles.chipText, selectedTypes.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
-                            </TouchableOpacity>
-                          ))}
-                        </View>
-                        <View style={styles.chipContainerRow}>
-                          {TYPE_OPTIONS.slice(5).map((opt) => (
-                            <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedTypes.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleSelection(opt.value, selectedTypes, setSelectedTypes)}>
-                              <Text style={[styles.chipText, selectedTypes.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
-                            </TouchableOpacity>
-                          ))}
-                        </View>
+                      </MobileScrollWrapper>
+                    </View>
+
+                    <View style={styles.panelRow}>
+                      <Text style={styles.panelLabel}>稀有</Text>
+                      <MobileScrollWrapper style={styles.chipContainerRow}>
+                        {RARITY_OPTIONS.map((opt) => (
+                          <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedRarity === opt.value && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => setSelectedRarity(opt.value)}>
+                            <Text style={[styles.chipText, selectedRarity === opt.value && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+                          </TouchableOpacity>
+                        ))}
+                      </MobileScrollWrapper>
+                    </View>
+
+                    <View style={styles.panelRow}>
+                      <Text style={styles.panelLabel}>卡圖</Text>
+                      <MobileScrollWrapper style={styles.chipContainerRow}>
+                        {VERSION_OPTIONS.map((opt) => (
+                          <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedVersions.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleVersionSelection(opt.value)}>
+                            <Text style={[styles.chipText, selectedVersions.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+                          </TouchableOpacity>
+                        ))}
+                      </MobileScrollWrapper>
+                    </View>
+                    
+                    <View style={styles.panelRow}>
+                      <Text style={styles.panelLabel}>入手</Text>
+                      <MobileScrollWrapper style={styles.chipContainerRow}>
+                        <TouchableOpacity style={[styles.reprintTickbox, includeRegular && styles.reprintTickboxActive]} onPress={() => setIncludeRegular(!includeRegular)} activeOpacity={0.8}><Text style={[styles.reprintTickboxText, includeRegular && styles.reprintTickboxTextActive]}>{includeRegular ? '☑' : '☐'} 常規</Text></TouchableOpacity>
+                        <TouchableOpacity style={[styles.reprintTickbox, includeBeta && styles.reprintTickboxActive]} onPress={() => setIncludeBeta(!includeBeta)} activeOpacity={0.8}><Text style={[styles.reprintTickboxText, includeBeta && styles.reprintTickboxTextActive]}>{includeBeta ? '☑' : '☐'} BETA</Text></TouchableOpacity>
+                        <TouchableOpacity style={[styles.reprintTickbox, includeReprint && styles.reprintTickboxActive]} onPress={() => setIncludeReprint(!includeReprint)} activeOpacity={0.8}><Text style={[styles.reprintTickboxText, includeReprint && styles.reprintTickboxTextActive]}>{includeReprint ? '☑' : '☐'} 重印</Text></TouchableOpacity>
+                        <TouchableOpacity style={[styles.reprintTickbox, includeLimited && styles.reprintTickboxActive]} onPress={() => setIncludeLimited(!includeLimited)} activeOpacity={0.8}><Text style={[styles.reprintTickboxText, includeLimited && styles.reprintTickboxTextActive]}>{includeLimited ? '☑' : '☐'} 限定</Text></TouchableOpacity>
+                        <TouchableOpacity style={[styles.reprintTickbox, includePromo && styles.reprintTickboxActive]} onPress={() => setIncludePromo(!includePromo)} activeOpacity={0.8}><Text style={[styles.reprintTickboxText, includePromo && styles.reprintTickboxTextActive]}>{includePromo ? '☑' : '☐'} 推廣</Text></TouchableOpacity>
+                      </MobileScrollWrapper>
+                    </View>
+
+                    <View style={styles.panelRow}>
+                      <Text style={styles.panelLabel}>共鳴</Text>
+                      <MobileScrollWrapper style={styles.chipContainerRow}>
+                        {RESONANCE_OPTIONS.map((opt) => (
+                          <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedResonance === opt.value && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => setSelectedResonance(opt.value)}>
+                            <Text style={[styles.chipText, selectedResonance === opt.value && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+                          </TouchableOpacity>
+                        ))}
+                      </MobileScrollWrapper>
+                    </View>
+
+                    <View style={[styles.panelRow, { marginTop: 4 }]}>
+                      <Text style={styles.panelLabel}>符合共鳴</Text>
+                      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <TextInput style={[styles.traitShortInput, { width: 140 }]} placeholder="卡牌編號" placeholderTextColor="#94a3b8" value={resonanceMatchId} onChangeText={setResonanceMatchId} />
+                        <TouchableOpacity style={styles.traitResetButton} activeOpacity={0.8} onPress={() => setResonanceMatchId('')}>
+                          <Text style={styles.traitResetButtonText}>重置</Text>
+                        </TouchableOpacity>
                       </View>
-                    )}
-                  </View>
-
-                  <View style={styles.panelRow}>
-                    <Text style={styles.panelLabel}>稀有</Text>
-                    <MobileScrollWrapper style={styles.chipContainerRow}>
-                      {RARITY_OPTIONS.map((opt) => (
-                        <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedRarity === opt.value && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => setSelectedRarity(opt.value)}>
-                          <Text style={[styles.chipText, selectedRarity === opt.value && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
-                        </TouchableOpacity>
-                      ))}
-                    </MobileScrollWrapper>
-                  </View>
-
-                  <View style={styles.panelRow}>
-                    <Text style={styles.panelLabel}>卡圖</Text>
-                    <MobileScrollWrapper style={styles.chipContainerRow}>
-                      {VERSION_OPTIONS.map((opt) => (
-                        <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedVersions.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleVersionSelection(opt.value)}>
-                          <Text style={[styles.chipText, selectedVersions.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
-                        </TouchableOpacity>
-                      ))}
-                    </MobileScrollWrapper>
-                  </View>
-                  
-                  <View style={styles.panelRow}>
-                    <Text style={styles.panelLabel}>入手</Text>
-                    <MobileScrollWrapper style={styles.chipContainerRow}>
-                      <TouchableOpacity 
-                        style={[styles.reprintTickbox, includeRegular && styles.reprintTickboxActive]}
-                        onPress={() => setIncludeRegular(!includeRegular)}
-                        activeOpacity={0.8}
-                      >
-                        <Text style={[styles.reprintTickboxText, includeRegular && styles.reprintTickboxTextActive]}>{includeRegular ? '☑' : '☐'} 常規</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity style={[styles.reprintTickbox, includeBeta && styles.reprintTickboxActive]} onPress={() => setIncludeBeta(!includeBeta)} activeOpacity={0.8}>
-                        <Text style={[styles.reprintTickboxText, includeBeta && styles.reprintTickboxTextActive]}>{includeBeta ? '☑' : '☐'} BETA</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity style={[styles.reprintTickbox, includeReprint && styles.reprintTickboxActive]} onPress={() => setIncludeReprint(!includeReprint)} activeOpacity={0.8}>
-                        <Text style={[styles.reprintTickboxText, includeReprint && styles.reprintTickboxTextActive]}>{includeReprint ? '☑' : '☐'} 重印</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity style={[styles.reprintTickbox, includeLimited && styles.reprintTickboxActive]} onPress={() => setIncludeLimited(!includeLimited)} activeOpacity={0.8}>
-                        <Text style={[styles.reprintTickboxText, includeLimited && styles.reprintTickboxTextActive]}>{includeLimited ? '☑' : '☐'} 限定</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity style={[styles.reprintTickbox, includePromo && styles.reprintTickboxActive]} onPress={() => setIncludePromo(!includePromo)} activeOpacity={0.8}>
-                        <Text style={[styles.reprintTickboxText, includePromo && styles.reprintTickboxTextActive]}>{includePromo ? '☑' : '☐'} 推廣</Text>
-                      </TouchableOpacity>
-                    </MobileScrollWrapper>
-                  </View>
-
-                  <View style={styles.panelRow}>
-                    <Text style={styles.panelLabel}>共鳴</Text>
-                    <MobileScrollWrapper style={styles.chipContainerRow}>
-                      {RESONANCE_OPTIONS.map((opt) => (
-                        <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedResonance === opt.value && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => setSelectedResonance(opt.value)}>
-                          <Text style={[styles.chipText, selectedResonance === opt.value && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
-                        </TouchableOpacity>
-                      ))}
-                    </MobileScrollWrapper>
-                  </View>
-
-                  <View style={[styles.panelRow, { marginTop: 4 }]}>
-                    <Text style={styles.panelLabel}>符合共鳴</Text>
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                      <TextInput style={[styles.traitShortInput, { width: 140 }]} placeholder="卡牌編號" placeholderTextColor="#94a3b8" value={resonanceMatchId} onChangeText={setResonanceMatchId} />
-                      <TouchableOpacity style={styles.traitResetButton} activeOpacity={0.8} onPress={() => setResonanceMatchId('')}>
-                        <Text style={styles.traitResetButtonText}>重置</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                </View>
-
-                <View style={styles.filterRightColumn}>
-                  <View style={styles.panelRow}>
-                    <Text style={styles.panelLabel}>特徵</Text>
-                    <View style={{flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 6}}>
-                      <TextInput style={[styles.traitShortInput, { width: 160, marginRight: 0 }]} placeholder="輸入特徵 (例：地球聯邦)" placeholderTextColor="#94a3b8" value={traitSearchText} onChangeText={setTraitSearchText} />
-                      <TouchableOpacity style={styles.traitResetButton} activeOpacity={0.8} onPress={() => { setTraitSearchText(''); setIsTraitExactMatch(false); }}>
-                        <Text style={styles.traitResetButtonText}>重置</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity 
-                        style={[styles.exactMatchBtn, isTraitExactMatch && styles.exactMatchBtnActive, {marginLeft: 0}]} 
-                        onPress={() => setIsTraitExactMatch(!isTraitExactMatch)}
-                        activeOpacity={0.8}
-                      >
-                        <Text style={[styles.exactMatchBtnText, isTraitExactMatch && styles.exactMatchBtnTextActive]}>✓ 完全符合</Text>
-                      </TouchableOpacity>
                     </View>
                   </View>
 
-                  <View style={[styles.panelRow, { alignItems: 'flex-start' }]}>
-                    <View style={{ width: 60, marginTop: 4 }}>
-                      <Text style={[styles.panelLabel, { width: 'auto', marginBottom: 12 }]}>關鍵字</Text>
-                      <TouchableOpacity style={[styles.trackResetBtn, { marginLeft: 0 }]} onPress={() => { setSelectedKeywords(['all']); setSupportValue(''); setBreakthroughValue(''); setRepairValue(''); }} activeOpacity={0.7}>
-                        <Text style={styles.trackResetBtnText}>↺</Text>
-                      </TouchableOpacity>
+                  <View style={styles.filterRightColumn}>
+                    <View style={styles.panelRow}>
+                      <Text style={styles.panelLabel}>特徵</Text>
+                      <View style={{flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 6}}>
+                        <TextInput style={[styles.traitShortInput, { width: 160, marginRight: 0 }]} placeholder="輸入特徵 (例：地球聯邦)" placeholderTextColor="#94a3b8" value={traitSearchText} onChangeText={setTraitSearchText} />
+                        <TouchableOpacity style={styles.traitResetButton} activeOpacity={0.8} onPress={() => { setTraitSearchText(''); setIsTraitExactMatch(false); }}>
+                          <Text style={styles.traitResetButtonText}>重置</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={[styles.exactMatchBtn, isTraitExactMatch && styles.exactMatchBtnActive, {marginLeft: 0}]} onPress={() => setIsTraitExactMatch(!isTraitExactMatch)} activeOpacity={0.8}><Text style={[styles.exactMatchBtnText, isTraitExactMatch && styles.exactMatchBtnTextActive]}>✓ 完全符合</Text></TouchableOpacity>
+                      </View>
                     </View>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, overflow: 'hidden' }}>
-                      {isMobile ? (
-                        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.mobileHorizontalScroll}>
+
+                    <View style={[styles.panelRow, { alignItems: 'flex-start' }]}>
+                      <View style={{ width: 70, marginTop: 4 }}>
+                        <Text style={[styles.panelLabel, { width: 'auto', marginBottom: 12 }]}>關鍵字</Text>
+                        <TouchableOpacity style={[styles.trackResetBtn, { marginLeft: 0 }]} onPress={() => { setSelectedKeywords(['all']); setSupportValue(''); setBreakthroughValue(''); setRepairValue(''); }} activeOpacity={0.7}><Text style={styles.trackResetBtnText}>↺</Text></TouchableOpacity>
+                      </View>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, overflow: 'hidden' }}>
+                        <MobileScrollWrapper style={styles.chipContainerRow}>
                           {KEYWORD_OPTIONS.map(renderKeywordChip)}
-                        </ScrollView>
-                      ) : (
-                        <View style={styles.typeRowsContainer}>
-                          <View style={[styles.chipContainerRow, { marginBottom: 6 }]}>
-                            {KEYWORD_OPTIONS.slice(0, 5).map(renderKeywordChip)}
-                          </View>
-                          <View style={styles.chipContainerRow}>
-                            {KEYWORD_OPTIONS.slice(5).map(renderKeywordChip)}
-                          </View>
-                        </View>
-                      )}
+                        </MobileScrollWrapper>
+                      </View>
                     </View>
-                  </View>
 
-                  <View style={[styles.panelRow, { alignItems: 'flex-start' }]}>
-                    <View style={{ width: 60, marginTop: 4 }}>
-                      <Text style={[styles.panelLabel, { width: 'auto', marginBottom: 12 }]}>時機</Text>
-                      <TouchableOpacity style={[styles.trackResetBtn, { marginLeft: 0 }]} onPress={() => { setSelectedTimings(['all']); }} activeOpacity={0.7}>
-                        <Text style={styles.trackResetBtnText}>↺</Text>
-                      </TouchableOpacity>
-                    </View>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, overflow: 'hidden' }}>
-                      {isMobile ? (
-                        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.mobileHorizontalScroll}>
+                    <View style={[styles.panelRow, { alignItems: 'flex-start' }]}>
+                      <View style={{ width: 70, marginTop: 4 }}>
+                        <Text style={[styles.panelLabel, { width: 'auto', marginBottom: 12 }]}>時機</Text>
+                        <TouchableOpacity style={[styles.trackResetBtn, { marginLeft: 0 }]} onPress={() => { setSelectedTimings(['all']); }} activeOpacity={0.7}><Text style={styles.trackResetBtnText}>↺</Text></TouchableOpacity>
+                      </View>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, overflow: 'hidden' }}>
+                        <MobileScrollWrapper style={styles.chipContainerRow}>
                           {TIMING_OPTIONS.map((opt) => (
                             <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedTimings.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleSelection(opt.value, selectedTimings, setSelectedTimings)}>
                               <Text style={[styles.chipText, selectedTimings.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
                             </TouchableOpacity>
                           ))}
-                        </ScrollView>
-                      ) : (
-                        <View style={styles.typeRowsContainer}>
-                          <View style={[styles.chipContainerRow, { marginBottom: 6 }]}>
-                            {TIMING_OPTIONS.slice(0, 5).map((opt) => (
-                              <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedTimings.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleSelection(opt.value, selectedTimings, setSelectedTimings)}>
-                                <Text style={[styles.chipText, selectedTimings.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
-                              </TouchableOpacity>
-                            ))}
-                          </View>
-                          <View style={styles.chipContainerRow}>
-                            {TIMING_OPTIONS.slice(5).map((opt) => (
-                              <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedTimings.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleSelection(opt.value, selectedTimings, setSelectedTimings)}>
-                                <Text style={[styles.chipText, selectedTimings.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
-                              </TouchableOpacity>
-                            ))}
-                          </View>
-                        </View>
-                      )}
+                        </MobileScrollWrapper>
+                      </View>
+                    </View>
+
+                    <View style={styles.rangeTracksWrapper}>
+                      <RangeTrack label="Lv." range={lvRange} setRange={setLvRange} minVal={0} maxVal={9} onReset={() => setLvRange([0, 9])}/>
+                      <RangeTrack label="COST" range={costRange} setRange={setCostRange} minVal={0} maxVal={9} onReset={() => setCostRange([0, 9])}/>
+                      <RangeTrack label="AP" range={apRange} setRange={setApRange} minVal={0} maxVal={9} onReset={() => setApRange([0, 9])}/>
+                      <RangeTrack label="HP" range={hpRange} setRange={setHpRange} minVal={0} maxVal={9} onReset={() => setHpRange([0, 9])}/>
                     </View>
                   </View>
-
-                  <View style={styles.rangeTracksWrapper}>
-                    <RangeTrack label="Lv." range={lvRange} setRange={setLvRange} minVal={0} maxVal={9} onReset={() => setLvRange([0, 9])}/>
-                    <RangeTrack label="COST" range={costRange} setRange={setCostRange} minVal={0} maxVal={9} onReset={() => setCostRange([0, 9])}/>
-                    <RangeTrack label="AP" range={apRange} setRange={setApRange} minVal={0} maxVal={9} onReset={() => setApRange([0, 9])}/>
-                    <RangeTrack label="HP" range={hpRange} setRange={setHpRange} minVal={0} maxVal={9} onReset={() => setHpRange([0, 9])}/>
-                  </View>
                 </View>
-              </View>
+              </ScrollView>
             )}
           </View>
 
@@ -1790,20 +1704,12 @@ export default function App() {
         {selectedCard && (
           <View style={[styles.modalOverlay, isMobile && { padding: 10 }]}>
             
-            {!isMobile && <TouchableOpacity style={[styles.floatingArrowButton, styles.leftArrowPosition, !hasPrev && styles.arrowDisabled]} onPress={handlePrevCard} disabled={!hasPrev}><Text style={styles.floatingArrowText}>&lt;&lt;</Text></TouchableOpacity>}
+            <TouchableOpacity style={[styles.floatingArrowButton, styles.leftArrowPosition, !hasPrev && styles.arrowDisabled, isMobile && styles.mobileFloatingLeftArrow]} onPress={handlePrevCard} disabled={!hasPrev}><Text style={styles.floatingArrowText}>&lt;&lt;</Text></TouchableOpacity>
             
             <TouchableOpacity activeOpacity={1} style={[styles.modalContentBox, isMobile && { maxHeight: '96%' }]}>
               
-              {/* 🌟 修正 4：頂部按鈕區強制單行，縮小按鈕防止斷行 */}
               <View style={[styles.modalTopBar, isMobile && { paddingHorizontal: 8, paddingVertical: 8, flexWrap: 'nowrap', gap: 4 }]}>
-                
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: isMobile ? 4 : 8, flexShrink: 1 }}>
-                  {isMobile && (
-                    <View style={{ flexDirection: 'row', gap: 4, marginRight: 2 }}>
-                      <TouchableOpacity style={[styles.mobileNavBtn, { paddingHorizontal: 8, paddingVertical: 4 }]} onPress={handlePrevCard} disabled={!hasPrev}><Text style={[styles.mobileNavBtnText, !hasPrev && styles.arrowDisabled]}>◀</Text></TouchableOpacity>
-                      <TouchableOpacity style={[styles.mobileNavBtn, { paddingHorizontal: 8, paddingVertical: 4 }]} onPress={handleNextCard} disabled={!hasNext}><Text style={[styles.mobileNavBtnText, !hasNext && styles.arrowDisabled]}>▶</Text></TouchableOpacity>
-                    </View>
-                  )}
                   <View style={[styles.langButtonGroup, isMobile && { padding: 2 }]}>
                     <TouchableOpacity style={[styles.langBtn, language === 'hk' ? styles.langBtnActive : styles.langBtnInactive, isMobile && { paddingHorizontal: 8, paddingVertical: 4 }]} onPress={() => setLanguage('hk')} activeOpacity={0.8}><Text style={[styles.langBtnText, isMobile && { fontSize: 11 }]}>港譯</Text></TouchableOpacity>
                     <TouchableOpacity style={[styles.langBtn, language === 'tw' ? styles.langBtnActive : styles.langBtnInactive, isMobile && { paddingHorizontal: 8, paddingVertical: 4 }]} onPress={() => setLanguage('tw')} activeOpacity={0.8}><Text style={[styles.langBtnText, isMobile && { fontSize: 11 }]}>台譯</Text></TouchableOpacity>
@@ -1831,7 +1737,6 @@ export default function App() {
                   )}
                   <TouchableOpacity style={[styles.closeButton, isMobile && { width: 28, height: 28 }]} onPress={() => { setLastState(null); setSelectedCard(null); }}><Text style={[styles.closeButtonText, isMobile && { fontSize: 14 }]}>X</Text></TouchableOpacity>
                 </View>
-
               </View>
 
               {isMobile && (
@@ -1846,10 +1751,8 @@ export default function App() {
                 </View>
               )}
 
-              {/* 🌟 修正 3：加入 ref，讓切換卡片時強制捲動至頂部 */}
               <ScrollView ref={modalScrollRef} contentContainerStyle={[styles.modalScrollBody, isMobile && { padding: 16 }]} showsVerticalScrollIndicator={true}>
                 <View style={[styles.modalFlexRow, isMobile && { flexDirection: 'column', alignItems: 'center' }]}>
-                  
                   <View style={[styles.modalLeftColumn, isMobile && { marginRight: 0, marginBottom: 15 }]}>
                     {cardImages[selectedCard.id] ? 
                       <Image source={{ uri: cardImages[selectedCard.id] }} style={[styles.cardImage, isMobile && { width: 250, height: 347 }]} resizeMode="contain" /> 
@@ -1955,7 +1858,7 @@ export default function App() {
               </ScrollView>
             </TouchableOpacity>
             
-            {!isMobile && <TouchableOpacity style={[styles.floatingArrowButton, styles.rightArrowPosition, !hasNext && styles.arrowDisabled]} onPress={handleNextCard} disabled={!hasNext}><Text style={styles.floatingArrowText}>&gt;&gt;</Text></TouchableOpacity>}
+            <TouchableOpacity style={[styles.floatingArrowButton, styles.rightArrowPosition, !hasNext && styles.arrowDisabled, isMobile && styles.mobileFloatingRightArrow]} onPress={handleNextCard} disabled={!hasNext}><Text style={styles.floatingArrowText}>&gt;&gt;</Text></TouchableOpacity>
           </View>
         )}
       </Modal>
@@ -1966,11 +1869,15 @@ export default function App() {
 const styles = StyleSheet.create({
   fullScreenOverlay: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 9998 }, 
   container: { flex: 1, backgroundColor: '#f0f2f5' },
-  header: { backgroundColor: '#20353f', paddingVertical: 14, paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', zIndex: 100 },
-  titleContainer: { flexDirection: 'row', alignItems: 'center', cursor: 'pointer' },
-  titleTextMain: { color: '#ffffff', fontSize: 20, fontWeight: 'bold', letterSpacing: 0.5 },
-  titleLink: { color: '#ffffff', fontSize: 20, fontWeight: 'bold' },
-  youtubeLogo: { width: 22, height: 22, marginLeft: 8, resizeMode: 'contain' },
+  
+  // 🌟 新增與優化：Header 防走位彈性比例結構
+  header: { backgroundColor: '#20353f', paddingVertical: 14, paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', zIndex: 100, flexWrap: 'nowrap' },
+  titleContainer: { flexDirection: 'row', alignItems: 'center', cursor: 'pointer', flex: 1, marginRight: 10, overflow: 'hidden' },
+  titleTextMain: { color: '#ffffff', fontSize: 20, fontWeight: 'bold', letterSpacing: 0.5, flexShrink: 1 },
+  titleLink: { color: '#ffffff', fontSize: 20, fontWeight: 'bold', flexShrink: 0 },
+  youtubeLogo: { width: 22, height: 22, marginLeft: 8, resizeMode: 'contain', flexShrink: 0 },
+  headerLangContainer: { flexShrink: 0 },
+
   langButtonGroup: { flexDirection: 'row', backgroundColor: 'rgba(0, 0, 0, 0.25)', borderRadius: 20, padding: 3 },
   langBtn: { paddingVertical: 5, paddingHorizontal: 16, borderRadius: 17, justifyContent: 'center', alignItems: 'center', cursor: 'pointer' },
   langBtnActive: { backgroundColor: '#376171' }, langBtnInactive: { backgroundColor: 'transparent', opacity: 0.45 },
@@ -2022,15 +1929,21 @@ const styles = StyleSheet.create({
   panelResetBtn: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 14, backgroundColor: '#111827', borderWidth: 1, borderColor: '#000000', cursor: 'pointer', marginLeft: 16 },
   panelResetBtnText: { fontSize: 12, color: '#ffffff', fontWeight: 'bold', letterSpacing: 0.5 },
 
+  // 🌟 手機版專屬：限制篩選面板最高高度，開啟垂直上下滾動
+  mobilePanelVerticalContainer: { maxHeight: 320, overflowY: 'auto' },
+
   filterColumnsContainer: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start', gap: 20 },
-  filterLeftColumn: { flex: 1, minWidth: 340, flexBasis: 340 },
+  
+  // 🌟 電腦版優化：當視窗小於 900px 時改為垂直堆疊，防暴卡與卡死
+  filterLeftColumn: { flex: 1, minWidth: 280 },
   filterLeftColumnBorder: { borderRightWidth: 1, borderRightColor: '#cbd5e1', paddingRight: 20 },
-  filterRightColumn: { flex: 1, minWidth: 340, flexBasis: 340 },
+  filterRightColumn: { flex: 1, minWidth: 280 },
 
   rangeTracksWrapper: { paddingLeft: 4, gap: 4, marginTop: 8 },
   rangeTrackContainer: { flexDirection: 'row', alignItems: 'center', marginBottom: 12 },
   
-  panelLabel: { fontSize: 13, fontWeight: 'bold', color: '#475569', width: 60, cursor: 'default' },
+  // 🌟 修正「種類」等字體：拉大寬度至 75px，強制不換行
+  panelLabel: { fontSize: 13, fontWeight: 'bold', color: '#475569', width: 75, whiteSpace: 'nowrap', flexShrink: 0, cursor: 'default' },
   rangeTrackLabel: { width: 45, fontSize: 13, fontWeight: 'bold', color: '#475569', cursor: 'default' },
   rangeTrackBox: { flexDirection: 'row', backgroundColor: '#f1f5f9', borderRadius: 15, borderWidth: 1, borderColor: '#e2e8f0', overflow: 'hidden' },
   rangeNumberCell: { width: 28, height: 28, justifyContent: 'center', alignItems: 'center', cursor: 'pointer' },
@@ -2042,13 +1955,13 @@ const styles = StyleSheet.create({
   trackResetBtn: { marginLeft: 10, width: 24, height: 24, borderRadius: 12, backgroundColor: '#e2e8f0', justifyContent: 'center', alignItems: 'center', cursor: 'pointer' },
   trackResetBtnText: { fontSize: 14, color: '#475569', fontWeight: 'bold', lineHeight: 24 },
 
-  panelRow: { flexDirection: 'row', alignItems: 'center', marginVertical: 6 },
+  panelRow: { flexDirection: 'row', alignItems: 'center', marginVertical: 6, width: '100%' },
   typeRowsContainer: { flexDirection: 'column' },
   chipContainerRow: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 6 },
-  filterChip: { paddingHorizontal: 11, paddingVertical: 5, borderRadius: 12, backgroundColor: '#f1f5f9', borderWidth: 1, borderColor: '#e2e8f0', cursor: 'pointer' },
+  filterChip: { paddingHorizontal: 11, paddingVertical: 5, borderRadius: 12, backgroundColor: '#f1f5f9', borderWidth: 1, borderColor: '#e2e8f0', cursor: 'pointer', whiteSpace: 'nowrap' },
   chipText: { fontSize: 12, color: '#475569', fontWeight: '500' },
   
-  reprintTickbox: { paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8, backgroundColor: '#f1f5f9', borderWidth: 1, borderColor: '#cbd5e1', flexDirection: 'row', alignItems: 'center', cursor: 'pointer' },
+  reprintTickbox: { paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8, backgroundColor: '#f1f5f9', borderWidth: 1, borderColor: '#cbd5e1', flexDirection: 'row', alignItems: 'center', cursor: 'pointer', whiteSpace: 'nowrap' },
   reprintTickboxActive: { backgroundColor: '#10b981', borderColor: '#059669' },
   reprintTickboxText: { fontSize: 12, color: '#475569', fontWeight: 'bold' },
   reprintTickboxTextActive: { color: '#ffffff' },
@@ -2062,13 +1975,14 @@ const styles = StyleSheet.create({
   traitResetButton: { paddingHorizontal: 12, height: 32, borderRadius: 16, backgroundColor: '#111827', justifyContent: 'center', alignItems: 'center', cursor: 'pointer', borderWidth: 1, borderColor: '#000000' },
   traitResetButtonText: { fontSize: 11, color: '#ffffff', fontWeight: 'bold', letterSpacing: 0.5 },
 
-  exactMatchBtn: { marginLeft: 8, paddingHorizontal: 8, height: 32, borderRadius: 16, borderWidth: 1, borderColor: '#cbd5e1', justifyContent: 'center', alignItems: 'center', backgroundColor: '#f1f5f9', cursor: 'pointer' },
+  exactMatchBtn: { marginLeft: 8, paddingHorizontal: 8, height: 32, borderRadius: 16, borderWidth: 1, borderColor: '#cbd5e1', justifyContent: 'center', alignItems: 'center', backgroundColor: '#f1f5f9', cursor: 'pointer', whiteSpace: 'nowrap' },
   exactMatchBtnActive: { backgroundColor: '#111827', borderColor: '#000000' },
   exactMatchBtnText: { fontSize: 11, color: '#475569', fontWeight: 'bold', letterSpacing: 0.5 },
   exactMatchBtnTextActive: { color: '#ffffff' },
 
-  // 🌟 手機專屬：左右滑動的容器樣式
-  mobileHorizontalScroll: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingRight: 20 },
+  // 🌟 修正 3：智慧型半透明漸變滑動指示器遮罩
+  mobileGradientContainer: { position: 'relative', flex: 1, overflow: 'hidden', maskImage: 'linear-gradient(to right, transparent, #000 8px, #000 calc(100% - 8px), transparent)', webkitMaskImage: 'linear-gradient(to right, transparent, #000 8px, #000 calc(100% - 8px), transparent)' },
+  mobileHorizontalScroll: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 8, overflowX: 'auto' },
   
   gridCard: { backgroundColor: 'white', borderRadius: 8, margin: 5, overflow: 'hidden', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 3, elevation: 2, cursor: 'pointer', transition: 'transform 0.2s ease, box-shadow 0.2s ease', transform: [{ translateY: 0 }] },
   gridCardHovered: { transform: [{ translateY: -4 }], shadowOpacity: 0.25, shadowRadius: 8, elevation: 6 },
@@ -2089,16 +2003,17 @@ const styles = StyleSheet.create({
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.4)', backdropFilter: 'blur(10px)', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: 20, position: 'relative' },
   modalContentBox: { backgroundColor: '#fff', width: '100%', maxWidth: 920, maxHeight: '92%', borderRadius: 12, overflow: 'hidden', shadowColor: '#000', shadowOpacity: 0.25, shadowRadius: 15, elevation: 10, mx: 20, display: 'flex', flexDirection: 'column', flexShrink: 1 },
   
+  // 🌟 修正 3：方案 1 經典回歸！懸浮於卡圖兩側的按鈕定位
   floatingArrowButton: { position: 'absolute', top: '50%', marginTop: -27, width: 54, height: 54, borderRadius: 27, backgroundColor: 'rgba(0, 0, 0, 0.6)', justifyContent: 'center', alignItems: 'center', cursor: 'pointer', zIndex: 999999 },
   leftArrowPosition: { left: 40 },
   rightArrowPosition: { right: 40 },
+  mobileFloatingLeftArrow: { left: 15, width: 44, height: 44, borderRadius: 22, marginTop: -22 },
+  mobileFloatingRightArrow: { right: 15, width: 44, height: 44, borderRadius: 22, marginTop: -22 },
+
   floatingArrowText: { color: '#ffffff', fontSize: 16, fontWeight: 'bold', letterSpacing: -1 },
   arrowDisabled: { opacity: 0.15, cursor: 'default' },
   
   modalTopBar: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#eee', backgroundColor: '#fafafa', flexShrink: 0 },
-  
-  mobileNavBtn: { paddingHorizontal: 12, paddingVertical: 6, backgroundColor: '#e2e8f0', borderRadius: 8 },
-  mobileNavBtnText: { fontSize: 14, color: '#475569', fontWeight: 'bold' },
   
   modalHeaderIdBox: { flexDirection: 'row', alignItems: 'center' },
   modalHeaderId: { fontSize: 14, color: '#666', marginRight: 10, fontFamily: 'monospace', cursor: 'default' },
@@ -2120,7 +2035,7 @@ const styles = StyleSheet.create({
   modalScrollBody: { padding: 30, flexGrow: 1 },
   modalFlexRow: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' },
   modalLeftColumn: { marginRight: 35, alignItems: 'center', marginBottom: 20 },
-  modalRightColumn: { flex: 1, minWidth: 320 },
+  modalRightColumn: { flex: 1, minWidth: 280 }, // 解除強硬鎖定，防止電腦版被擠扁
   cardImage: { width: 320, height: 445, borderRadius: 12 },
   noImagePlaceholder: { backgroundColor: '#e5e7eb', justifyContent: 'center', alignItems: 'center' },
   noImageText: { color: '#9ca3af', fontSize: 18, fontWeight: 'bold', cursor: 'default' },
