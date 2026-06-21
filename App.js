@@ -148,13 +148,14 @@ const sortedSets = rawSets.sort((a, b) => {
 });
 
 const AVAILABLE_SETS = ['all', ...sortedSets];
-const OPTIMAL_CARD_WIDTH = 170;
+// 🌟 修正：電腦版的卡片尺寸拉大
+const OPTIMAL_CARD_WIDTH = 220;
 
 const STATUS_COLORS_JSON = Object.freeze({
   "搭乘時": "status_bg_pink", "搭乘中": "status_bg_pink", "共鳴中": "status_bg_yellow", "共鳴時": "status_bg_yellow",
   "攻擊時": "status_bg_lightblue", "破壞時": "status_bg_lightblue", "配置時": "status_bg_lightblue",
-  "啟動・主要": "status_bg_blue", "啟動・瞬動": "status_bg_blue", "每回合1次": "status_bg_red", "爆發": "status_bg_orange",
-  "主要": "status_bg_blue", "瞬動": "status_bg_blue", "DEFAULT": "status_bg_DEFAULT"
+  "啟錠・主要": "status_bg_blue", "啟動・瞬動": "status_bg_blue", "每回合1次": "status_bg_red", "爆發": "status_bg_orange",
+  "主要": "status_bg_blue", "瞬動": "status_bg_blue", "啟動": "status_bg_blue", "DEFAULT": "status_bg_DEFAULT"
 });
 const STATUS_THEME_STYLES = Object.freeze({
   "status_bg_pink": { bg: '#cd6e99' }, "status_bg_yellow": { bg: '#faee01' }, "status_bg_lightblue": { bg: '#77b8bb' }, 
@@ -283,7 +284,7 @@ const FACTION_COND = "(?:(?:我方|對方|雙方|友方|敵方)\\s*)";
 const EXCLUDE_COND = `(?:(?:[^，。、]+此(?:機體|角色|卡|卡牌)以外[的且]|${TARGET_TYPES}以外[的且])\\s*)`; 
 const RIDING_COND = "(?:搭乘(?:此|該)(?:機體|角色|卡牌|卡)的\\s*)";
 
-const PLAYER_LV_COND = "(?:若)?(?:我方|對方)(?:的等級)?(?:為)?\\s*(?:Lv\\.?\\s*)?\\d+\\s*(?:或更高等級|或高等級|幻想更低|或更低|或以下|或以上|以下|以上)?";
+const PLAYER_LV_COND = "(?:若)?(?:我方|對方)(?:的等級)?(?:為)?\\s*(?:Lv\\.?\\s*)?\\d+\\s*(?:或更高等級|或高等級|或更高|或更低|或以下|或以上|以下|以上)?";
 
 const SMART_PREFIX = `(?:(?:${TRAIT_GROUP}\\s*的?\\s*)?${STAT_COND}\\s*(?:的\\s*)?|${NAME_COND}|${KEYWORD_COND}|${STATUS_WORD_COND}|${COLOR_COND}|${FACTION_COND}|${RIDING_COND}|${TRAIT_GROUP}\\s*(?:的\\s*)?|${EXCLUDE_COND})`;
 const SMART_COND_STR = `(?:${SMART_PREFIX}+${TARGET_TYPES}(?:共鳴)?)`;
@@ -339,7 +340,8 @@ const CardGridItem = ({ item, dynamicCardWidth, language, onPress, isMobile }) =
   );
 };
 
-const RangeTrack = ({ label, range, setRange, minVal = 0, maxVal = 9, onReset }) => {
+// 🌟 修正：確保 Tracker 不走位
+const RangeTrack = ({ label, range, setRange, minVal = 0, maxVal = 9, onReset, isMobile }) => {
   const numbers = Array.from({ length: maxVal - minVal + 1 }, (_, i) => minVal + i);
   const isOffset = !numbers.includes(0);
   const isFullRange = range[0] === minVal && range[1] === maxVal;
@@ -356,27 +358,36 @@ const RangeTrack = ({ label, range, setRange, minVal = 0, maxVal = 9, onReset })
   return (
     <View style={styles.rangeTrackContainer}>
       <Text style={styles.rangeTrackLabel}>{label}</Text>
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <View style={[styles.rangeTrackBox, isOffset && { marginLeft: 28 }]}>
-          {numbers.map(num => {
-            const inRange = !isFullRange && (num >= range[0] && num <= range[1]);
-            const isFirstActive = !isFullRange && (num === range[0]);
-            const isLastActive = !isFullRange && (num === range[1]);
-            return (
-              <TouchableOpacity 
-                key={num}
-                style={[styles.rangeNumberCell, inRange && styles.rangeNumberCellActive, isFirstActive && styles.rangeCellFirst, isLastActive && styles.rangeCellLast]}
-                onPress={() => handleNumberClick(num)} activeOpacity={0.8}
-              >
-                <Text style={[styles.rangeNumberText, inRange && styles.rangeNumberTextActive]}>{num}</Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-        <TouchableOpacity style={styles.trackResetBtn} onPress={onReset} activeOpacity={0.7}>
-          <Text style={styles.trackResetBtnText}>↺</Text>
-        </TouchableOpacity>
+      <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, overflow: 'hidden' }}>
+        {isMobile ? (
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={[styles.rangeTrackBox, isOffset && { marginLeft: 28 }]}>
+            {numbers.map(num => {
+              const inRange = !isFullRange && (num >= range[0] && num <= range[1]);
+              const isFirstActive = !isFullRange && (num === range[0]);
+              const isLastActive = !isFullRange && (num === range[1]);
+              return (
+                <TouchableOpacity key={num} style={[styles.rangeNumberCell, inRange && styles.rangeNumberCellActive, isFirstActive && styles.rangeCellFirst, isLastActive && styles.rangeCellLast]} onPress={() => handleNumberClick(num)} activeOpacity={0.8}>
+                  <Text style={[styles.rangeNumberText, inRange && styles.rangeNumberTextActive]}>{num}</Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        ) : (
+          <View style={[styles.rangeTrackBox, isOffset && { marginLeft: 28 }]}>
+            {numbers.map(num => {
+              const inRange = !isFullRange && (num >= range[0] && num <= range[1]);
+              const isFirstActive = !isFullRange && (num === range[0]);
+              const isLastActive = !isFullRange && (num === range[1]);
+              return (
+                <TouchableOpacity key={num} style={[styles.rangeNumberCell, inRange && styles.rangeNumberCellActive, isFirstActive && styles.rangeCellFirst, isLastActive && styles.rangeCellLast]} onPress={() => handleNumberClick(num)} activeOpacity={0.8}>
+                  <Text style={[styles.rangeNumberText, inRange && styles.rangeNumberTextActive]}>{num}</Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        )}
       </View>
+      <TouchableOpacity style={styles.trackResetBtn} onPress={onReset} activeOpacity={0.7}><Text style={styles.trackResetBtnText}>↺</Text></TouchableOpacity>
     </View>
   );
 };
@@ -393,6 +404,10 @@ export default function App() {
   const modalScrollRef = useRef(null); 
   const [currentScrollY, setCurrentScrollY] = useState(0);
   const [pendingScrollY, setPendingScrollY] = useState(null);
+  
+  // Swipe State
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
 
   const [language, setLanguage] = useState('hk'); 
   const [selectedColors, setSelectedColors] = useState(['all']);
@@ -432,7 +447,6 @@ export default function App() {
   }, []);
 
   const isMobile = screenWidth < 768;
-
   const numColumns = isMobile ? 4 : Math.max(2, Math.floor(screenWidth / OPTIMAL_CARD_WIDTH));
   const paddingSpace = isMobile ? 10 : 20;
   const marginSpace = isMobile ? (numColumns * 6) : (numColumns * 10);
@@ -516,6 +530,7 @@ export default function App() {
     }
   }, [selectedCard, pendingScrollY]);
 
+  // 🌟 修正：深層共鳴判定邏輯修復 (主客反轉問題)
   const triggerResonanceDirectSearch = (targetCardId) => {
     if (!targetCardId) return;
     const baseMatchCard = cardsData.find(c => (c.displayId || c.id).toLowerCase() === targetCardId.trim().toLowerCase());
@@ -563,7 +578,7 @@ export default function App() {
 
       if (op) {
          if (['或更低', '或以下', '不大於', '不高於', '不超過', '<=', '小於等於', '以下', '<', '小於'].some(o => op.includes(o))) { min = 0; max = num; if (['<', '小於'].includes(op)) max = num - 1; }
-         else if (['Memory of Advance', '或更高等級', '或高等級', '或以上', '不小於', '不低於', '>=', '大於等於', '以上', '>', '大於'].some(o => op.includes(o))) { min = num; max = 9; if (['>', '大於'].includes(op)) min = num + 1; }
+         else if (['或更高', '或更高等級', '或高等級', '或以上', '不小於', '不低於', '>=', '大於等於', '以上', '>', '大於'].some(o => op.includes(o))) { min = num; max = 9; if (['>', '大於'].includes(op)) min = num + 1; }
          else { min = num; max = num; }
       } else { min = num; max = num; }
 
@@ -651,6 +666,7 @@ export default function App() {
 
     const allValidNames = getAliasNames(card, language).map(n => n.toLowerCase());
     
+    // 🌟 修正：精準共鳴對應邏輯
     if (resonanceMatchId.trim() !== '') {
        const targetId = resonanceMatchId.trim().toLowerCase();
        const baseMatchCard = cardsData.find(c => (c.displayId || c.id).toLowerCase() === targetId);
@@ -662,40 +678,39 @@ export default function App() {
 
        const linkRaw = language === 'tw' ? card.link_tw : card.link_hk;
        const baseLinkRaw = language === 'tw' ? baseMatchCard.link_tw : baseMatchCard.link_hk;
-
        const traitRaw = language === 'tw' ? card.traits_tw : card.traits_hk;
        const baseTraitRaw = language === 'tw' ? baseMatchCard.traits_tw : baseMatchCard.traits_hk;
 
        let isResonanceMatch = false;
 
        if (baseIsPilot) {
-           const baseAliases = getAliasNames(baseMatchCard, language);
-           if (linkRaw && linkRaw !== '-') {
-               const nameMatches = [...linkRaw.matchAll(/「([^」]+)」/g)].map(m => m[1].trim());
-               if (nameMatches.length > 0 && baseAliases.some(alias => nameMatches.some(n => alias.includes(n) || n.includes(alias)))) {
-                   isResonanceMatch = true;
-               }
-               const traitMatchList = [];
-               const trRegex = /〔([^〕]+)〕/g; let tm;
-               while((tm = trRegex.exec(linkRaw)) !== null) traitMatchList.push(tm[1].trim());
-               if (traitMatchList.length > 0) {
-                   const exactBaseTraits = (baseTraitRaw.match(/〔([^〕]+)〕/g) || []).map(t => t.replace(/[〔〕]/g, '').trim());
-                   traitMatchList.forEach(t => { if (exactBaseTraits.includes(t)) isResonanceMatch = true; });
-               }
-           }
-       } else if (baseIsUnit) {
-           const targetAliases = getAliasNames(card, language);
            if (baseLinkRaw && baseLinkRaw !== '-') {
                const nameMatches = [...baseLinkRaw.matchAll(/「([^」]+)」/g)].map(m => m[1].trim());
-               if (nameMatches.length > 0 && targetAliases.some(alias => nameMatches.some(n => alias.includes(n) || n.includes(alias)))) {
+               const unitAliases = getAliasNames(card, language);
+               if (nameMatches.length > 0 && unitAliases.some(alias => nameMatches.some(n => alias.includes(n) || n.includes(alias)))) {
                    isResonanceMatch = true;
                }
                const traitMatchList = [];
                const trRegex = /〔([^〕]+)〕/g; let tm;
                while((tm = trRegex.exec(baseLinkRaw)) !== null) traitMatchList.push(tm[1].trim());
                if (traitMatchList.length > 0) {
-                   const exactTargetTraits = (traitRaw.match(/〔([^〕]+)〕/g) || []).map(t => t.replace(/〔〕/g, '').trim());
-                   traitMatchList.forEach(t => { if (exactTargetTraits.includes(t)) isResonanceMatch = true; });
+                   const unitTraits = (traitRaw.match(/〔([^〕]+)〕/g) || []).map(t => t.replace(/[〔〕]/g, '').trim());
+                   traitMatchList.forEach(t => { if (unitTraits.includes(t)) isResonanceMatch = true; });
+               }
+           }
+       } else if (baseIsUnit) {
+           if (linkRaw && linkRaw !== '-') {
+               const nameMatches = [...linkRaw.matchAll(/「([^」]+)」/g)].map(m => m[1].trim());
+               const unitAliases = getAliasNames(baseMatchCard, language);
+               if (nameMatches.length > 0 && unitAliases.some(alias => nameMatches.some(n => alias.includes(n) || n.includes(alias)))) {
+                   isResonanceMatch = true;
+               }
+               const traitMatchList = [];
+               const trRegex = /〔([^〕]+)〕/g; let tm;
+               while((tm = trRegex.exec(linkRaw)) !== null) traitMatchList.push(tm[1].trim());
+               if (traitMatchList.length > 0) {
+                   const unitTraits = (baseTraitRaw.match(/〔([^〕]+)〕/g) || []).map(t => t.replace(/[〔〕]/g, '').trim());
+                   traitMatchList.forEach(t => { if (unitTraits.includes(t)) isResonanceMatch = true; });
                }
            }
        } else {
@@ -710,7 +725,6 @@ export default function App() {
 
     let matchesSearch = true;
     const lowerSearchText = searchText.trim().toLowerCase();
-    
     const isExactSetMatch = lowerSearchText !== '' && (currentSetHk.includes(lowerSearchText) || currentSetTw.includes(lowerSearchText) || currentSet.includes(lowerSearchText));
 
     if (isExactSetMatch) {
@@ -790,14 +804,12 @@ export default function App() {
       if (selectedVersions.includes('Normal') && !card._isAltArt) {
          matchesVersion = true;
       }
-      
       if (card._isAltArt) {
         const r = card.rarity || '';
         const matchAlt = selectedVersions.includes('Alt') ||
                          (selectedVersions.includes('Alt_Plus') && r.includes('+') && !r.includes('++')) ||
                          (selectedVersions.includes('Alt_PlusPlus') && r.includes('++')) ||
                          (selectedVersions.includes('Alt_SP') && r.includes('SP'));
-                         
         if (matchAlt) matchesVersion = true;
       }
     }
@@ -843,6 +855,22 @@ export default function App() {
   const handlePrevCard = () => { if (hasPrev) setSelectedCard(filteredCards[currentCardIndex - 1]); };
   const handleNextCard = () => { if (hasNext) setSelectedCard(filteredCards[currentCardIndex + 1]); };
 
+  // 🌟 手機專屬滑動 Swipe 觸發上下頁
+  const minSwipeDistance = 50;
+  const onTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.nativeEvent.pageX);
+  };
+  const onTouchMove = (e) => setTouchEnd(e.nativeEvent.pageX);
+  const onTouchEndHandler = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    if (isLeftSwipe && hasNext) handleNextCard();
+    if (isRightSwipe && hasPrev) handlePrevCard();
+  };
+
   useEffect(() => {
     const handleGlobalKeyDown = (event) => {
       if (!selectedCard) return; 
@@ -869,24 +897,18 @@ export default function App() {
   
   const handleExactTokenClick = (name, attributesRaw) => {
     executeRedirect(); handleResetSearch(); handleResetFilters();
-
     setSearchText(name);
     setSelectedTypes(['TOKEN']);
-
     const traitsFound = [];
     const trRegex = /〔([^〕]+)〕/g;
     let m;
-    while ((m = trRegex.exec(attributesRaw)) !== null) {
-       traitsFound.push(m[1].trim());
-    }
+    while ((m = trRegex.exec(attributesRaw)) !== null) traitsFound.push(m[1].trim());
     if (traitsFound.length > 0) {
         setTraitSearchText(traitsFound.join('/'));
         setIsTraitExactMatch(true);
     }
-
     const apMatch = attributesRaw.match(/AP(\d+)/i);
     if (apMatch) setApRange([parseInt(apMatch[1], 10), parseInt(apMatch[1], 10)]);
-
     const hpMatch = attributesRaw.match(/HP(\d+)/i);
     if (hpMatch) setHpRange([parseInt(hpMatch[1], 10), parseInt(hpMatch[1], 10)]);
   };
@@ -903,41 +925,30 @@ export default function App() {
         if (baseKw === '突破') setBreakthroughValue(num);
         if (baseKw === '修復') setRepairValue(num);
       }
-    } else {
-      setSelectedKeywords([keywordText]);
-    }
+    } else setSelectedKeywords([keywordText]);
   };
 
   const handleAcquisitionClick = (card) => {
     if (!card) return;
     executeRedirect();
     handleResetEverything();
-
     if (card.isLimitedCard || card.isPromoCard) {
       const acqText = card[`set_${language}`] || card.set || '';
       if (acqText && acqText !== '-') {
         setSearchText(acqText);
-        setIncludeRegular(false); 
-        setIncludeBeta(false);
-        setIncludeReprint(false);
-        setIncludeLimited(true); 
-        setIncludePromo(true);   
+        setIncludeRegular(false); setIncludeBeta(false); setIncludeReprint(false); setIncludeLimited(true); setIncludePromo(true);   
         setSelectedVersions(['Normal', 'Alt']); 
       }
     } else {
       if (card.set && card.set !== '-') {
-        setSelectedSet(card.set);
-        setIncludeRegular(true);
+        setSelectedSet(card.set); setIncludeRegular(true);
       }
     }
   };
 
   const applyCondition = (partText, cardId) => {
     executeRedirect(); handleResetSearch(); handleResetFilters();
-
-    if (partText.match(/(?:搭乘(?:此|該)|此(?:機體|角色|卡牌|卡|機師)(?:為|作為)共鳴)/) && cardId) {
-        setResonanceMatchId(cardId);
-    }
+    if (partText.match(/(?:搭乘(?:此|該)|此(?:機體|角色|卡牌|卡|機師)(?:為|作為)共鳴)/) && cardId) setResonanceMatchId(cardId);
 
     const excludeRegex = /([^，。、]+)以外的/;
     const exMatch = partText.match(excludeRegex);
@@ -948,10 +959,7 @@ export default function App() {
            const exTypeMatch = exText.match(new RegExp(`(${TARGET_TYPES})`, 'i'));
            if (exTypeMatch) {
                let tArr = exTypeMatch[1].replace(/共鳴/g, '').split(/[\/／]/);
-               tArr.forEach(t => {
-                   let cleanT = t.trim();
-                   if (cleanT) excludedTypes.push(...resolveCardTypes(cleanT));
-               });
+               tArr.forEach(t => { let cleanT = t.trim(); if (cleanT) excludedTypes.push(...resolveCardTypes(cleanT)); });
            }
        }
     }
@@ -960,39 +968,27 @@ export default function App() {
     const typeMatch = partText.match(typeRegex);
     const selfTraitTypeRegex = new RegExp(`(?:若)?此(${SINGLE_TARGET})(?:為|變成|擁有|具有)?\\s*${TRAIT_GROUP}`, 'i');
     const selfTraitMatch = partText.match(selfTraitTypeRegex);
-    
     const selfColorTypeRegex = new RegExp(`此(${SINGLE_TARGET})(?:若為|為)(藍色|紅色|綠色|黃色|紫色|白色|黑色)`, 'i');
     const selfColorMatch = partText.match(selfColorTypeRegex);
 
     let typeStr = null;
-    if (typeMatch) {
-        typeStr = typeMatch[1];
-    } else if (selfTraitMatch) {
-        typeStr = selfTraitMatch[1];
-    } else if (selfColorMatch) {
-        typeStr = selfColorMatch[1];
-    } else {
+    if (typeMatch) typeStr = typeMatch[1];
+    else if (selfTraitMatch) typeStr = selfTraitMatch[1];
+    else if (selfColorMatch) typeStr = selfColorMatch[1];
+    else {
         const selfTargetRegex = new RegExp(`^此(${SINGLE_TARGET})`, 'i');
         const selfTargetMatch = partText.match(selfTargetRegex);
-        if (selfTargetMatch) {
-            typeStr = selfTargetMatch[1];
-        }
+        if (selfTargetMatch) typeStr = selfTargetMatch[1];
     }
 
     let mappedTypes = [];
     if (typeStr) {
-       if (typeStr.includes('共鳴')) {
-           setSelectedResonance('yes');
-           typeStr = typeStr.replace(/共鳴/g, '');
-       }
+       if (typeStr.includes('共鳴')) { setSelectedResonance('yes'); typeStr = typeStr.replace(/共鳴/g, ''); }
        let tArr = typeStr.split(/[\/／]/);
        tArr.forEach(t => {
            let cleanT = t.trim();
-           if (cleanT === '基地' || cleanT === '基地卡' || cleanT === '基地卡牌') {
-               mappedTypes.push('BASE');
-           } else {
-               if (cleanT) mappedTypes.push(...resolveCardTypes(cleanT));
-           }
+           if (cleanT === '基地' || cleanT === '基地卡' || cleanT === '基地卡牌') mappedTypes.push('BASE');
+           else if (cleanT) mappedTypes.push(...resolveCardTypes(cleanT));
        });
     }
 
@@ -1004,26 +1000,21 @@ export default function App() {
             if (partIndex !== -1) {
                 const afterPart = fullEffect.substring(partIndex + partText.length, partIndex + partText.length + 20);
                 const nextNounMatch = afterPart.match(/(機體|機師|角色|駕駛員|指令|據點|基地|卡牌|卡)/);
-                if (nextNounMatch) {
-                    mappedTypes.push(...resolveCardTypes(nextNounMatch[1]));
-                }
+                if (nextNounMatch) mappedTypes.push(...resolveCardTypes(nextNounMatch[1]));
             }
         }
     }
 
     if(mappedTypes.length > 0) {
         mappedTypes = mappedTypes.filter(t => !excludedTypes.includes(t));
-        if (selfColorMatch && mappedTypes.includes('UNIT') && mappedTypes.includes('TOKEN')) {
-            mappedTypes = mappedTypes.filter(t => t !== 'TOKEN');
-        }
+        if (selfColorMatch && mappedTypes.includes('UNIT') && mappedTypes.includes('TOKEN')) mappedTypes = mappedTypes.filter(t => t !== 'TOKEN');
         if(mappedTypes.length === 0) mappedTypes = ['all'];
         setSelectedTypes([...new Set(mappedTypes)]);
     }
 
     let targetColorStr = null;
-    if (selfColorMatch) {
-        targetColorStr = selfColorMatch[2].replace('色', '');
-    } else {
+    if (selfColorMatch) targetColorStr = selfColorMatch[2].replace('色', '');
+    else {
         const genColorMatch = partText.match(/(藍|紅|綠|黃|紫|白|黑)色的?/);
         if (genColorMatch) targetColorStr = genColorMatch[1];
     }
@@ -1035,37 +1026,21 @@ export default function App() {
     }
 
     const traitsFound = [];
-    const traitRegexGlobal = /〔([^〕]+)〕/g;
-    let traitMatch;
-    while ((traitMatch = traitRegexGlobal.exec(partText)) !== null) {
-       traitsFound.push(traitMatch[1].trim());
-    }
-    if (traitsFound.length > 0) {
-       setTraitSearchText(traitsFound.join('/'));
-       setIsTraitExactMatch(true); 
-    }
+    const traitRegexGlobal = /〔([^〕]+)〕/g; let traitMatch;
+    while ((traitMatch = traitRegexGlobal.exec(partText)) !== null) traitsFound.push(traitMatch[1].trim());
+    if (traitsFound.length > 0) { setTraitSearchText(traitsFound.join('/')); setIsTraitExactMatch(true); }
 
     const kwMatchRegex = /擁有《([^》]+)》效果(?:的\s*|之\s*|且\s*)?/i;
     const kwMatch = partText.match(kwMatchRegex);
-    if (kwMatch) {
-        const kw = kwMatch[1].trim();
-        setSelectedKeywords([kw]);
-    }
+    if (kwMatch) setSelectedKeywords([kwMatch[1].trim()]);
 
     const statusMatchRegex = /擁有【([^】]+)】效果(?:的\s*|之\s*|且\s*)?/i;
     const statusMatch = partText.match(statusMatchRegex);
-    if (statusMatch) {
-        const rawTiming = statusMatch[1].trim().split('・')[0]; 
-        setSelectedTimings([rawTiming]);
-    }
+    if (statusMatch) setSelectedTimings([statusMatch[1].trim().split('・')[0]]);
 
     const nameMatchRegex = /卡牌名稱中(不包含|包含)「([^」]+)」/i;
     const nMatch = partText.match(nameMatchRegex);
-    if (nMatch) {
-        const isExclude = nMatch[1] === '不包含';
-        const targetName = nMatch[2].trim();
-        setSearchText(isExclude ? `-${targetName}` : targetName);
-    }
+    if (nMatch) setSearchText(nMatch[1] === '不包含' ? `-${nMatch[2].trim()}` : nMatch[2].trim());
 
     const parseRegex = /(HP|AP|Lv\.?|COST|等級)\s*(為)?\s*(不大於|不高於|不超過|<=|小於等於|不小於|不低於|>=|大於等於|大於|>|小於|<|等於|=)?\s*(?:Lv\.?\s*)?(\d+)\s*(或更高等級|或高等級|或更高|或更低|或以下|或以上|以下|以上)?/i;
     const match = partText.match(parseRegex);
@@ -1074,42 +1049,16 @@ export default function App() {
         if (statRaw === '等級') statRaw = 'lv';
         const num = parseInt(match[4], 10);
         const op = (match[3] || '') + (match[5] || '');
-        
         let min = 0, max = 9;
-        if (['或更低', '或以下', '不大於', '不高於', '不超過', '<=', '小於等於', '以下', '<', '小於'].some(o => op.includes(o))) {
-           min = 0; max = num; if (['<', '小於'].includes(op)) max = num - 1;
-        } else if (['或更高', '或更高等級', '或高等級', '或以上', '不小於', '不低於', '>=', '大於等於', '以上', '>', '大於'].some(o => op.includes(o))) {
-           min = num; max = 9; if (['>', '大於'].includes(op)) min = num + 1;
-        } else {
-           min = num; max = num;
-        }
+        if (['或更低', '或以下', '不大於', '不高於', '不超過', '<=', '小於等於', '以下', '<', '小於'].some(o => op.includes(o))) { min = 0; max = num; if (['<', '小於'].includes(op)) max = num - 1; } 
+        else if (['或更高', '或更高等級', '或高等級', '或以上', '不小於', '不低於', '>=', '大於等於', '以上', '>', '大於'].some(o => op.includes(o))) { min = num; max = 9; if (['>', '大於'].includes(op)) min = num + 1; } 
+        else { min = num; max = num; }
         
         if (statRaw === 'hp') setHpRange([Math.max(0, min), Math.min(9, max)]);
         if (statRaw === 'ap') setApRange([Math.max(0, min), Math.min(9, max)]);
         if (statRaw === 'lv') setLvRange([Math.max(0, min), Math.min(9, max)]);
         if (statRaw === 'cost') setCostRange([Math.max(0, min), Math.min(9, max)]);
     }
-  };
-
-  const handleSetClick = (setStr) => {
-    if (!setStr || setStr === '-') return;
-    executeRedirect(); handleResetEverything();
-    setSelectedSet(setStr);
-  };
-
-  const MobileScrollWrapper = ({ children, style }) => {
-    if (isMobile) {
-      return (
-        <View style={styles.mobileGradientContainer}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={[style, styles.mobileHorizontalScroll]}>
-            {children}
-          </ScrollView>
-          <View style={styles.leftFade} />
-          <View style={styles.rightFade} />
-        </View>
-      );
-    }
-    return <View style={style}>{children}</View>;
   };
 
   const renderKeywordChip = (opt) => {
@@ -1249,16 +1198,9 @@ export default function App() {
             const renderBadgeInner = innerParts.map((bp, i) => {
               if (!bp) return null;
               
-              if (IS_PLAYER_LV_REGEX.test(bp)) {
-                  return <Text key={i}>{bp}</Text>;
-              }
-
-              if (bp === '此機體以外的機體' || bp === '此角色以外的角色' || bp === '此卡以外的卡' || bp === '此卡牌以外的卡牌') {
-                  return <Text key={i}>{bp}</Text>;
-              }
-              if (IS_SELF_RESONANCE_REGEX.test(bp)) {
-                  return <Text key={i} style={{ color: textColor, fontWeight: '900', cursor: 'pointer' }} onPress={() => triggerResonanceDirectSearch(cardId)}>{bp}</Text>;
-              }
+              if (IS_PLAYER_LV_REGEX.test(bp)) return <Text key={i}>{bp}</Text>;
+              if (bp === '此機體以外的機體' || bp === '此角色以外的角色' || bp === '此卡以外的卡' || bp === '此卡牌以外的卡牌') return <Text key={i}>{bp}</Text>;
+              if (IS_SELF_RESONANCE_REGEX.test(bp)) return <Text key={i} style={{ color: textColor, fontWeight: '900', cursor: 'pointer' }} onPress={() => triggerResonanceDirectSearch(cardId)}>{bp}</Text>;
               if (IS_SELF_TRAIT_REGEX.test(bp)) {
                   const match = bp.match(/^(若?)(.*)$/);
                   if (match && match[1]) {
@@ -1271,15 +1213,9 @@ export default function App() {
                   }
                   return <Text key={i} style={{ color: textColor, fontWeight: '900', cursor: 'pointer' }} onPress={() => applyCondition(bp, cardId)}>{bp}</Text>;
               }
-              if (IS_SELF_COLOR_REGEX.test(bp)) {
-                  return <Text key={i} style={{ color: textColor, fontWeight: '900', cursor: 'pointer' }} onPress={() => applyCondition(bp, cardId)}>{bp}</Text>;
-              }
-              if (IS_SMART_REGEX.test(bp) || IS_PURE_RESONANCE_REGEX.test(bp) || IS_SELF_COMPLEX_REGEX.test(bp)) {
-                  return <Text key={i}>{renderVisualCutoff(bp, () => applyCondition(bp, cardId), { color: textColor, fontWeight: '900', cursor: 'pointer' })}</Text>;
-              }
-              if (IS_STAT_COND_REGEX.test(bp)) {
-                  return <Text key={i} style={{ color: textColor, fontWeight: '900', cursor: 'pointer' }} onPress={() => applyCondition(bp, cardId)}>{bp}</Text>;
-              }
+              if (IS_SELF_COLOR_REGEX.test(bp)) return <Text key={i} style={{ color: textColor, fontWeight: '900', cursor: 'pointer' }} onPress={() => applyCondition(bp, cardId)}>{bp}</Text>;
+              if (IS_SMART_REGEX.test(bp) || IS_PURE_RESONANCE_REGEX.test(bp) || IS_SELF_COMPLEX_REGEX.test(bp)) return <Text key={i}>{renderVisualCutoff(bp, () => applyCondition(bp, cardId), { color: textColor, fontWeight: '900', cursor: 'pointer' })}</Text>;
+              if (IS_STAT_COND_REGEX.test(bp)) return <Text key={i} style={{ color: textColor, fontWeight: '900', cursor: 'pointer' }} onPress={() => applyCondition(bp, cardId)}>{bp}</Text>;
               if (/^「([^」]+)」[（\(]([^）\)]+)[）\)](?:的機體替代卡)?$/.test(bp)) {
                   const m = bp.match(/^「([^」]+)」[（\(]([^）\)]+)[）\)](?:的機體替代卡)?$/);
                   const subParts = bp.split(/(《[^》]+》)/g);
@@ -1299,9 +1235,7 @@ export default function App() {
                       </Text>
                   );
               }
-              if (/^〔[^〕]+〕$/.test(bp) || /^「[^」]+」$/.test(bp)) {
-                  return <Text key={i} style={{ color: textColor, fontWeight: '900', cursor: 'pointer' }} onPress={() => handleTokenClick(bp.replace(/[〔〕長裝」]/g, '').replace(/[〔〕「」]/g, '').trim(), bp.startsWith('〔'))}>{bp}</Text>;
-              }
+              if (/^〔[^〕]+〕$/.test(bp) || /^「[^」]+」$/.test(bp)) return <Text key={i} style={{ color: textColor, fontWeight: '900', cursor: 'pointer' }} onPress={() => handleTokenClick(bp.replace(/[〔〕長裝」]/g, '').replace(/[〔〕「」]/g, '').trim(), bp.startsWith('〔'))}>{bp}</Text>;
               return <Text key={i}>{bp}</Text>;
             });
 
@@ -1314,9 +1248,7 @@ export default function App() {
             );
           }
 
-          if (IS_SELF_RESONANCE_REGEX.test(part)) {
-              return <Text key={index} style={styles.interactiveBoldToken} onPress={() => triggerResonanceDirectSearch(cardId)}>{part}</Text>;
-          }
+          if (IS_SELF_RESONANCE_REGEX.test(part)) return <Text key={index} style={styles.interactiveBoldToken} onPress={() => triggerResonanceDirectSearch(cardId)}>{part}</Text>;
 
           if (IS_SELF_TRAIT_REGEX.test(part)) {
               const match = part.match(/^(若?)(.*)$/);
@@ -1331,9 +1263,7 @@ export default function App() {
               return <Text key={index} style={styles.interactiveBoldToken} onPress={() => applyCondition(part, cardId)}>{part}</Text>;
           }
 
-          if (IS_SELF_COLOR_REGEX.test(part)) {
-              return <Text key={index} style={styles.interactiveBoldToken} onPress={() => applyCondition(part, cardId)}>{part}</Text>;
-          }
+          if (IS_SELF_COLOR_REGEX.test(part)) return <Text key={index} style={styles.interactiveBoldToken} onPress={() => applyCondition(part, cardId)}>{part}</Text>;
 
           const tokenCardMatch = part.match(/^「([^」]+)」[（\(]([^）\)]+)[）\)](?:的機體替代卡)?$/);
           if (tokenCardMatch) {
@@ -1341,7 +1271,7 @@ export default function App() {
               return (
                   <Text key={index}>
                       {subParts.map((sub, i) => {
-                          if (/^《[^》]+>$/.test(sub)) {
+                          if (/^《[^》]+》$/.test(sub)) {
                               const cleanText = sub.replace(/[《》]/g, '').trim();
                               return (
                                 <TouchableOpacity key={i} style={styles.hexWrapperText} onPress={() => handleKeywordHexClick(cleanText)} activeOpacity={0.7}>
@@ -1355,13 +1285,8 @@ export default function App() {
               );
           }
           
-          if (IS_SMART_REGEX.test(part) || IS_PURE_RESONANCE_REGEX.test(part) || IS_SELF_COMPLEX_REGEX.test(part)) {
-             return <Text key={index}>{renderVisualCutoff(part, () => applyCondition(part, cardId), styles.interactiveBoldToken)}</Text>;
-          }
-
-          if (IS_STAT_COND_REGEX.test(part)) {
-             return <Text key={index} style={styles.interactiveBoldToken} onPress={() => applyCondition(part, cardId)}>{part}</Text>;
-          }
+          if (IS_SMART_REGEX.test(part) || IS_PURE_RESONANCE_REGEX.test(part) || IS_SELF_COMPLEX_REGEX.test(part)) return <Text key={index}>{renderVisualCutoff(part, () => applyCondition(part, cardId), styles.interactiveBoldToken)}</Text>;
+          if (IS_STAT_COND_REGEX.test(part)) return <Text key={index} style={styles.interactiveBoldToken} onPress={() => applyCondition(part, cardId)}>{part}</Text>;
           
           const isClickableBracket = /^〔[^〕]+〕$/.test(part) || /^「[^」]+」$/.test(part);
           if (isClickableBracket) return <Text key={index} style={styles.interactiveBoldToken} onPress={() => handleTokenClick(part.replace(/[〔〕長裝」]/g, '').replace(/[〔〕「」]/g, '').trim(), part.startsWith('〔'))}>{part}</Text>;
@@ -1381,59 +1306,6 @@ export default function App() {
     );
   };
 
-  const renderResonanceText = (text) => {
-    if (!text || text.trim() === '' || text.trim() === '-') return <Text style={styles.sectionBodyText}>-</Text>;
-    let processedText = text;
-    if (processedText.includes('特徵') || processedText.includes('特徴')) {
-       const matchedTrait = processedText.match(/〔([^〕]+)〕/);
-       if (matchedTrait) {
-          const trait = matchedTrait[1];
-          return (
-             <Text style={styles.interactiveBoldToken} onPress={() => {
-                 executeRedirect(); handleResetSearch(); handleResetFilters();
-                 setTraitSearchText(trait); setSelectedTypes(['PILOT', 'COMMAND_PILOT']);
-                 setIsTraitExactMatch(true);
-             }}>
-                特徴〔{trait}〕
-             </Text>
-          );
-       }
-    }
-    if (!processedText.includes('〔') && !processedText.includes('「') && !processedText.includes('〕') && !processedText.includes('」')) {
-        processedText = `「${processedText}」`;
-    }
-    const parts = processedText.split(/(〔[^〕]+〕|「[^」]+」)/g);
-    return (
-      <Text style={styles.sectionBodyText}>
-         {parts.map((part, index) => {
-             if (part.startsWith('〔') && part.endsWith('〕')) {
-                 const trait = part.slice(1, -1);
-                 return (
-                     <Text key={index} style={styles.interactiveBoldToken} onPress={() => {
-                         executeRedirect(); handleResetSearch(); handleResetFilters();
-                         setTraitSearchText(trait); setSelectedTypes(['PILOT', 'COMMAND_PILOT']);
-                         setIsTraitExactMatch(true); 
-                     }}>
-                         {part}
-                     </Text>
-                 );
-             } else if (part.startsWith('「') && part.endsWith('」')) {
-                 const name = part.slice(1, -1);
-                 return (
-                     <Text key={index} style={styles.interactiveBoldToken} onPress={() => {
-                         executeRedirect(); handleResetSearch(); handleResetFilters();
-                         setSearchText(name); setSelectedTypes(['PILOT', 'COMMAND_PILOT']);
-                     }}>
-                         {part}
-                     </Text>
-                 );
-             }
-             return <Text key={index}>{part}</Text>;
-         })}
-      </Text>
-    );
-  };
-
   const shouldShowResonanceButton = (card) => {
     if (!card) return false;
     const type = card.type || '';
@@ -1441,15 +1313,9 @@ export default function App() {
     const traits = card[`traits_${language}`] || '';
     const link = card[`link_${language}`] || '';
 
-    if (type === 'UNIT' || type === 'UNIT TOKEN' || type === 'TOKEN') {
-       return link.trim() !== '' && link.trim() !== '-';
-    }
-    if (type === 'PILOT') {
-       return true;
-    }
-    if (type === 'COMMAND') {
-       return effect.includes('【機師】') || traits.includes('【機師】') || traits.includes('機師');
-    }
+    if (type === 'UNIT' || type === 'UNIT TOKEN' || type === 'TOKEN') return link.trim() !== '' && link.trim() !== '-';
+    if (type === 'PILOT') return true;
+    if (type === 'COMMAND') return effect.includes('【機師】') || traits.includes('【機師】') || traits.includes('機師');
     return false;
   };
 
@@ -1461,11 +1327,13 @@ export default function App() {
         </TouchableWithoutFeedback>
       )}
 
-      {/* 🌟 修正 1：修復語系按鈕在各種寬度下的防擠壓結構 */}
+      {/* 🌟 標題列：彈性佈局防爆與縮小字體 */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.titleContainer} onPress={() => Linking.openURL('https://www.youtube.com/@FLCdesu')} activeOpacity={0.8}>
-          <Text style={styles.titleTextMain} numberOfLines={1} adjustsFontSizeToFit>GUNDAM CARD GAME中文卡效資料庫 by </Text>
-          <Text style={styles.titleLink}>FLC</Text>
+          <Text style={[styles.titleTextMain, isMobile && { fontSize: 16 }]} numberOfLines={1} adjustsFontSizeToFit>
+             {isMobile ? "GCG中文資料庫 by " : "GUNDAM CARD GAME中文卡效資料庫 by "}
+          </Text>
+          <Text style={[styles.titleLink, isMobile && { fontSize: 16 }]}>FLC</Text>
           <Image source={{ uri: 'https://cdn-icons-png.flaticon.com/512/1384/1384060.png' }} style={styles.youtubeLogo} resizeMode="contain" />
         </TouchableOpacity>
         <View style={styles.headerLangContainer}>
@@ -1476,9 +1344,8 @@ export default function App() {
         </View>
       </View>
 
-      <View style={styles.searchBarSection}>
+      <View style={[styles.searchBarSection, isMobile && { paddingVertical: 10, paddingHorizontal: 12 }]}>
         <View style={styles.mainControlContainer}>
-          
           <View style={[styles.topSearchSection, isMobile && { flexDirection: 'column', alignItems: 'stretch', gap: 8, paddingVertical: 10, paddingHorizontal: 15 }]}>
             {!isMobile && (
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -1497,10 +1364,7 @@ export default function App() {
                   <View style={[styles.dropdownList, isMobile && { width: '100%' }]}>
                     <ScrollView style={{ maxHeight: 250 }} nestedScrollEnabled={true} keyboardShouldPersistTaps="handled">
                       {AVAILABLE_SETS.map((setOpt) => (
-                        <TouchableOpacity 
-                          key={setOpt} style={[styles.dropdownItem, selectedSet === setOpt && styles.dropdownItemActive]}
-                          onPress={() => { setSelectedSet(setOpt); setIsSetDropdownOpen(false); }}
-                        >
+                        <TouchableOpacity key={setOpt} style={[styles.dropdownItem, selectedSet === setOpt && styles.dropdownItemActive]} onPress={() => { setSelectedSet(setOpt); setIsSetDropdownOpen(false); }}>
                           <Text style={[styles.dropdownItemText, selectedSet === setOpt && { color: '#fff', fontWeight: 'bold' }]}>{setOpt === 'all' ? '收錄彈' : setOpt}</Text>
                         </TouchableOpacity>
                       ))}
@@ -1534,14 +1398,9 @@ export default function App() {
             </View>
           </View>
 
-          {/* 🌟 修正 2：過長面板限制最高高度，允許手機上下滑動滾動 */}
           <View style={[styles.bottomFilterSection, !isFilterPanelOpen && { paddingBottom: 16 }]}>
             <View style={[styles.panelHeaderRow, isFilterPanelOpen && { marginBottom: 12 }]}>
-              <TouchableOpacity 
-                style={styles.panelTitleToggleClickable} 
-                onPress={() => setIsFilterPanelOpen(!isFilterPanelOpen)}
-                activeOpacity={0.7}
-              >
+              <TouchableOpacity style={styles.panelTitleToggleClickable} onPress={() => setIsFilterPanelOpen(!isFilterPanelOpen)} activeOpacity={0.7}>
                 <Text style={styles.panelMainTitle}>篩選卡牌</Text>
                 <Text style={styles.panelToggleIndicatorText}>{isFilterPanelOpen ? '▲ 收起' : '▼ 展開'}</Text>
               </TouchableOpacity>
@@ -1559,68 +1418,149 @@ export default function App() {
                   <View style={[styles.filterLeftColumn, screenWidth > 900 && styles.filterLeftColumnBorder]}>
                     <View style={styles.panelRow}>
                       <Text style={styles.panelLabel}>顏色</Text>
-                      <MobileScrollWrapper style={styles.chipContainerRow}>
-                        {COLOR_OPTIONS.map((opt) => (
-                          <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedColors.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleSelection(opt.value, selectedColors, setSelectedColors)}>
-                            <Text style={[styles.chipText, selectedColors.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
-                          </TouchableOpacity>
-                        ))}
-                      </MobileScrollWrapper>
+                      {isMobile ? (
+                        <View style={styles.mobileGradientContainer}>
+                          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.mobileHorizontalScroll}>
+                            {COLOR_OPTIONS.map((opt) => (
+                              <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedColors.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleSelection(opt.value, selectedColors, setSelectedColors)}>
+                                <Text style={[styles.chipText, selectedColors.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+                              </TouchableOpacity>
+                            ))}
+                          </ScrollView>
+                        </View>
+                      ) : (
+                        <View style={styles.chipContainerRow}>
+                          {COLOR_OPTIONS.map((opt) => (
+                            <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedColors.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleSelection(opt.value, selectedColors, setSelectedColors)}>
+                              <Text style={[styles.chipText, selectedColors.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+                            </TouchableOpacity>
+                          ))}
+                        </View>
+                      )}
                     </View>
 
                     <View style={styles.panelRow}>
                       <Text style={styles.panelLabel}>種類</Text>
-                      <MobileScrollWrapper style={styles.chipContainerRow}>
-                        {TYPE_OPTIONS.map((opt) => (
-                          <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedTypes.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleSelection(opt.value, selectedTypes, setSelectedTypes)}>
-                            <Text style={[styles.chipText, selectedTypes.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
-                          </TouchableOpacity>
-                        ))}
-                      </MobileScrollWrapper>
+                      {isMobile ? (
+                        <View style={styles.mobileGradientContainer}>
+                          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.mobileHorizontalScroll}>
+                            {TYPE_OPTIONS.map((opt) => (
+                              <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedTypes.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleSelection(opt.value, selectedTypes, setSelectedTypes)}>
+                                <Text style={[styles.chipText, selectedTypes.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+                              </TouchableOpacity>
+                            ))}
+                          </ScrollView>
+                        </View>
+                      ) : (
+                        <View style={styles.typeRowsContainer}>
+                          <View style={[styles.chipContainerRow, { marginBottom: 6 }]}>
+                            {TYPE_OPTIONS.slice(0, 5).map((opt) => (
+                              <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedTypes.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleSelection(opt.value, selectedTypes, setSelectedTypes)}>
+                                <Text style={[styles.chipText, selectedTypes.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+                              </TouchableOpacity>
+                            ))}
+                          </View>
+                          <View style={styles.chipContainerRow}>
+                            {TYPE_OPTIONS.slice(5).map((opt) => (
+                              <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedTypes.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleSelection(opt.value, selectedTypes, setSelectedTypes)}>
+                                <Text style={[styles.chipText, selectedTypes.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+                              </TouchableOpacity>
+                            ))}
+                          </View>
+                        </View>
+                      )}
                     </View>
 
                     <View style={styles.panelRow}>
                       <Text style={styles.panelLabel}>稀有</Text>
-                      <MobileScrollWrapper style={styles.chipContainerRow}>
-                        {RARITY_OPTIONS.map((opt) => (
-                          <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedRarity === opt.value && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => setSelectedRarity(opt.value)}>
-                            <Text style={[styles.chipText, selectedRarity === opt.value && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
-                          </TouchableOpacity>
-                        ))}
-                      </MobileScrollWrapper>
+                      {isMobile ? (
+                        <View style={styles.mobileGradientContainer}>
+                          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.mobileHorizontalScroll}>
+                            {RARITY_OPTIONS.map((opt) => (
+                              <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedRarity === opt.value && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => setSelectedRarity(opt.value)}>
+                                <Text style={[styles.chipText, selectedRarity === opt.value && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+                              </TouchableOpacity>
+                            ))}
+                          </ScrollView>
+                        </View>
+                      ) : (
+                        <View style={styles.chipContainerRow}>
+                          {RARITY_OPTIONS.map((opt) => (
+                            <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedRarity === opt.value && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => setSelectedRarity(opt.value)}>
+                              <Text style={[styles.chipText, selectedRarity === opt.value && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+                            </TouchableOpacity>
+                          ))}
+                        </View>
+                      )}
                     </View>
 
                     <View style={styles.panelRow}>
                       <Text style={styles.panelLabel}>卡圖</Text>
-                      <MobileScrollWrapper style={styles.chipContainerRow}>
-                        {VERSION_OPTIONS.map((opt) => (
-                          <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedVersions.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleVersionSelection(opt.value)}>
-                            <Text style={[styles.chipText, selectedVersions.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
-                          </TouchableOpacity>
-                        ))}
-                      </MobileScrollWrapper>
+                      {isMobile ? (
+                        <View style={styles.mobileGradientContainer}>
+                          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.mobileHorizontalScroll}>
+                            {VERSION_OPTIONS.map((opt) => (
+                              <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedVersions.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleVersionSelection(opt.value)}>
+                                <Text style={[styles.chipText, selectedVersions.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+                              </TouchableOpacity>
+                            ))}
+                          </ScrollView>
+                        </View>
+                      ) : (
+                        <View style={styles.chipContainerRow}>
+                          {VERSION_OPTIONS.map((opt) => (
+                            <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedVersions.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleVersionSelection(opt.value)}>
+                              <Text style={[styles.chipText, selectedVersions.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+                            </TouchableOpacity>
+                          ))}
+                        </View>
+                      )}
                     </View>
                     
                     <View style={styles.panelRow}>
                       <Text style={styles.panelLabel}>入手</Text>
-                      <MobileScrollWrapper style={styles.chipContainerRow}>
-                        <TouchableOpacity style={[styles.reprintTickbox, includeRegular && styles.reprintTickboxActive]} onPress={() => setIncludeRegular(!includeRegular)} activeOpacity={0.8}><Text style={[styles.reprintTickboxText, includeRegular && styles.reprintTickboxTextActive]}>{includeRegular ? '☑' : '☐'} 常規</Text></TouchableOpacity>
-                        <TouchableOpacity style={[styles.reprintTickbox, includeBeta && styles.reprintTickboxActive]} onPress={() => setIncludeBeta(!includeBeta)} activeOpacity={0.8}><Text style={[styles.reprintTickboxText, includeBeta && styles.reprintTickboxTextActive]}>{includeBeta ? '☑' : '☐'} BETA</Text></TouchableOpacity>
-                        <TouchableOpacity style={[styles.reprintTickbox, includeReprint && styles.reprintTickboxActive]} onPress={() => setIncludeReprint(!includeReprint)} activeOpacity={0.8}><Text style={[styles.reprintTickboxText, includeReprint && styles.reprintTickboxTextActive]}>{includeReprint ? '☑' : '☐'} 重印</Text></TouchableOpacity>
-                        <TouchableOpacity style={[styles.reprintTickbox, includeLimited && styles.reprintTickboxActive]} onPress={() => setIncludeLimited(!includeLimited)} activeOpacity={0.8}><Text style={[styles.reprintTickboxText, includeLimited && styles.reprintTickboxTextActive]}>{includeLimited ? '☑' : '☐'} 限定</Text></TouchableOpacity>
-                        <TouchableOpacity style={[styles.reprintTickbox, includePromo && styles.reprintTickboxActive]} onPress={() => setIncludePromo(!includePromo)} activeOpacity={0.8}><Text style={[styles.reprintTickboxText, includePromo && styles.reprintTickboxTextActive]}>{includePromo ? '☑' : '☐'} 推廣</Text></TouchableOpacity>
-                      </MobileScrollWrapper>
+                      {isMobile ? (
+                        <View style={styles.mobileGradientContainer}>
+                          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.mobileHorizontalScroll}>
+                            <TouchableOpacity style={[styles.reprintTickbox, includeRegular && styles.reprintTickboxActive]} onPress={() => setIncludeRegular(!includeRegular)} activeOpacity={0.8}><Text style={[styles.reprintTickboxText, includeRegular && styles.reprintTickboxTextActive]}>{includeRegular ? '☑' : '☐'} 常規</Text></TouchableOpacity>
+                            <TouchableOpacity style={[styles.reprintTickbox, includeBeta && styles.reprintTickboxActive]} onPress={() => setIncludeBeta(!includeBeta)} activeOpacity={0.8}><Text style={[styles.reprintTickboxText, includeBeta && styles.reprintTickboxTextActive]}>{includeBeta ? '☑' : '☐'} BETA</Text></TouchableOpacity>
+                            <TouchableOpacity style={[styles.reprintTickbox, includeReprint && styles.reprintTickboxActive]} onPress={() => setIncludeReprint(!includeReprint)} activeOpacity={0.8}><Text style={[styles.reprintTickboxText, includeReprint && styles.reprintTickboxTextActive]}>{includeReprint ? '☑' : '☐'} 重印</Text></TouchableOpacity>
+                            <TouchableOpacity style={[styles.reprintTickbox, includeLimited && styles.reprintTickboxActive]} onPress={() => setIncludeLimited(!includeLimited)} activeOpacity={0.8}><Text style={[styles.reprintTickboxText, includeLimited && styles.reprintTickboxTextActive]}>{includeLimited ? '☑' : '☐'} 限定</Text></TouchableOpacity>
+                            <TouchableOpacity style={[styles.reprintTickbox, includePromo && styles.reprintTickboxActive]} onPress={() => setIncludePromo(!includePromo)} activeOpacity={0.8}><Text style={[styles.reprintTickboxText, includePromo && styles.reprintTickboxTextActive]}>{includePromo ? '☑' : '☐'} 推廣</Text></TouchableOpacity>
+                          </ScrollView>
+                        </View>
+                      ) : (
+                        <View style={styles.chipContainerRow}>
+                          <TouchableOpacity style={[styles.reprintTickbox, includeRegular && styles.reprintTickboxActive]} onPress={() => setIncludeRegular(!includeRegular)} activeOpacity={0.8}><Text style={[styles.reprintTickboxText, includeRegular && styles.reprintTickboxTextActive]}>{includeRegular ? '☑' : '☐'} 常規</Text></TouchableOpacity>
+                          <TouchableOpacity style={[styles.reprintTickbox, includeBeta && styles.reprintTickboxActive]} onPress={() => setIncludeBeta(!includeBeta)} activeOpacity={0.8}><Text style={[styles.reprintTickboxText, includeBeta && styles.reprintTickboxTextActive]}>{includeBeta ? '☑' : '☐'} BETA</Text></TouchableOpacity>
+                          <TouchableOpacity style={[styles.reprintTickbox, includeReprint && styles.reprintTickboxActive]} onPress={() => setIncludeReprint(!includeReprint)} activeOpacity={0.8}><Text style={[styles.reprintTickboxText, includeReprint && styles.reprintTickboxTextActive]}>{includeReprint ? '☑' : '☐'} 重印</Text></TouchableOpacity>
+                          <TouchableOpacity style={[styles.reprintTickbox, includeLimited && styles.reprintTickboxActive]} onPress={() => setIncludeLimited(!includeLimited)} activeOpacity={0.8}><Text style={[styles.reprintTickboxText, includeLimited && styles.reprintTickboxTextActive]}>{includeLimited ? '☑' : '☐'} 限定</Text></TouchableOpacity>
+                          <TouchableOpacity style={[styles.reprintTickbox, includePromo && styles.reprintTickboxActive]} onPress={() => setIncludePromo(!includePromo)} activeOpacity={0.8}><Text style={[styles.reprintTickboxText, includePromo && styles.reprintTickboxTextActive]}>{includePromo ? '☑' : '☐'} 推廣</Text></TouchableOpacity>
+                        </View>
+                      )}
                     </View>
 
                     <View style={styles.panelRow}>
                       <Text style={styles.panelLabel}>共鳴</Text>
-                      <MobileScrollWrapper style={styles.chipContainerRow}>
-                        {RESONANCE_OPTIONS.map((opt) => (
-                          <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedResonance === opt.value && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => setSelectedResonance(opt.value)}>
-                            <Text style={[styles.chipText, selectedResonance === opt.value && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
-                          </TouchableOpacity>
-                        ))}
-                      </MobileScrollWrapper>
+                      {isMobile ? (
+                        <View style={styles.mobileGradientContainer}>
+                          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.mobileHorizontalScroll}>
+                            {RESONANCE_OPTIONS.map((opt) => (
+                              <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedResonance === opt.value && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => setSelectedResonance(opt.value)}>
+                                <Text style={[styles.chipText, selectedResonance === opt.value && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+                              </TouchableOpacity>
+                            ))}
+                          </ScrollView>
+                        </View>
+                      ) : (
+                        <View style={styles.chipContainerRow}>
+                          {RESONANCE_OPTIONS.map((opt) => (
+                            <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedResonance === opt.value && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => setSelectedResonance(opt.value)}>
+                              <Text style={[styles.chipText, selectedResonance === opt.value && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+                            </TouchableOpacity>
+                          ))}
+                        </View>
+                      )}
                     </View>
 
                     <View style={[styles.panelRow, { marginTop: 4 }]}>
@@ -1646,39 +1586,74 @@ export default function App() {
                       </View>
                     </View>
 
-                    <View style={[styles.panelRow, { alignItems: 'flex-start' }]}>
-                      <View style={{ width: 70, marginTop: 4 }}>
-                        <Text style={[styles.panelLabel, { width: 'auto', marginBottom: 12 }]}>關鍵字</Text>
-                        <TouchableOpacity style={[styles.trackResetBtn, { marginLeft: 0 }]} onPress={() => { setSelectedKeywords(['all']); setSupportValue(''); setBreakthroughValue(''); setRepairValue(''); }} activeOpacity={0.7}><Text style={styles.trackResetBtnText}>↺</Text></TouchableOpacity>
+                    {/* 🌟 修正：重置按鈕移動至右側，單行佈局 */}
+                    <View style={styles.panelRow}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', width: 75, flexShrink: 0 }}>
+                        <Text style={[styles.panelLabel, { width: 'auto' }]}>關鍵字</Text>
+                        <TouchableOpacity style={[styles.trackResetBtn, { marginLeft: 4, width: 20, height: 20 }]} onPress={() => { setSelectedKeywords(['all']); setSupportValue(''); setBreakthroughValue(''); setRepairValue(''); }} activeOpacity={0.7}><Text style={{fontSize: 12, fontWeight: 'bold'}}>↺</Text></TouchableOpacity>
                       </View>
                       <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, overflow: 'hidden' }}>
-                        <MobileScrollWrapper style={styles.chipContainerRow}>
-                          {KEYWORD_OPTIONS.map(renderKeywordChip)}
-                        </MobileScrollWrapper>
+                        {isMobile ? (
+                          <View style={styles.mobileGradientContainer}>
+                            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.mobileHorizontalScroll}>
+                              {KEYWORD_OPTIONS.map(renderKeywordChip)}
+                            </ScrollView>
+                          </View>
+                        ) : (
+                          <View style={styles.typeRowsContainer}>
+                            <View style={[styles.chipContainerRow, { marginBottom: 6 }]}>
+                              {KEYWORD_OPTIONS.slice(0, 5).map(renderKeywordChip)}
+                            </View>
+                            <View style={styles.chipContainerRow}>
+                              {KEYWORD_OPTIONS.slice(5).map(renderKeywordChip)}
+                            </View>
+                          </View>
+                        )}
                       </View>
                     </View>
 
-                    <View style={[styles.panelRow, { alignItems: 'flex-start' }]}>
-                      <View style={{ width: 70, marginTop: 4 }}>
-                        <Text style={[styles.panelLabel, { width: 'auto', marginBottom: 12 }]}>時機</Text>
-                        <TouchableOpacity style={[styles.trackResetBtn, { marginLeft: 0 }]} onPress={() => { setSelectedTimings(['all']); }} activeOpacity={0.7}><Text style={styles.trackResetBtnText}>↺</Text></TouchableOpacity>
+                    <View style={styles.panelRow}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', width: 75, flexShrink: 0 }}>
+                        <Text style={[styles.panelLabel, { width: 'auto' }]}>時機</Text>
+                        <TouchableOpacity style={[styles.trackResetBtn, { marginLeft: 4, width: 20, height: 20 }]} onPress={() => { setSelectedTimings(['all']); }} activeOpacity={0.7}><Text style={{fontSize: 12, fontWeight: 'bold'}}>↺</Text></TouchableOpacity>
                       </View>
                       <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, overflow: 'hidden' }}>
-                        <MobileScrollWrapper style={styles.chipContainerRow}>
-                          {TIMING_OPTIONS.map((opt) => (
-                            <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedTimings.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleSelection(opt.value, selectedTimings, setSelectedTimings)}>
-                              <Text style={[styles.chipText, selectedTimings.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
-                            </TouchableOpacity>
-                          ))}
-                        </MobileScrollWrapper>
+                        {isMobile ? (
+                          <View style={styles.mobileGradientContainer}>
+                            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.mobileHorizontalScroll}>
+                              {TIMING_OPTIONS.map((opt) => (
+                                <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedTimings.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleSelection(opt.value, selectedTimings, setSelectedTimings)}>
+                                  <Text style={[styles.chipText, selectedTimings.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+                                </TouchableOpacity>
+                              ))}
+                            </ScrollView>
+                          </View>
+                        ) : (
+                          <View style={styles.typeRowsContainer}>
+                            <View style={[styles.chipContainerRow, { marginBottom: 6 }]}>
+                              {TIMING_OPTIONS.slice(0, 5).map((opt) => (
+                                <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedTimings.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleSelection(opt.value, selectedTimings, setSelectedTimings)}>
+                                  <Text style={[styles.chipText, selectedTimings.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+                                </TouchableOpacity>
+                              ))}
+                            </View>
+                            <View style={styles.chipContainerRow}>
+                              {TIMING_OPTIONS.slice(5).map((opt) => (
+                                <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedTimings.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleSelection(opt.value, selectedTimings, setSelectedTimings)}>
+                                  <Text style={[styles.chipText, selectedTimings.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+                                </TouchableOpacity>
+                              ))}
+                            </View>
+                          </View>
+                        )}
                       </View>
                     </View>
 
                     <View style={styles.rangeTracksWrapper}>
-                      <RangeTrack label="Lv." range={lvRange} setRange={setLvRange} minVal={0} maxVal={9} onReset={() => setLvRange([0, 9])}/>
-                      <RangeTrack label="COST" range={costRange} setRange={setCostRange} minVal={0} maxVal={9} onReset={() => setCostRange([0, 9])}/>
-                      <RangeTrack label="AP" range={apRange} setRange={setApRange} minVal={0} maxVal={9} onReset={() => setApRange([0, 9])}/>
-                      <RangeTrack label="HP" range={hpRange} setRange={setHpRange} minVal={0} maxVal={9} onReset={() => setHpRange([0, 9])}/>
+                      <RangeTrack label="Lv." range={lvRange} setRange={setLvRange} minVal={0} maxVal={9} onReset={() => setLvRange([0, 9])} isMobile={isMobile} />
+                      <RangeTrack label="COST" range={costRange} setRange={setCostRange} minVal={0} maxVal={9} onReset={() => setCostRange([0, 9])} isMobile={isMobile} />
+                      <RangeTrack label="AP" range={apRange} setRange={setApRange} minVal={0} maxVal={9} onReset={() => setApRange([0, 9])} isMobile={isMobile} />
+                      <RangeTrack label="HP" range={hpRange} setRange={setHpRange} minVal={0} maxVal={9} onReset={() => setHpRange([0, 9])} isMobile={isMobile} />
                     </View>
                   </View>
                 </View>
@@ -1702,9 +1677,11 @@ export default function App() {
 
       <Modal visible={selectedCard !== null} animationType="fade" transparent={true}>
         {selectedCard && (
-          <View style={[styles.modalOverlay, isMobile && { padding: 10 }]}>
+          // 🌟 修正：手機板支援 Swipe 滑動切換
+          <View style={[styles.modalOverlay, isMobile && { padding: 10 }]} onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEndHandler}>
             
-            <TouchableOpacity style={[styles.floatingArrowButton, styles.leftArrowPosition, !hasPrev && styles.arrowDisabled, isMobile && styles.mobileFloatingLeftArrow]} onPress={handlePrevCard} disabled={!hasPrev}><Text style={styles.floatingArrowText}>&lt;&lt;</Text></TouchableOpacity>
+            {/* 🌟 方案 1：懸浮於卡圖左右邊緣的大箭頭 (單箭頭) */}
+            {!isMobile && <TouchableOpacity style={[styles.floatingArrowButton, styles.leftArrowPosition, !hasPrev && styles.arrowDisabled]} onPress={handlePrevCard} disabled={!hasPrev}><Text style={styles.floatingArrowText}>&lt;</Text></TouchableOpacity>}
             
             <TouchableOpacity activeOpacity={1} style={[styles.modalContentBox, isMobile && { maxHeight: '96%' }]}>
               
@@ -1754,9 +1731,15 @@ export default function App() {
               <ScrollView ref={modalScrollRef} contentContainerStyle={[styles.modalScrollBody, isMobile && { padding: 16 }]} showsVerticalScrollIndicator={true}>
                 <View style={[styles.modalFlexRow, isMobile && { flexDirection: 'column', alignItems: 'center' }]}>
                   <View style={[styles.modalLeftColumn, isMobile && { marginRight: 0, marginBottom: 15 }]}>
+                    
+                    {/* 🌟 方案 1：手機版的箭頭懸浮在圖片上 (若不滑動也能點) */}
+                    {isMobile && <TouchableOpacity style={[styles.floatingArrowButton, styles.mobileFloatingLeftArrow, !hasPrev && styles.arrowDisabled]} onPress={handlePrevCard} disabled={!hasPrev}><Text style={[styles.floatingArrowText, {fontSize: 14}]}>&lt;</Text></TouchableOpacity>}
+                    
                     {cardImages[selectedCard.id] ? 
                       <Image source={{ uri: cardImages[selectedCard.id] }} style={[styles.cardImage, isMobile && { width: 250, height: 347 }]} resizeMode="contain" /> 
                       : <View style={[styles.cardImage, styles.noImagePlaceholder, isMobile && { width: 250, height: 347 }]}><Text style={styles.noImageText}>圖片準備中</Text></View>}
+                      
+                    {isMobile && <TouchableOpacity style={[styles.floatingArrowButton, styles.mobileFloatingRightArrow, !hasNext && styles.arrowDisabled]} onPress={handleNextCard} disabled={!hasNext}><Text style={[styles.floatingArrowText, {fontSize: 14}]}>&gt;</Text></TouchableOpacity>}
                   </View>
 
                   <View style={[styles.modalRightColumn, isMobile && { minWidth: '100%' }]}>
@@ -1858,7 +1841,7 @@ export default function App() {
               </ScrollView>
             </TouchableOpacity>
             
-            <TouchableOpacity style={[styles.floatingArrowButton, styles.rightArrowPosition, !hasNext && styles.arrowDisabled, isMobile && styles.mobileFloatingRightArrow]} onPress={handleNextCard} disabled={!hasNext}><Text style={styles.floatingArrowText}>&gt;&gt;</Text></TouchableOpacity>
+            {!isMobile && <TouchableOpacity style={[styles.floatingArrowButton, styles.rightArrowPosition, !hasNext && styles.arrowDisabled]} onPress={handleNextCard} disabled={!hasNext}><Text style={styles.floatingArrowText}>&gt;</Text></TouchableOpacity>}
           </View>
         )}
       </Modal>
@@ -1870,7 +1853,6 @@ const styles = StyleSheet.create({
   fullScreenOverlay: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 9998 }, 
   container: { flex: 1, backgroundColor: '#f0f2f5' },
   
-  // 🌟 新增與優化：Header 防走位彈性比例結構
   header: { backgroundColor: '#20353f', paddingVertical: 14, paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', zIndex: 100, flexWrap: 'nowrap' },
   titleContainer: { flexDirection: 'row', alignItems: 'center', cursor: 'pointer', flex: 1, marginRight: 10, overflow: 'hidden' },
   titleTextMain: { color: '#ffffff', fontSize: 20, fontWeight: 'bold', letterSpacing: 0.5, flexShrink: 1 },
@@ -1929,12 +1911,9 @@ const styles = StyleSheet.create({
   panelResetBtn: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 14, backgroundColor: '#111827', borderWidth: 1, borderColor: '#000000', cursor: 'pointer', marginLeft: 16 },
   panelResetBtnText: { fontSize: 12, color: '#ffffff', fontWeight: 'bold', letterSpacing: 0.5 },
 
-  // 🌟 手機版專屬：限制篩選面板最高高度，開啟垂直上下滾動
   mobilePanelVerticalContainer: { maxHeight: 320, overflowY: 'auto' },
-
   filterColumnsContainer: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start', gap: 20 },
   
-  // 🌟 電腦版優化：當視窗小於 900px 時改為垂直堆疊，防暴卡與卡死
   filterLeftColumn: { flex: 1, minWidth: 280 },
   filterLeftColumnBorder: { borderRightWidth: 1, borderRightColor: '#cbd5e1', paddingRight: 20 },
   filterRightColumn: { flex: 1, minWidth: 280 },
@@ -1942,9 +1921,9 @@ const styles = StyleSheet.create({
   rangeTracksWrapper: { paddingLeft: 4, gap: 4, marginTop: 8 },
   rangeTrackContainer: { flexDirection: 'row', alignItems: 'center', marginBottom: 12 },
   
-  // 🌟 修正「種類」等字體：拉大寬度至 75px，強制不換行
+  // 🌟 對齊修正：標籤固定寬度，強制不換行
   panelLabel: { fontSize: 13, fontWeight: 'bold', color: '#475569', width: 75, whiteSpace: 'nowrap', flexShrink: 0, cursor: 'default' },
-  rangeTrackLabel: { width: 45, fontSize: 13, fontWeight: 'bold', color: '#475569', cursor: 'default' },
+  rangeTrackLabel: { width: 50, fontSize: 13, fontWeight: 'bold', color: '#475569', cursor: 'default' },
   rangeTrackBox: { flexDirection: 'row', backgroundColor: '#f1f5f9', borderRadius: 15, borderWidth: 1, borderColor: '#e2e8f0', overflow: 'hidden' },
   rangeNumberCell: { width: 28, height: 28, justifyContent: 'center', alignItems: 'center', cursor: 'pointer' },
   rangeNumberCellActive: { backgroundColor: '#376171' }, 
@@ -1980,9 +1959,9 @@ const styles = StyleSheet.create({
   exactMatchBtnText: { fontSize: 11, color: '#475569', fontWeight: 'bold', letterSpacing: 0.5 },
   exactMatchBtnTextActive: { color: '#ffffff' },
 
-  // 🌟 修正 3：智慧型半透明漸變滑動指示器遮罩
+  // 🌟 手機專屬：漸層遮罩讓左右有透明漸變效果，且移除了造成走位的額外 wrapper
   mobileGradientContainer: { position: 'relative', flex: 1, overflow: 'hidden', maskImage: 'linear-gradient(to right, transparent, #000 8px, #000 calc(100% - 8px), transparent)', webkitMaskImage: 'linear-gradient(to right, transparent, #000 8px, #000 calc(100% - 8px), transparent)' },
-  mobileHorizontalScroll: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 8, overflowX: 'auto' },
+  mobileHorizontalScroll: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 8 },
   
   gridCard: { backgroundColor: 'white', borderRadius: 8, margin: 5, overflow: 'hidden', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 3, elevation: 2, cursor: 'pointer', transition: 'transform 0.2s ease, box-shadow 0.2s ease', transform: [{ translateY: 0 }] },
   gridCardHovered: { transform: [{ translateY: -4 }], shadowOpacity: 0.25, shadowRadius: 8, elevation: 6 },
@@ -2003,14 +1982,14 @@ const styles = StyleSheet.create({
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.4)', backdropFilter: 'blur(10px)', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: 20, position: 'relative' },
   modalContentBox: { backgroundColor: '#fff', width: '100%', maxWidth: 920, maxHeight: '92%', borderRadius: 12, overflow: 'hidden', shadowColor: '#000', shadowOpacity: 0.25, shadowRadius: 15, elevation: 10, mx: 20, display: 'flex', flexDirection: 'column', flexShrink: 1 },
   
-  // 🌟 修正 3：方案 1 經典回歸！懸浮於卡圖兩側的按鈕定位
+  // 🌟 單箭頭 ＆ 手機版圖片邊緣懸浮
   floatingArrowButton: { position: 'absolute', top: '50%', marginTop: -27, width: 54, height: 54, borderRadius: 27, backgroundColor: 'rgba(0, 0, 0, 0.6)', justifyContent: 'center', alignItems: 'center', cursor: 'pointer', zIndex: 999999 },
   leftArrowPosition: { left: 40 },
   rightArrowPosition: { right: 40 },
-  mobileFloatingLeftArrow: { left: 15, width: 44, height: 44, borderRadius: 22, marginTop: -22 },
-  mobileFloatingRightArrow: { right: 15, width: 44, height: 44, borderRadius: 22, marginTop: -22 },
+  mobileFloatingLeftArrow: { left: 5, width: 44, height: 44, borderRadius: 22, marginTop: -22 },
+  mobileFloatingRightArrow: { right: 5, width: 44, height: 44, borderRadius: 22, marginTop: -22 },
 
-  floatingArrowText: { color: '#ffffff', fontSize: 16, fontWeight: 'bold', letterSpacing: -1 },
+  floatingArrowText: { color: '#ffffff', fontSize: 18, fontWeight: 'bold', letterSpacing: -1 },
   arrowDisabled: { opacity: 0.15, cursor: 'default' },
   
   modalTopBar: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#eee', backgroundColor: '#fafafa', flexShrink: 0 },
@@ -2034,8 +2013,8 @@ const styles = StyleSheet.create({
   
   modalScrollBody: { padding: 30, flexGrow: 1 },
   modalFlexRow: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' },
-  modalLeftColumn: { marginRight: 35, alignItems: 'center', marginBottom: 20 },
-  modalRightColumn: { flex: 1, minWidth: 280 }, // 解除強硬鎖定，防止電腦版被擠扁
+  modalLeftColumn: { marginRight: 35, alignItems: 'center', marginBottom: 20, position: 'relative' },
+  modalRightColumn: { flex: 1, minWidth: 280 },
   cardImage: { width: 320, height: 445, borderRadius: 12 },
   noImagePlaceholder: { backgroundColor: '#e5e7eb', justifyContent: 'center', alignItems: 'center' },
   noImageText: { color: '#9ca3af', fontSize: 18, fontWeight: 'bold', cursor: 'default' },
