@@ -1295,10 +1295,15 @@ export default function App() {
                             setSelectedSet(setOpt); 
                             setIsSetDropdownOpen(false);
                             
-                            // 🌟 新增：BETA 收錄彈專屬聯動魔法
+                            // 🌟 新增：BETA 與常規彈的雙向聯動切換魔法
                             if (setOpt && setOpt.includes('Ver.β')) {
+                              // 選到 BETA 彈，切換為 BETA 模式
                               setIncludeRegular(false);
                               setIncludeBeta(true);
+                            } else {
+                              // 選到其他彈或「全部」，自動切回預設常規模式
+                              setIncludeRegular(true);
+                              setIncludeBeta(false);
                             }
                           }}
                         >
