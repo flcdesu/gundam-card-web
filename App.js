@@ -1288,7 +1288,20 @@ export default function App() {
                   <View style={[styles.dropdownList, isMobile && { width: '100%' }]}>
                     <ScrollView style={{ maxHeight: 250 }} nestedScrollEnabled={true} keyboardShouldPersistTaps="handled">
                       {AVAILABLE_SETS.map((setOpt) => (
-                        <TouchableOpacity key={setOpt} style={[styles.dropdownItem, selectedSet === setOpt && styles.dropdownItemActive]} onPress={() => { setSelectedSet(setOpt); setIsSetDropdownOpen(false); }}>
+                        <TouchableOpacity 
+                          key={setOpt} 
+                          style={[styles.dropdownItem, selectedSet === setOpt && styles.dropdownItemActive]} 
+                          onPress={() => { 
+                            setSelectedSet(setOpt); 
+                            setIsSetDropdownOpen(false);
+                            
+                            // 🌟 新增：BETA 收錄彈專屬聯動魔法
+                            if (setOpt && setOpt.includes('Ver.β')) {
+                              setIncludeRegular(false);
+                              setIncludeBeta(true);
+                            }
+                          }}
+                        >
                           <Text style={[styles.dropdownItemText, selectedSet === setOpt && { color: '#fff', fontWeight: 'bold' }]}>{setOpt === 'all' ? '收錄彈' : setOpt}</Text>
                         </TouchableOpacity>
                       ))}
