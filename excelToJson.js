@@ -1,6 +1,22 @@
 const xlsx = require('xlsx');
 const fs = require('fs');
 
+// 🌟 1. 讀取並建立作品譯名字典
+const seriesDictWorkbook = xlsx.readFile('./excel_data/series_dict.xlsx');
+const seriesDictSheet = seriesDictWorkbook.Sheets[seriesDictWorkbook.SheetNames[0]];
+const seriesDictData = xlsx.utils.sheet_to_json(seriesDictSheet);
+
+const seriesMap = {};
+seriesDictData.forEach(row => {
+    if (row['日文原名']) {
+        seriesMap[row['日文原名'].trim()] = {
+            sort: row['排序'] || 999,
+            hk: row['港譯'] || row['日文原名'],
+            tw: row['台譯'] || row['日文原名']
+        };
+    }
+});
+
 const HK_EXCEL_PATH = './excel_data/gcg_cardlist_hk.xlsx';
 const TW_EXCEL_PATH = './excel_data/gcg_cardlist_tw.xlsx';
 const BETA_HK_EXCEL_PATH = './excel_data/gcg_cardlist_beta_hk.xlsx';
@@ -8,7 +24,6 @@ const BETA_TW_EXCEL_PATH = './excel_data/gcg_cardlist_beta_tw.xlsx';
 
 const LIMITED_EXCEL_PATH = './excel_data/gcg_cardlist_limited.xlsx';
 const PROMO_EXCEL_PATH = './excel_data/gcg_cardlist_promo.xlsx'; 
-// 🌟 新增 YouTube 連結 Excel 路徑
 const YT_EXCEL_PATH = './excel_data/youtube_links.xlsx'; 
 
 const baseMapping = { '卡牌編號': 'id', '稀有度': 'rarity', 'Lv.': 'lv', 'COST': 'cost', '顏色': 'color', '類型': 'type', '地形': 'terrain', 'AP': 'ap', 'HP': 'hp', '收錄彈': 'set' };
@@ -22,10 +37,33 @@ function readExcel(filePath, langPrefix, isBeta = false) {
 
   return rawJson.map(row => {
     let newRow = {};
+    
+    // 基礎欄位與本地化欄位映射
     for (const key in row) {
       if (baseMapping[key]) newRow[baseMapping[key]] = row[key];
       else if (localizedMapping[key]) newRow[`${localizedMapping[key]}_${langPrefix}`] = row[key];
     }
+
+    // 🌟 新增：查字典並寫入雙語作品名與排序
+    const sourceSeries = row['出自作品'] ? String(row['出自作品']).trim() : '';
+    if (sourceSeries && sourceSeries !== '-' && sourceSeries !== '0') {
+        newRow.series_source = sourceSeries;
+        if (seriesMap[sourceSeries]) {
+            newRow.series_hk = seriesMap[sourceSeries].hk;
+            newRow.series_tw = seriesMap[sourceSeries].tw;
+            newRow.series_sort = seriesMap[sourceSeries].sort;
+        } else {
+            newRow.series_hk = sourceSeries;
+            newRow.series_tw = sourceSeries;
+            newRow.series_sort = 999;
+        }
+    } else {
+        newRow.series_source = 'その他';
+        newRow.series_hk = '其他';
+        newRow.series_tw = '其他';
+        newRow.series_sort = 999;
+    }
+
     if (isBeta && newRow.id) {
       newRow.id = `${newRow.id}_BETA`;
       newRow.isBetaCard = true; 
@@ -65,7 +103,6 @@ if (fs.existsSync(YT_EXCEL_PATH)) {
   ytData.forEach(row => {
     const id = row['卡牌編號'];
     const url = row['YouTube連結'];
-    // 支援直接綁定常規卡，也支援明確綁定 Beta 卡
     if (id && url && cardMap[id]) {
       cardMap[id].youtube_url = url;
       ytCount++;
@@ -88,6 +125,8 @@ function processSpecialCards(filePath, specialTag) {
     const rarity = row['稀有度'];       
     const setHk = row['入手情報 [HK]'] || row['入手情報[HK]'] || row['入手情報'];
     const setTw = row['入手情報 [TW]'] || row['入手情報[TW]'] || row['入手情報'];
+    // 🌟 擷取 PR/LTD 專屬的覆寫作品
+    const overrideSeries = row['出自作品'] ? String(row['出自作品']).trim() : '';
 
     if (!id || !originalRefId) return;
 
@@ -100,7 +139,7 @@ function processSpecialCards(filePath, specialTag) {
     if (!baseCard) return;
 
     const specialCard = {
-      ...baseCard, // 這裡會連同 youtube_url 一起完美拷貝！
+      ...baseCard, // 先完美繼承母卡的所有資料 (包含母卡的登場作品)
       id: id,
       displayId: originalRefId, 
       rarity: rarity,
@@ -108,6 +147,20 @@ function processSpecialCards(filePath, specialTag) {
       set_tw: setTw,    
       isBetaCard: false 
     };
+
+    // 🌟 覆寫魔法：如果在 PR/LTD 的 Excel 有填寫「出自作品」，就查字典並覆寫母卡資料
+    if (overrideSeries && overrideSeries !== '-' && overrideSeries !== '0') {
+        specialCard.series_source = overrideSeries;
+        if (seriesMap[overrideSeries]) {
+            specialCard.series_hk = seriesMap[overrideSeries].hk;
+            specialCard.series_tw = seriesMap[overrideSeries].tw;
+            specialCard.series_sort = seriesMap[overrideSeries].sort;
+        } else {
+            specialCard.series_hk = overrideSeries;
+            specialCard.series_tw = overrideSeries;
+            specialCard.series_sort = 999;
+        }
+    }
 
     if (specialTag === 'limited') specialCard.isLimitedCard = true;
     if (specialTag === 'promo') specialCard.isPromoCard = true;

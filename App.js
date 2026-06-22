@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { StyleSheet, Text, View, TextInput, SafeAreaView, FlatList, TouchableOpacity, Image, Modal, ScrollView, Dimensions, Linking, TouchableWithoutFeedback } from 'react-native';
 import rawCardsData from './cards.json'; 
 import { cardImages, keywordImages } from './imageDictionary'; 
@@ -15,8 +15,30 @@ const generateFullCardDatabase = () => {
               isAlt = true;
           }
       }
+
+      // 🌟 Beta卡完美繼承母卡登場作品邏輯
+      let series_hk = card.series_hk;
+      let series_tw = card.series_tw;
+      let series_source = card.series_source;
+      let series_sort = card.series_sort;
+      
+      if (card.isBetaCard) {
+          const baseId = card.id.replace('_BETA', '');
+          const baseCard = rawCardsData.find(c => c.id === baseId);
+          if (baseCard && (!series_source || series_source === '-' || series_source === '其他' || series_source === 'その他')) {
+              series_hk = baseCard.series_hk;
+              series_tw = baseCard.series_tw;
+              series_source = baseCard.series_source;
+              series_sort = baseCard.series_sort;
+          }
+      }
+
       return { 
           ...card, 
+          series_hk,
+          series_tw,
+          series_source,
+          series_sort,
           _isAltArt: isAlt, 
           _isReprint: false,
           displayId: card.displayId || card.id.replace('_BETA', '')
@@ -398,7 +420,6 @@ export default function App() {
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
   const panelSwipeStartY = useRef(null);
-  // 🌟 新增：用於面板底部拉把的手勢偵測
   const bottomSwipeStartY = useRef(null);
 
   const [language, setLanguage] = useState('hk'); 
@@ -427,10 +448,31 @@ export default function App() {
 
   const [lvRange, setLvRange] = useState([0, 9]);
   const [costRange, setCostRange] = useState([0, 9]);
+  const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
+  const [isPanelScrolledToBottom, setIsPanelScrolledToBottom] = useState(false);
+  
+  // 🌟 新增：登場作品狀態
+  const [selectedSeries, setSelectedSeries] = useState('全部');
+  const [isSeriesExpanded, setIsSeriesExpanded] = useState(false);
+
+  // 🌟 新增：動態生成登場作品清單 (並自動依照 series_sort 排序)
+  const seriesOptions = useMemo(() => {
+    const options = ['全部'];
+    const seriesMap = new Map();
+    cardsData.forEach(c => {
+      const name = c[`series_${language}`] || '其他';
+      const sort = c.series_sort || 999;
+      if (name !== '-' && !seriesMap.has(name)) seriesMap.set(name, sort);
+    });
+    Array.from(seriesMap.entries())
+      .sort((a, b) => a[1] - b[1])
+      .forEach(e => options.push(e[0]));
+    return options;
+  }, [language]);
+
   const [apRange, setApRange] = useState([0, 9]); 
   const [hpRange, setHpRange] = useState([0, 9]); 
 
-  const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
   const [screenWidth, setScreenWidth] = useState(Dimensions.get('window').width);
 
   useEffect(() => {
@@ -463,6 +505,8 @@ export default function App() {
     setSelectedResonance('all'); setResonanceMatchId(''); 
     setSupportValue(''); setBreakthroughValue(''); setRepairValue(''); 
     setTraitSearchText(''); setIsTraitExactMatch(false); 
+    // 🌟 新增：重置作品篩選
+    setSelectedSeries('全部'); setIsSeriesExpanded(false);
   };
 
   const handleResetEverything = () => {
@@ -484,6 +528,7 @@ export default function App() {
       setSupportValue(lastState.supportValue); setBreakthroughValue(lastState.breakthroughValue); setRepairValue(lastState.repairValue);
       setTraitSearchText(lastState.traitSearchText); setIsTraitExactMatch(lastState.isTraitExactMatch || false);
       setLvRange(lastState.lvRange); setCostRange(lastState.costRange); setApRange(lastState.apRange); setHpRange(lastState.hpRange);
+      setSelectedSeries(lastState.selectedSeries || '全部'); // 🌟 歷史還原
       setSelectedCard(lastState.card); setPendingScrollY(lastState.scrollY || 0); setLastState(null);
     }
   };
@@ -492,6 +537,7 @@ export default function App() {
     if (selectedCard) setLastState({
         card: selectedCard, searchText, selectedSet, selectedColors, selectedTypes, selectedRarity, selectedVersions, includeRegular, includeBeta, includeReprint, includeLimited, includePromo, selectedResonance, resonanceMatchId,
         selectedKeywords, selectedTimings, supportValue, breakthroughValue, repairValue, traitSearchText, isTraitExactMatch, lvRange, costRange, apRange, hpRange,
+        selectedSeries, // 🌟 跳轉時記錄當前作品
         scrollY: currentScrollY 
     });
     setSelectedCard(null);
@@ -784,7 +830,11 @@ export default function App() {
        if (selectedResonance === 'no') matchesResonance = !hasLink;
     }
 
-    return matchesSearch && matchesSet && matchesColor && matchesType && matchesRarity && matchesTrait && matchesKeyword && matchesTiming && matchesVersion && matchesLv && matchesCost && matchesAp && matchesHp && matchesResonance;
+    // 🌟 新增：登場作品篩選邏輯
+    const cardSeries = card[`series_${language}`] || card.series_source || '其他';
+    const matchesSeries = selectedSeries === '全部' || cardSeries === selectedSeries;
+
+    return matchesSearch && matchesSet && matchesColor && matchesType && matchesRarity && matchesTrait && matchesKeyword && matchesTiming && matchesVersion && matchesLv && matchesCost && matchesAp && matchesHp && matchesResonance && matchesSeries;
   });
 
   const currentCardIndex = filteredCards.findIndex(c => c.id === selectedCard?.id);
@@ -856,6 +906,26 @@ export default function App() {
       if (card.set && card.set !== '-') { setSelectedSet(card.set); setIncludeRegular(true); }
     }
   };
+
+  // 🌟 新增：點擊作品直接觸發篩選
+  const handleSeriesClick = (seriesName) => {
+    if (!seriesName || seriesName === '-' || seriesName === '全部') return;
+    executeRedirect(); 
+    handleResetEverything();
+    setSelectedSeries(seriesName);
+  };
+
+  // 🌟 新增：監聽語言切換，同步更新作品篩選器的藍字與狀態
+  useEffect(() => {
+    if (selectedSeries !== '全部') {
+      const matchedCard = cardsData.find(c => c.series_hk === selectedSeries || c.series_tw === selectedSeries || c.series_source === selectedSeries);
+      if (matchedCard) {
+        const newSeriesName = matchedCard[`series_${language}`] || matchedCard.series_source || '全部';
+        setSelectedSeries(newSeriesName);
+      }
+    }
+  }, [language]);
+
 
   const applyCondition = (partText, cardId) => {
     executeRedirect(); handleResetSearch(); handleResetFilters();
@@ -1284,6 +1354,35 @@ export default function App() {
               <ScrollView style={isMobile ? styles.mobilePanelVerticalContainer : null} nestedScrollEnabled={true} showsVerticalScrollIndicator={true}>
                 <View style={styles.filterColumnsContainer}>
                   <View style={[styles.filterLeftColumn, screenWidth > 900 && styles.filterLeftColumnBorder]}>
+                    
+                    {/* 🌟 登場作品篩選 (自訂摺疊下拉式) */}
+                    <View style={[styles.panelRow, {flexDirection: 'column', alignItems: 'stretch'}]}>
+                      <TouchableOpacity 
+                        style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 8, borderBottomWidth: 1, borderBottomColor: '#eee', marginBottom: 10 }}
+                        onPress={() => setIsSeriesExpanded(!isSeriesExpanded)}
+                        activeOpacity={0.7}
+                      >
+                        <Text style={styles.panelLabel}>登場作品 : <Text style={{color: '#007BFF'}}>{selectedSeries}</Text></Text>
+                        <Text style={{ fontSize: 16, color: '#666', fontWeight: 'bold' }}>{isSeriesExpanded ? '▲' : '▼'}</Text>
+                      </TouchableOpacity>
+                      
+                      {isSeriesExpanded && (
+                        <View style={styles.chipContainerRow}>
+                          {seriesOptions.map(series => (
+                            <TouchableOpacity
+                              key={series}
+                              style={[styles.filterChip, selectedSeries === series && { backgroundColor: '#334155', borderColor: '#334155' }]}
+                              onPress={() => { setSelectedSeries(series); setIsSeriesExpanded(false); }}
+                            >
+                              <Text style={[styles.chipText, selectedSeries === series && { color: '#fff', fontWeight: 'bold' }]}>
+                                {series}
+                              </Text>
+                            </TouchableOpacity>
+                          ))}
+                        </View>
+                      )}
+                    </View>
+
                     <View style={styles.panelRow}>
                       <Text style={styles.panelLabel}>顏色</Text>
                       {isMobile ? (
@@ -1656,7 +1755,7 @@ export default function App() {
                                         setTraitSearchText(trait); setSelectedTypes(['PILOT', 'COMMAND_PILOT']);
                                         setIsTraitExactMatch(true); 
                                     }}>
-                                       特徴〔{trait}〕
+                                        特徴〔{trait}〕
                                     </Text>
                                  );
                               }
@@ -1718,6 +1817,17 @@ export default function App() {
                         <Text style={[styles.sectionBodyText, styles.interactiveBoldToken]}>{selectedCard[`set_${language}`] || selectedCard.set || '-'}</Text>
                       </TouchableOpacity>
                     </View>
+                    
+                    {/* 🌟 新增：登場作品顯示區塊，可點擊連動篩選 */}
+                    <View style={styles.officialSectionDivider}>
+                      <Text style={styles.sectionTitle}>登場作品</Text>
+                      <TouchableOpacity activeOpacity={0.7} onPress={() => handleSeriesClick(selectedCard[`series_${language}`] || selectedCard.series_source)}>
+                        <Text style={[styles.sectionBodyText, styles.interactiveBoldToken]}>
+                          {selectedCard[`series_${language}`] || selectedCard.series_source || '-'}
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+
                   </View>
                 </View>
               </ScrollView>
