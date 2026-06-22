@@ -397,7 +397,9 @@ export default function App() {
   
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
-  const panelSwipeStartY = useRef(null); // 🌟 新增：用於記錄面板下拉的手勢起點
+  const panelSwipeStartY = useRef(null);
+  // 🌟 新增：用於面板底部拉把的手勢偵測
+  const bottomSwipeStartY = useRef(null);
 
   const [language, setLanguage] = useState('hk'); 
   const [selectedColors, setSelectedColors] = useState(['all']);
@@ -1250,34 +1252,32 @@ export default function App() {
             </View>
           </View>
 
-          <View style={[styles.bottomFilterSection, !isFilterPanelOpen && { paddingVertical: 10 }]}>
-            {/* 🌟 新增：手勢感應區塊與 Drag Handle */}
-            <View 
-              onTouchStart={(e) => { panelSwipeStartY.current = e.nativeEvent.pageY; }}
-              onTouchEnd={(e) => {
-                if (!panelSwipeStartY.current || !isFilterPanelOpen) return;
-                const distance = e.nativeEvent.pageY - panelSwipeStartY.current;
-                if (distance > 40) setIsFilterPanelOpen(false); // 大力向下滑動超過 40px 即自動收起
-                panelSwipeStartY.current = null;
-              }}
-            >
-              {isFilterPanelOpen && isMobile && (
-                <View style={styles.dragHandleContainer}>
-                  <View style={styles.dragHandlePill} />
-                </View>
-              )}
-              <View style={[styles.panelHeaderRow, isFilterPanelOpen && { marginBottom: 12 }]}>
-                <TouchableOpacity style={styles.panelTitleToggleClickable} onPress={() => setIsFilterPanelOpen(!isFilterPanelOpen)} activeOpacity={0.7}>
-                  <Text style={styles.panelMainTitle}>篩選卡牌</Text>
-                  <Text style={styles.panelToggleIndicatorText}>{isFilterPanelOpen ? '▲ 收起' : '▼ 展開'}</Text>
-                </TouchableOpacity>
-                
-                {isFilterPanelOpen && (
-                  <TouchableOpacity style={styles.panelResetBtn} onPress={handleResetFilters}>
-                    <Text style={styles.panelResetBtnText}>重置面板</Text>
-                  </TouchableOpacity>
-                )}
+          <View 
+            style={[styles.bottomFilterSection, !isFilterPanelOpen && { paddingVertical: 10 }]}
+            onTouchStart={(e) => { panelSwipeStartY.current = e.nativeEvent.pageY; }}
+            onTouchEnd={(e) => {
+              if (!panelSwipeStartY.current || !isFilterPanelOpen) return;
+              const distance = e.nativeEvent.pageY - panelSwipeStartY.current;
+              if (distance > 40) setIsFilterPanelOpen(false);
+              panelSwipeStartY.current = null;
+            }}
+          >
+            {isFilterPanelOpen && isMobile && (
+              <View style={styles.dragHandleContainer}>
+                <View style={styles.dragHandlePill} />
               </View>
+            )}
+            <View style={[styles.panelHeaderRow, isFilterPanelOpen && { marginBottom: 12 }]}>
+              <TouchableOpacity style={styles.panelTitleToggleClickable} onPress={() => setIsFilterPanelOpen(!isFilterPanelOpen)} activeOpacity={0.7}>
+                <Text style={styles.panelMainTitle}>篩選卡牌</Text>
+                <Text style={styles.panelToggleIndicatorText}>{isFilterPanelOpen ? '▲ 收起' : '▼ 展開'}</Text>
+              </TouchableOpacity>
+              
+              {isFilterPanelOpen && (
+                <TouchableOpacity style={styles.panelResetBtn} onPress={handleResetFilters}>
+                  <Text style={styles.panelResetBtnText}>重置面板</Text>
+                </TouchableOpacity>
+              )}
             </View>
 
             {isFilterPanelOpen && (
@@ -1524,6 +1524,22 @@ export default function App() {
                     </View>
                   </View>
                 </View>
+                
+                {/* 🌟 底部新增：額外的下拉手勢空間 (讓用戶滑到底部也能關閉面板) */}
+                {isFilterPanelOpen && isMobile && (
+                  <View 
+                    style={styles.bottomDragSpace} 
+                    onTouchStart={(e) => { bottomSwipeStartY.current = e.nativeEvent.pageY; }}
+                    onTouchEnd={(e) => {
+                      if (!bottomSwipeStartY.current || !isFilterPanelOpen) return;
+                      const distance = e.nativeEvent.pageY - bottomSwipeStartY.current;
+                      if (distance > 40) setIsFilterPanelOpen(false);
+                      bottomSwipeStartY.current = null;
+                    }}
+                  >
+                    <View style={styles.dragHandlePill} />
+                  </View>
+                )}
               </ScrollView>
             )}
           </View>
@@ -1536,7 +1552,7 @@ export default function App() {
           ref={flatListRef}
           onScroll={(e) => setCurrentScrollY(e.nativeEvent.contentOffset.y)}
           onScrollBeginDrag={() => {
-            // 🌟 選項A魔法：當用家手指碰到卡牌列表並開始滑動時，立刻收起面板
+            // 🌟 捲動即收起魔法
             if (isMobile && isFilterPanelOpen) setIsFilterPanelOpen(false); 
           }}
           scrollEventThrottle={16}
@@ -1578,7 +1594,6 @@ export default function App() {
                   {selectedCard.youtube_url && (
                     <TouchableOpacity style={[styles.ytPromoButton, isMobile && { paddingHorizontal: 6, paddingVertical: 4 }]} onPress={() => Linking.openURL(selectedCard.youtube_url)} activeOpacity={0.8}>
                       <Text style={[styles.ytPromoIcon, isMobile && { fontSize: 10, marginRight: 2 }]}>▶</Text>
-                      {/* 🌟 修正：改回卡牌講座 */}
                       <Text style={[styles.ytPromoText, isMobile && { fontSize: 10 }]}>卡牌講座</Text>
                     </TouchableOpacity>
                   )}
@@ -1586,7 +1601,6 @@ export default function App() {
                 </View>
               </View>
 
-              {/* 🌟 修正：防擠壓的 padding 調整 */}
               {isMobile && (
                 <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingTop: 10, paddingBottom: 10, borderBottomWidth: 1, borderBottomColor: '#eee', backgroundColor: '#fafafa', flexWrap: 'wrap', gap: 6 }}>
                   <Text style={styles.modalHeaderId}>{selectedCard.displayId}</Text>
@@ -1603,7 +1617,6 @@ export default function App() {
                 <View style={[styles.modalFlexRow, isMobile && { flexDirection: 'column', alignItems: 'center' }]}>
                   <View style={[styles.modalLeftColumn, isMobile && { marginRight: 0, marginBottom: 15 }]}>
                     
-                    {/* 🌟 修正：箭頭往外推至 -15 */}
                     {isMobile && <TouchableOpacity style={[styles.floatingArrowButton, styles.mobileFloatingLeftArrow, !hasPrev && styles.arrowDisabled]} onPress={handlePrevCard} disabled={!hasPrev}><Text style={[styles.floatingArrowText, {fontSize: 18}]}>&lt;</Text></TouchableOpacity>}
                     
                     {cardImages[selectedCard.id] ? 
@@ -1756,7 +1769,6 @@ const styles = StyleSheet.create({
   dropdownItemText: { fontSize: 13, color: '#475569' },
 
   searchInputWrapper: { flex: 1, minWidth: 260, maxWidth: 350, flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderRadius: 20, paddingLeft: 14, paddingRight: 6, height: 38, borderWidth: 1, borderColor: '#e2e8f0' },
-  // 🌟 修正：輸入框字體設定為 16px 以上，避免 iOS Safari 自動放大
   officialSearchInput: { flex: 1, height: '100%', fontSize: 16, color: '#1e293b', outlineWidth: 0 },
   searchIconButton: { paddingHorizontal: 12, height: 28, borderRadius: 14, backgroundColor: '#376171', justifyContent: 'center', alignItems: 'center', cursor: 'pointer' },
   searchIconText: { fontSize: 11, color: '#fff', fontWeight: 'bold' },
@@ -1775,12 +1787,13 @@ const styles = StyleSheet.create({
 
   bottomFilterSection: { backgroundColor: 'rgba(211, 224, 227, 0.45)', borderRadius: 24, paddingVertical: 16, paddingHorizontal: 25, zIndex: 900 },
   
-  // 🌟 新增：Drag Handle 小橫條樣式
   dragHandleContainer: { width: '100%', alignItems: 'center', paddingBottom: 10, paddingTop: 0, marginTop: -6 },
   dragHandlePill: { width: 40, height: 5, backgroundColor: '#cbd5e1', borderRadius: 3 },
+  // 🌟 底部新增拉把空間樣式
+  bottomDragSpace: { width: '100%', alignItems: 'center', paddingVertical: 15, marginTop: 10 },
   
   panelHeaderRow: { flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', paddingRight: 4 },
-
+  
   panelTitleToggleClickable: { flexDirection: 'row', alignItems: 'center', gap: 8, cursor: 'pointer', flex: 1, paddingVertical: 4 },
   panelMainTitle: { fontSize: 17, fontWeight: 'bold', color: '#1a2a3a', letterSpacing: 1 }, 
   panelToggleIndicatorText: { fontSize: 13, color: '#475569', fontWeight: '600' },
@@ -1823,11 +1836,9 @@ const styles = StyleSheet.create({
 
   filterChipWithInput: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#f1f5f9', borderRadius: 12, borderWidth: 1, borderColor: '#e2e8f0', overflow: 'hidden' },
   filterChipInner: { paddingHorizontal: 11, paddingVertical: 5, cursor: 'pointer' },
-  // 🌟 修正：輸入框字體設定為 16px 以上
   keywordValInput: { width: 24, height: '100%', fontSize: 16, textAlign: 'center', color: '#1e293b', borderLeftWidth: 1, borderLeftColor: '#cbd5e1', outlineWidth: 0 },
   keywordValInputActive: { color: '#ffffff', borderLeftColor: '#475569' },
 
-  // 🌟 修正：輸入框字體設定為 16px 以上
   traitShortInput: { width: 180, height: 32, backgroundColor: '#ffffff', borderRadius: 16, paddingHorizontal: 14, borderWidth: 1, borderColor: '#cbd5e1', fontSize: 16, outlineWidth: 0, color: '#1e293b', marginRight: 8 },
   traitResetButton: { paddingHorizontal: 12, height: 32, borderRadius: 16, backgroundColor: '#111827', justifyContent: 'center', alignItems: 'center', cursor: 'pointer', borderWidth: 1, borderColor: '#000000' },
   traitResetButtonText: { fontSize: 11, color: '#ffffff', fontWeight: 'bold', letterSpacing: 0.5 },
@@ -1862,7 +1873,6 @@ const styles = StyleSheet.create({
   floatingArrowButton: { position: 'absolute', top: '50%', marginTop: -27, width: 54, height: 54, borderRadius: 27, backgroundColor: 'rgba(0, 0, 0, 0.6)', justifyContent: 'center', alignItems: 'center', cursor: 'pointer', zIndex: 999999 },
   leftArrowPosition: { left: 40 },
   rightArrowPosition: { right: 40 },
-  // 🌟 修正 3：把箭頭外推，減少遮擋
   mobileFloatingLeftArrow: { left: -15, width: 44, height: 44, borderRadius: 22, marginTop: -22 },
   mobileFloatingRightArrow: { right: -15, width: 44, height: 44, borderRadius: 22, marginTop: -22 },
 
