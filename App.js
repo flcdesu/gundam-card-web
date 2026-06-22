@@ -1626,20 +1626,15 @@ export default function App() {
               </ScrollView>
             )}
 
-            {/* 🌟 修正：把小灰線移出 ScrollView，讓它永遠貼在白色面板的最底部 */}
+            {/* 🌟 修正：將底部小灰條改為「點擊收起」，加大判定範圍，防呆且直覺 */}
             {isFilterPanelOpen && isMobile && (
-              <View 
-                style={styles.bottomDragSpace} 
-                onTouchStart={(e) => { panelSwipeStartY.current = e.nativeEvent.pageY; }}
-                onTouchEnd={(e) => {
-                  if (!panelSwipeStartY.current || !isFilterPanelOpen) return;
-                  const distance = e.nativeEvent.pageY - panelSwipeStartY.current;
-                  if (distance > 40) setIsFilterPanelOpen(false); // 🌟 手指在底部向上掃（負數超過100px）即自動收起
-                  panelSwipeStartY.current = null;
-                }}
+              <TouchableOpacity 
+                style={[styles.bottomDragSpace, { paddingBottom: 15, paddingTop: 15 }]} 
+                activeOpacity={0.6}
+                onPress={() => setIsFilterPanelOpen(false)}
               >
                 <View style={styles.dragHandlePill} />
-              </View>
+              </TouchableOpacity>
             )}
           </View>
 
