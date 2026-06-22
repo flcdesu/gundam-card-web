@@ -1566,8 +1566,8 @@ export default function App() {
         {selectedCard && (
           <View style={[styles.modalOverlay, isMobile && { padding: 10 }]}>
             
-            {!isMobile && <TouchableOpacity style={[styles.floatingArrowButton, styles.leftArrowPosition, !hasPrev && styles.arrowDisabled]} onPress={handlePrevCard} disabled={!hasPrev}><Text style={styles.floatingArrowText}>&lt;</Text></TouchableOpacity>}
-            
+            <TouchableOpacity style={[styles.floatingArrowButton, styles.leftArrowPosition, isMobile && styles.mobileFloatingLeftArrow, !hasPrev && styles.arrowDisabled]} onPress={handlePrevCard} disabled={!hasPrev}><Text style={[styles.floatingArrowText, isMobile && {fontSize: 18}]}>&lt;</Text></TouchableOpacity>
+
             <TouchableOpacity activeOpacity={1} style={[styles.modalContentBox, isMobile && { maxHeight: '96%' }]}>
               
               <View style={[styles.modalTopBar, isMobile && { paddingHorizontal: 8, paddingVertical: 8, flexWrap: 'nowrap', gap: 4 }]}>
@@ -1616,14 +1616,9 @@ export default function App() {
               <ScrollView ref={modalScrollRef} contentContainerStyle={[styles.modalScrollBody, isMobile && { padding: 16 }]} showsVerticalScrollIndicator={true}>
                 <View style={[styles.modalFlexRow, isMobile && { flexDirection: 'column', alignItems: 'center' }]}>
                   <View style={[styles.modalLeftColumn, isMobile && { marginRight: 0, marginBottom: 15 }]}>
-                    
-                    {isMobile && <TouchableOpacity style={[styles.floatingArrowButton, styles.mobileFloatingLeftArrow, !hasPrev && styles.arrowDisabled]} onPress={handlePrevCard} disabled={!hasPrev}><Text style={[styles.floatingArrowText, {fontSize: 18}]}>&lt;</Text></TouchableOpacity>}
-                    
                     {cardImages[selectedCard.id] ? 
                       <Image source={{ uri: cardImages[selectedCard.id] }} style={[styles.cardImage, isMobile && { width: 250, height: 347 }]} resizeMode="contain" /> 
                       : <View style={[styles.cardImage, styles.noImagePlaceholder, isMobile && { width: 250, height: 347 }]}><Text style={styles.noImageText}>圖片準備中</Text></View>}
-                      
-                    {isMobile && <TouchableOpacity style={[styles.floatingArrowButton, styles.mobileFloatingRightArrow, !hasNext && styles.arrowDisabled]} onPress={handleNextCard} disabled={!hasNext}><Text style={[styles.floatingArrowText, {fontSize: 18}]}>&gt;</Text></TouchableOpacity>}
                   </View>
 
                   <View style={[styles.modalRightColumn, isMobile && { minWidth: '100%' }]}>
@@ -1873,8 +1868,9 @@ const styles = StyleSheet.create({
   floatingArrowButton: { position: 'absolute', top: '50%', marginTop: -27, width: 54, height: 54, borderRadius: 27, backgroundColor: 'rgba(0, 0, 0, 0.6)', justifyContent: 'center', alignItems: 'center', cursor: 'pointer', zIndex: 999999 },
   leftArrowPosition: { left: 40 },
   rightArrowPosition: { right: 40 },
-  mobileFloatingLeftArrow: { left: -15, width: 44, height: 44, borderRadius: 22, marginTop: -22 },
-  mobileFloatingRightArrow: { right: -15, width: 44, height: 44, borderRadius: 22, marginTop: -22 },
+  // 🌟 修正：讓手機版箭頭靠緊螢幕最邊緣，拉開距離，永遠固定
+  mobileFloatingLeftArrow: { left: 4, width: 38, height: 38, borderRadius: 19, marginTop: -19, backgroundColor: 'rgba(0, 0, 0, 0.75)' },
+  mobileFloatingRightArrow: { right: 4, width: 38, height: 38, borderRadius: 19, marginTop: -19, backgroundColor: 'rgba(0, 0, 0, 0.75)' },
 
   floatingArrowText: { color: '#ffffff', fontSize: 18, fontWeight: 'bold', letterSpacing: -1 },
   arrowDisabled: { opacity: 0.15, cursor: 'default' },
