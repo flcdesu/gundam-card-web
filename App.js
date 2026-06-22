@@ -1249,7 +1249,7 @@ export default function App() {
             </View>
           </View>
 
-          <View style={[styles.bottomFilterSection, !isFilterPanelOpen && { paddingBottom: 16 }]}>
+          <View style={[styles.bottomFilterSection, !isFilterPanelOpen && { paddingVertical: 10 }]}>
             <View style={[styles.panelHeaderRow, isFilterPanelOpen && { marginBottom: 12 }]}>
               <TouchableOpacity style={styles.panelTitleToggleClickable} onPress={() => setIsFilterPanelOpen(!isFilterPanelOpen)} activeOpacity={0.7}>
                 <Text style={styles.panelMainTitle}>篩選卡牌</Text>
@@ -1706,7 +1706,7 @@ const styles = StyleSheet.create({
   header: { backgroundColor: '#20353f', paddingVertical: 14, paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', zIndex: 100, flexWrap: 'nowrap' },
   titleContainer: { flexDirection: 'row', alignItems: 'center', cursor: 'pointer', flex: 1, marginRight: 10, overflow: 'hidden' },
   titleTextMain: { color: '#ffffff', fontSize: 20, fontWeight: 'bold', letterSpacing: 0.5, flexShrink: 1 },
-  titleLink: { color: '#ffffff', fontSize: 20, fontWeight: 'bold', flexShrink: 0 },
+  titleLink: { color: '#ffffff', fontSize: 20, fontWeight: 'bold', flexShrink: 0, marginLeft: 4 },
   youtubeLogo: { width: 22, height: 22, marginLeft: 8, resizeMode: 'contain', flexShrink: 0 },
   headerLangContainer: { flexShrink: 0 },
 
