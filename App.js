@@ -1258,7 +1258,11 @@ export default function App() {
             onTouchEnd={(e) => {
               if (!panelSwipeStartY.current || !isFilterPanelOpen) return;
               const distance = e.nativeEvent.pageY - panelSwipeStartY.current;
+<<<<<<< Updated upstream
               if (distance > 40) setIsFilterPanelOpen(false); // 🌟 頂部同樣改為向上掃收起，物理邏輯完美統一！
+=======
+              if (distance > 40) setIsFilterPanelOpen(false); // 🌟 reverse direction
+>>>>>>> Stashed changes
               panelSwipeStartY.current = null;
             }}
           >
@@ -1535,7 +1539,11 @@ export default function App() {
                 onTouchEnd={(e) => {
                   if (!panelSwipeStartY.current || !isFilterPanelOpen) return;
                   const distance = e.nativeEvent.pageY - panelSwipeStartY.current;
+<<<<<<< Updated upstream
                   if (distance > 40) setIsFilterPanelOpen(false); // 🌟 手指在底部向上掃（負數超過100px）即自動收起
+=======
+                  if (distance > 40) setIsFilterPanelOpen(false); // 🌟 changed direction
+>>>>>>> Stashed changes
                   panelSwipeStartY.current = null;
                 }}
               >
