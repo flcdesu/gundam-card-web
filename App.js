@@ -148,13 +148,12 @@ const sortedSets = rawSets.sort((a, b) => {
 });
 
 const AVAILABLE_SETS = ['all', ...sortedSets];
-// 🌟 修正：電腦版的卡片尺寸拉大
 const OPTIMAL_CARD_WIDTH = 220;
 
 const STATUS_COLORS_JSON = Object.freeze({
   "搭乘時": "status_bg_pink", "搭乘中": "status_bg_pink", "共鳴中": "status_bg_yellow", "共鳴時": "status_bg_yellow",
   "攻擊時": "status_bg_lightblue", "破壞時": "status_bg_lightblue", "配置時": "status_bg_lightblue",
-  "啟錠・主要": "status_bg_blue", "啟動・瞬動": "status_bg_blue", "每回合1次": "status_bg_red", "爆發": "status_bg_orange",
+  "啟動・主要": "status_bg_blue", "啟動・瞬動": "status_bg_blue", "每回合1次": "status_bg_red", "爆發": "status_bg_orange",
   "主要": "status_bg_blue", "瞬動": "status_bg_blue", "啟動": "status_bg_blue", "DEFAULT": "status_bg_DEFAULT"
 });
 const STATUS_THEME_STYLES = Object.freeze({
@@ -269,9 +268,6 @@ const getAliasNames = (cardObj, lang) => {
   return names;
 };
 
-// ====================================================
-// 🌟 終極 NLP 切詞與判斷引擎
-// ====================================================
 const SINGLE_TARGET = "(?:機體替代卡|替代卡|機體卡牌|機體卡|機體|機師卡牌|機師卡|機師|角色卡牌|角色卡|角色|駕駛員卡牌|駕駛員卡|駕駛員|指令卡牌|指令卡|指令|據點卡牌|據點卡|據點|基地卡牌|基地卡|基地|UNIT\\s*TOKEN|UNIT|PILOT|COMMAND|BASE|TOKEN|代幣|資源卡牌|資源卡|資源|RESOURCE|EX\\s*BASE|EX\\s*據點|EX\\s*RESOURCE|EX\\s*資源|卡牌(?!名稱)|卡(?!組|牌名稱|名稱))";
 const TARGET_TYPES = `(?:(?:共鳴)?${SINGLE_TARGET}(?:\\s*[/／]\\s*(?:共鳴)?${SINGLE_TARGET}(?!\\s*名稱))*)`;
 const TRAIT_GROUP = "(?:〔[^〕]+〕(?:\\s*[\\/／]\\s*〔[^〕]+〕)*)";
@@ -283,23 +279,18 @@ const COLOR_COND = "(?:(?:藍|紅|綠|黃|紫|白|黑)介的?\\s*|(?:藍|紅|綠
 const FACTION_COND = "(?:(?:我方|對方|雙方|友方|敵方)\\s*)"; 
 const EXCLUDE_COND = `(?:(?:[^，。、]+此(?:機體|角色|卡|卡牌)以外[的且]|${TARGET_TYPES}以外[的且])\\s*)`; 
 const RIDING_COND = "(?:搭乘(?:此|該)(?:機體|角色|卡牌|卡)的\\s*)";
-
 const PLAYER_LV_COND = "(?:若)?(?:我方|對方)(?:的等級)?(?:為)?\\s*(?:Lv\\.?\\s*)?\\d+\\s*(?:或更高等級|或高等級|或更高|或更低|或以下|或以上|以下|以上)?";
-
 const SMART_PREFIX = `(?:(?:${TRAIT_GROUP}\\s*的?\\s*)?${STAT_COND}\\s*(?:的\\s*)?|${NAME_COND}|${KEYWORD_COND}|${STATUS_WORD_COND}|${COLOR_COND}|${FACTION_COND}|${RIDING_COND}|${TRAIT_GROUP}\\s*(?:的\\s*)?|${EXCLUDE_COND})`;
 const SMART_COND_STR = `(?:${SMART_PREFIX}+${TARGET_TYPES}(?:共鳴)?)`;
-
 const SELF_COMPLEX_COND_STR = `此${SINGLE_TARGET}(?:受到過傷害且|在戰鬥中且)${STAT_COND}`;
 const PURE_RESONANCE_TARGET = `(?:共鳴${SINGLE_TARGET}(?:\\s*[/／]\\s*(?:共鳴)?${SINGLE_TARGET})*|${SINGLE_TARGET}共鳴)`;
 const SELF_RESONANCE_STR = `此(?:機體|機師|角色|指令|卡牌|卡(?!組))(?:為|作為)共鳴(?:機體|機師|角色|指令|卡牌|卡(?!組))?`;
 const SELF_TRAIT_STR = `(?:若)?此(?:${SINGLE_TARGET})(?:為|變成|擁有|具有)?\\s*${TRAIT_GROUP}`;
 const SELF_COLOR_STR = `此(?:${SINGLE_TARGET})(?:若為|為)(?:藍色|紅色|綠色|黃色|紫色|白色|黑色)`;
-
 const TOKEN_REGEX = `「[^」]+」[（\\(][^）\\)]+[）\\)](?:的機體替代卡)?`;
 
 const MASTER_SPLIT_REGEX = new RegExp(`(${SMART_COND_STR}|${SELF_COMPLEX_COND_STR}|${SELF_RESONANCE_STR}|${SELF_TRAIT_STR}|${SELF_COLOR_STR}|${PURE_RESONANCE_TARGET}|${TOKEN_REGEX}|「[^」]+」|【[^】]+】|《[^》]+》|〔[^〕]+〕|${PLAYER_LV_COND}|${STAT_COND})`, 'gi');
 const INNER_SPLIT_REGEX = new RegExp(`(${SMART_COND_STR}|${SELF_COMPLEX_COND_STR}|${SELF_RESONANCE_STR}|${SELF_TRAIT_STR}|${SELF_COLOR_STR}|${PURE_RESONANCE_TARGET}|${TOKEN_REGEX}|「[^」]+」|【[^】]+】|《[^》]+》|〔[^〕]+〕|${PLAYER_LV_COND}|${STAT_COND})`, 'gi');
-
 const IS_SMART_REGEX = new RegExp(`^${SMART_COND_STR}$`, 'i');
 const IS_PURE_RESONANCE_REGEX = new RegExp(`^${PURE_RESONANCE_TARGET}$`, 'i');
 const IS_SELF_RESONANCE_REGEX = new RegExp(`^${SELF_RESONANCE_STR}$`, 'i');
@@ -340,7 +331,6 @@ const CardGridItem = ({ item, dynamicCardWidth, language, onPress, isMobile }) =
   );
 };
 
-// 🌟 修正：確保 Tracker 不走位
 const RangeTrack = ({ label, range, setRange, minVal = 0, maxVal = 9, onReset, isMobile }) => {
   const numbers = Array.from({ length: maxVal - minVal + 1 }, (_, i) => minVal + i);
   const isOffset = !numbers.includes(0);
@@ -405,7 +395,6 @@ export default function App() {
   const [currentScrollY, setCurrentScrollY] = useState(0);
   const [pendingScrollY, setPendingScrollY] = useState(null);
   
-  // Swipe State
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
 
@@ -466,13 +455,8 @@ export default function App() {
     setLvRange([0, 9]); setCostRange([0, 9]); setApRange([0, 9]); setHpRange([0, 9]);
     setSelectedColors(['all']); setSelectedTypes(['all']); setSelectedRarity('all'); 
     setSelectedVersions(['Normal']); 
-    setIncludeRegular(true); 
-    setIncludeBeta(false); 
-    setIncludeReprint(false); 
-    setIncludeLimited(false);
-    setIncludePromo(false);
-    setSelectedKeywords(['all']); 
-    setSelectedTimings(['all']); 
+    setIncludeRegular(true); setIncludeBeta(false); setIncludeReprint(false); setIncludeLimited(false); setIncludePromo(false);
+    setSelectedKeywords(['all']); setSelectedTimings(['all']); 
     setSelectedResonance('all'); setResonanceMatchId(''); 
     setSupportValue(''); setBreakthroughValue(''); setRepairValue(''); 
     setTraitSearchText(''); setIsTraitExactMatch(false); 
@@ -481,9 +465,7 @@ export default function App() {
   const handleResetEverything = () => {
     handleResetSearch();
     handleResetFilters();
-    if (flatListRef.current) {
-      flatListRef.current.scrollToOffset({ offset: 0, animated: true });
-    }
+    if (flatListRef.current) flatListRef.current.scrollToOffset({ offset: 0, animated: true });
   };
 
   const restoreHistoryState = () => {
@@ -492,20 +474,14 @@ export default function App() {
       setSelectedColors(lastState.selectedColors); setSelectedTypes(lastState.selectedTypes);
       setSelectedRarity(lastState.selectedRarity); setSelectedVersions(lastState.selectedVersions);
       setIncludeRegular(lastState.includeRegular !== undefined ? lastState.includeRegular : true);
-      setIncludeBeta(lastState.includeBeta || false); 
-      setIncludeReprint(lastState.includeReprint || false); 
-      setIncludeLimited(lastState.includeLimited || false);
-      setIncludePromo(lastState.includePromo || false);
+      setIncludeBeta(lastState.includeBeta || false); setIncludeReprint(lastState.includeReprint || false); 
+      setIncludeLimited(lastState.includeLimited || false); setIncludePromo(lastState.includePromo || false);
       setSelectedResonance(lastState.selectedResonance); setResonanceMatchId(lastState.resonanceMatchId || '');
-      setSelectedKeywords(lastState.selectedKeywords); 
-      setSelectedTimings(lastState.selectedTimings || ['all']); 
-      setSupportValue(lastState.supportValue);
-      setBreakthroughValue(lastState.breakthroughValue); setRepairValue(lastState.repairValue);
+      setSelectedKeywords(lastState.selectedKeywords); setSelectedTimings(lastState.selectedTimings || ['all']); 
+      setSupportValue(lastState.supportValue); setBreakthroughValue(lastState.breakthroughValue); setRepairValue(lastState.repairValue);
       setTraitSearchText(lastState.traitSearchText); setIsTraitExactMatch(lastState.isTraitExactMatch || false);
       setLvRange(lastState.lvRange); setCostRange(lastState.costRange); setApRange(lastState.apRange); setHpRange(lastState.hpRange);
-      setSelectedCard(lastState.card); 
-      setPendingScrollY(lastState.scrollY || 0); 
-      setLastState(null);
+      setSelectedCard(lastState.card); setPendingScrollY(lastState.scrollY || 0); setLastState(null);
     }
   };
 
@@ -516,9 +492,7 @@ export default function App() {
         scrollY: currentScrollY 
     });
     setSelectedCard(null);
-    if (flatListRef.current) {
-        flatListRef.current.scrollToOffset({ offset: 0, animated: false });
-    }
+    if (flatListRef.current) flatListRef.current.scrollToOffset({ offset: 0, animated: false });
   };
 
   useEffect(() => {
@@ -530,14 +504,11 @@ export default function App() {
     }
   }, [selectedCard, pendingScrollY]);
 
-  // 🌟 修正：深層共鳴判定邏輯修復 (主客反轉問題)
   const triggerResonanceDirectSearch = (targetCardId) => {
     if (!targetCardId) return;
     const baseMatchCard = cardsData.find(c => (c.displayId || c.id).toLowerCase() === targetCardId.trim().toLowerCase());
     
-    executeRedirect();
-    handleResetSearch();
-    handleResetFilters();
+    executeRedirect(); handleResetSearch(); handleResetFilters();
     setResonanceMatchId(targetCardId);
 
     if (baseMatchCard) {
@@ -546,11 +517,8 @@ export default function App() {
        const traits = baseMatchCard[`traits_${language}`] || '';
        const isCommandPilot = type === 'COMMAND' && (effect.includes('【機師】') || traits.includes('【機師】') || traits.includes('機師'));
 
-       if (type === 'UNIT' || type === 'UNIT TOKEN' || type === 'TOKEN') {
-           setSelectedTypes(['PILOT', 'COMMAND_PILOT']);
-       } else if (type === 'PILOT' || isCommandPilot) {
-           setSelectedTypes(['UNIT']);
-       }
+       if (['UNIT', 'UNIT TOKEN', 'TOKEN'].includes(type)) setSelectedTypes(['PILOT', 'COMMAND_PILOT']);
+       else if (type === 'PILOT' || isCommandPilot) setSelectedTypes(['UNIT', 'TOKEN']);
     }
   };
 
@@ -563,16 +531,14 @@ export default function App() {
     const traitRegex = /〔([^〕]+)〕/g;
     let traitMatch;
     while ((traitMatch = traitRegex.exec(text)) !== null) {
-      setTraitSearchText(traitMatch[1].trim());
-      setIsTraitExactMatch(true); 
+      setTraitSearchText(traitMatch[1].trim()); setIsTraitExactMatch(true); 
     }
     text = text.replace(traitRegex, '');
 
     const statRegex = /(hp|ap|lv|cost|等級)\s*(為)?\s*(不大於|不高於|不超過|<=|小於等於|不小於|不低於|>=|大於等於|大於|>|小於|<|等於|=)?\s*(?:Lv\.?\s*)?(\d+)\s*(或更低|或更高|或高等級|或更等級|或以下|或以上)?/gi;
     text = text.replace(statRegex, (match, stat, isBe, opFront, val, opBack) => {
       const num = parseInt(val, 10);
-      let statKey = stat.toLowerCase();
-      if (statKey === '等級') statKey = 'lv';
+      let statKey = stat.toLowerCase(); if (statKey === '等級') statKey = 'lv';
       let min = 0, max = 9;
       const op = (opFront || '') + (opBack || '');
 
@@ -663,18 +629,29 @@ export default function App() {
     const currentSetHk = (card.set_hk || '').toLowerCase();
     const currentSetTw = (card.set_tw || '').toLowerCase();
     const currentSet = (card.set || '').toLowerCase();
-
     const allValidNames = getAliasNames(card, language).map(n => n.toLowerCase());
     
-    // 🌟 修正：精準共鳴對應邏輯
+    // 🌟 核心引擎重構：完美對齊 3 大共鳴條件的 OR 邏輯檢測器
     if (resonanceMatchId.trim() !== '') {
        const targetId = resonanceMatchId.trim().toLowerCase();
        const baseMatchCard = cardsData.find(c => (c.displayId || c.id).toLowerCase() === targetId);
-       
        if (!baseMatchCard) return false; 
 
-       const baseIsPilot = baseMatchCard.type === 'PILOT' || baseMatchCard.type === 'COMMAND';
-       const baseIsUnit = baseMatchCard.type === 'UNIT' || baseMatchCard.type === 'UNIT TOKEN' || baseMatchCard.type === 'TOKEN';
+       const isTypeUnit = (type) => ['UNIT', 'UNIT TOKEN', 'TOKEN'].includes(type);
+       const isTypePilot = (cardObj) => {
+           if (cardObj.type === 'PILOT') return true;
+           if (cardObj.type === 'COMMAND') {
+               const effect = cardObj[`effect_${language}`] || '';
+               const traits = cardObj[`traits_${language}`] || '';
+               return effect.includes('【機師】') || traits.includes('【機師】') || traits.includes('機師');
+           }
+           return false;
+       };
+
+       const baseIsUnit = isTypeUnit(baseMatchCard.type);
+       const baseIsPilot = isTypePilot(baseMatchCard);
+       const targetIsUnit = isTypeUnit(card.type);
+       const targetIsPilot = isTypePilot(card);
 
        const linkRaw = language === 'tw' ? card.link_tw : card.link_hk;
        const baseLinkRaw = language === 'tw' ? baseMatchCard.link_tw : baseMatchCard.link_hk;
@@ -683,39 +660,41 @@ export default function App() {
 
        let isResonanceMatch = false;
 
-       if (baseIsPilot) {
-           if (baseLinkRaw && baseLinkRaw !== '-') {
-               const nameMatches = [...baseLinkRaw.matchAll(/「([^」]+)」/g)].map(m => m[1].trim());
-               const unitAliases = getAliasNames(card, language);
-               if (nameMatches.length > 0 && unitAliases.some(alias => nameMatches.some(n => alias.includes(n) || n.includes(alias)))) {
-                   isResonanceMatch = true;
-               }
-               const traitMatchList = [];
-               const trRegex = /〔([^〕]+)〕/g; let tm;
-               while((tm = trRegex.exec(baseLinkRaw)) !== null) traitMatchList.push(tm[1].trim());
-               if (traitMatchList.length > 0) {
-                   const unitTraits = (traitRaw.match(/〔([^〕]+)〕/g) || []).map(t => t.replace(/[〔〕]/g, '').trim());
-                   traitMatchList.forEach(t => { if (unitTraits.includes(t)) isResonanceMatch = true; });
-               }
-           }
-       } else if (baseIsUnit) {
-           if (linkRaw && linkRaw !== '-') {
-               const nameMatches = [...linkRaw.matchAll(/「([^」]+)」/g)].map(m => m[1].trim());
-               const unitAliases = getAliasNames(baseMatchCard, language);
-               if (nameMatches.length > 0 && unitAliases.some(alias => nameMatches.some(n => alias.includes(n) || n.includes(alias)))) {
-                   isResonanceMatch = true;
-               }
-               const traitMatchList = [];
-               const trRegex = /〔([^〕]+)〕/g; let tm;
-               while((tm = trRegex.exec(linkRaw)) !== null) traitMatchList.push(tm[1].trim());
-               if (traitMatchList.length > 0) {
-                   const unitTraits = (baseTraitRaw.match(/〔([^〕]+)〕/g) || []).map(t => t.replace(/[〔〕]/g, '').trim());
-                   traitMatchList.forEach(t => { if (unitTraits.includes(t)) isResonanceMatch = true; });
-               }
-           }
+       // 🌟 統一共鳴比對器
+       const evaluateResonance = (linkToParse, pilotCardObj, pilotTraitRaw) => {
+           if (!linkToParse || linkToParse === '-') return false;
+           
+           // 解析 Link 內的所有 Case(1) [名稱] 與 Case(2) [特徵]
+           const nameConditions = [...linkToParse.matchAll(/「([^」]+)」/g)].map(m => m[1].trim());
+           const traitConditions = [...linkToParse.matchAll(/〔([^〕]+)〕/g)].map(m => m[1].trim());
+           
+           // 解析 PILOT 卡的 實際名稱(含化名) 與 實際特徵
+           const pilotAliases = getAliasNames(pilotCardObj, language);
+           const pilotTraits = ((pilotTraitRaw || '').match(/〔([^〕]+)〕/g) || []).map(t => t.replace(/[〔〕]/g, '').trim());
+
+           // 比對 Case 1
+           const hasNameMatch = nameConditions.length > 0 && pilotAliases.some(alias => 
+               nameConditions.some(n => alias.includes(n) || n.includes(alias))
+           );
+           
+           // 比對 Case 2
+           const hasTraitMatch = traitConditions.length > 0 && pilotTraits.some(t => 
+               traitConditions.includes(t)
+           );
+
+           return hasNameMatch || hasTraitMatch;
+       };
+
+       if (baseIsUnit && targetIsPilot) {
+           // Case A: 查 UNIT，篩選出符合其 link 條件的 PILOT。
+           isResonanceMatch = evaluateResonance(baseLinkRaw, card, traitRaw);
+       } else if (baseIsPilot && targetIsUnit) {
+           // Case B: 查 PILOT，篩選出其 link 條件包容此 PILOT 的 UNIT。
+           isResonanceMatch = evaluateResonance(linkRaw, baseMatchCard, baseTraitRaw);
        } else {
-           return false;
+           return false; // 同種類不共鳴
        }
+       
        if (!isResonanceMatch) return false;
     }
 
@@ -727,29 +706,17 @@ export default function App() {
     const lowerSearchText = searchText.trim().toLowerCase();
     const isExactSetMatch = lowerSearchText !== '' && (currentSetHk.includes(lowerSearchText) || currentSetTw.includes(lowerSearchText) || currentSet.includes(lowerSearchText));
 
-    if (isExactSetMatch) {
-        matchesSearch = true;
-    } else if (searchText.trim() !== '') {
+    if (isExactSetMatch) matchesSearch = true;
+    else if (searchText.trim() !== '') {
         const searchTerms = searchText.trim().split(/\s+/);
         for (const term of searchTerms) {
             if (!term) continue;
-            let isEx = term.startsWith('-');
-            let q = isEx ? term.substring(1).toLowerCase() : term.toLowerCase();
+            let isEx = term.startsWith('-'); let q = isEx ? term.substring(1).toLowerCase() : term.toLowerCase();
             if (!q) continue;
 
-            const hasText = safeId.includes(q) || 
-                            safeDisplayId.includes(q) || 
-                            allValidNames.some(n => n.includes(q)) || 
-                            (card.type === 'COMMAND' && currentEffect.toLowerCase().includes(q)) ||
-                            currentSetHk.includes(q) || 
-                            currentSetTw.includes(q) || 
-                            currentSet.includes(q);
-
-            if (isEx) {
-                if (hasText) { matchesSearch = false; break; }
-            } else {
-                if (!hasText) { matchesSearch = false; break; }
-            }
+            const hasText = safeId.includes(q) || safeDisplayId.includes(q) || allValidNames.some(n => n.includes(q)) || 
+                            (card.type === 'COMMAND' && currentEffect.toLowerCase().includes(q)) || currentSetHk.includes(q) || currentSetTw.includes(q) || currentSet.includes(q);
+            if (isEx) { if (hasText) { matchesSearch = false; break; } } else { if (!hasText) { matchesSearch = false; break; } }
         }
     }
     
@@ -774,9 +741,7 @@ export default function App() {
        if (isTraitExactMatch) {
           const cardTraitsArray = (currentTraits.match(/〔([^〕]+)〕/g) || []).map(t => t.replace(/[〔〕]/g, '').toLowerCase().trim());
           matchesTrait = targetTraits.some(target => cardTraitsArray.includes(target));
-       } else {
-          matchesTrait = targetTraits.some(target => currentTraits.toLowerCase().includes(target));
-       }
+       } else matchesTrait = targetTraits.some(target => currentTraits.toLowerCase().includes(target));
     }
     
     let matchesKeyword = true;
@@ -790,27 +755,15 @@ export default function App() {
     }
 
     let matchesTiming = true;
-    if (!selectedTimings.includes('all') && selectedTimings.length > 0) {
-      matchesTiming = selectedTimings.some(timing => {
-        const regex = new RegExp(`【${timing}(?:】|・)`);
-        return regex.test(currentEffect);
-      });
-    }
+    if (!selectedTimings.includes('all') && selectedTimings.length > 0) matchesTiming = selectedTimings.some(timing => new RegExp(`【${timing}(?:】|・)`).test(currentEffect));
     
     let matchesVersion = false;
-    if (selectedVersions.includes('all')) {
-      matchesVersion = true;
-    } else {
-      if (selectedVersions.includes('Normal') && !card._isAltArt) {
-         matchesVersion = true;
-      }
+    if (selectedVersions.includes('all')) matchesVersion = true;
+    else {
+      if (selectedVersions.includes('Normal') && !card._isAltArt) matchesVersion = true;
       if (card._isAltArt) {
         const r = card.rarity || '';
-        const matchAlt = selectedVersions.includes('Alt') ||
-                         (selectedVersions.includes('Alt_Plus') && r.includes('+') && !r.includes('++')) ||
-                         (selectedVersions.includes('Alt_PlusPlus') && r.includes('++')) ||
-                         (selectedVersions.includes('Alt_SP') && r.includes('SP'));
-        if (matchAlt) matchesVersion = true;
+        if (selectedVersions.includes('Alt') || (selectedVersions.includes('Alt_Plus') && r.includes('+') && !r.includes('++')) || (selectedVersions.includes('Alt_PlusPlus') && r.includes('++')) || (selectedVersions.includes('Alt_SP') && r.includes('SP'))) matchesVersion = true;
       }
     }
 
@@ -826,21 +779,18 @@ export default function App() {
     }
     let matchesAp = true;
     if (isApFiltered) {
-      const apRaw = card.ap || '';
-      const val = (!apRaw || apRaw === '-' || apRaw.includes('+') || apRaw.includes('-')) ? 0 : parseInt(apRaw, 10);
+      const apRaw = card.ap || ''; const val = (!apRaw || apRaw === '-' || apRaw.includes('+') || apRaw.includes('-')) ? 0 : parseInt(apRaw, 10);
       matchesAp = !isNaN(val) && val >= apRange[0] && val <= apRange[1];
     }
     let matchesHp = true;
     if (isHpFiltered) {
-      const hpRaw = card.hp || '';
-      const val = (!hpRaw || hpRaw === '-' || hpRaw.includes('+') || hpRaw.includes('-')) ? 0 : parseInt(hpRaw, 10);
+      const hpRaw = card.hp || ''; const val = (!hpRaw || hpRaw === '-' || hpRaw.includes('+') || hpRaw.includes('-')) ? 0 : parseInt(hpRaw, 10);
       matchesHp = !isNaN(val) && val >= hpRange[0] && val <= hpRange[1];
     }
 
     let matchesResonance = true;
     if (selectedResonance !== 'all') {
-       const linkVal = card[`link_${language}`] || '';
-       const hasLink = linkVal.trim() !== '-' && linkVal.trim() !== '';
+       const linkVal = card[`link_${language}`] || ''; const hasLink = linkVal.trim() !== '-' && linkVal.trim() !== '';
        if (selectedResonance === 'yes') matchesResonance = hasLink;
        if (selectedResonance === 'no') matchesResonance = !hasLink;
     }
@@ -855,12 +805,9 @@ export default function App() {
   const handlePrevCard = () => { if (hasPrev) setSelectedCard(filteredCards[currentCardIndex - 1]); };
   const handleNextCard = () => { if (hasNext) setSelectedCard(filteredCards[currentCardIndex + 1]); };
 
-  // 🌟 手機專屬滑動 Swipe 觸發上下頁
+  // 🌟 新增：彈窗防爆手勢 Swipe 邏輯
   const minSwipeDistance = 50;
-  const onTouchStart = (e) => {
-    setTouchEnd(null);
-    setTouchStart(e.nativeEvent.pageX);
-  };
+  const onTouchStart = (e) => { setTouchEnd(null); setTouchStart(e.nativeEvent.pageX); };
   const onTouchMove = (e) => setTouchEnd(e.nativeEvent.pageX);
   const onTouchEndHandler = () => {
     if (!touchStart || !touchEnd) return;
@@ -876,10 +823,7 @@ export default function App() {
       if (!selectedCard) return; 
       if (event.key === 'ArrowLeft') handlePrevCard();
       else if (event.key === 'ArrowRight') handleNextCard();
-      else if (event.key === 'Escape') {
-         setLastState(null);
-         setSelectedCard(null);
-      }
+      else if (event.key === 'Escape') { setLastState(null); setSelectedCard(null); }
     };
     document.addEventListener('keydown', handleGlobalKeyDown);
     return () => document.removeEventListener('keydown', handleGlobalKeyDown);
@@ -887,62 +831,41 @@ export default function App() {
 
   const handleTokenClick = (clickedText, isTraitSymbol) => {
     executeRedirect(); handleResetSearch(); handleResetFilters();
-    if (isTraitSymbol) {
-        setTraitSearchText(clickedText);
-        setIsTraitExactMatch(true); 
-    } else {
-        setSearchText(clickedText);
-    }
+    if (isTraitSymbol) { setTraitSearchText(clickedText); setIsTraitExactMatch(true); } else setSearchText(clickedText);
   };
   
   const handleExactTokenClick = (name, attributesRaw) => {
     executeRedirect(); handleResetSearch(); handleResetFilters();
-    setSearchText(name);
-    setSelectedTypes(['TOKEN']);
-    const traitsFound = [];
-    const trRegex = /〔([^〕]+)〕/g;
-    let m;
+    setSearchText(name); setSelectedTypes(['TOKEN']);
+    const traitsFound = []; const trRegex = /〔([^〕]+)〕/g; let m;
     while ((m = trRegex.exec(attributesRaw)) !== null) traitsFound.push(m[1].trim());
-    if (traitsFound.length > 0) {
-        setTraitSearchText(traitsFound.join('/'));
-        setIsTraitExactMatch(true);
-    }
-    const apMatch = attributesRaw.match(/AP(\d+)/i);
-    if (apMatch) setApRange([parseInt(apMatch[1], 10), parseInt(apMatch[1], 10)]);
-    const hpMatch = attributesRaw.match(/HP(\d+)/i);
-    if (hpMatch) setHpRange([parseInt(hpMatch[1], 10), parseInt(hpMatch[1], 10)]);
+    if (traitsFound.length > 0) { setTraitSearchText(traitsFound.join('/')); setIsTraitExactMatch(true); }
+    const apMatch = attributesRaw.match(/AP(\d+)/i); if (apMatch) setApRange([parseInt(apMatch[1], 10), parseInt(apMatch[1], 10)]);
+    const hpMatch = attributesRaw.match(/HP(\d+)/i); if (hpMatch) setHpRange([parseInt(hpMatch[1], 10), parseInt(hpMatch[1], 10)]);
   };
 
   const handleKeywordHexClick = (keywordText) => {
     executeRedirect(); handleResetSearch(); handleResetFilters();
     const kwMatch = keywordText.match(/^(爆發|修復|阻擋者|突破|高機動|支援|先制攻擊|壓制)(\d+)?$/);
     if (kwMatch) {
-      const baseKw = kwMatch[1];
-      const num = kwMatch[2];
-      setSelectedKeywords([baseKw]);
+      const baseKw = kwMatch[1]; const num = kwMatch[2]; setSelectedKeywords([baseKw]);
       if (num) {
-        if (baseKw === '支援') setSupportValue(num);
-        if (baseKw === '突破') setBreakthroughValue(num);
-        if (baseKw === '修復') setRepairValue(num);
+        if (baseKw === '支援') setSupportValue(num); if (baseKw === '突破') setBreakthroughValue(num); if (baseKw === '修復') setRepairValue(num);
       }
     } else setSelectedKeywords([keywordText]);
   };
 
   const handleAcquisitionClick = (card) => {
     if (!card) return;
-    executeRedirect();
-    handleResetEverything();
+    executeRedirect(); handleResetEverything();
     if (card.isLimitedCard || card.isPromoCard) {
       const acqText = card[`set_${language}`] || card.set || '';
       if (acqText && acqText !== '-') {
-        setSearchText(acqText);
-        setIncludeRegular(false); setIncludeBeta(false); setIncludeReprint(false); setIncludeLimited(true); setIncludePromo(true);   
+        setSearchText(acqText); setIncludeRegular(false); setIncludeBeta(false); setIncludeReprint(false); setIncludeLimited(true); setIncludePromo(true);   
         setSelectedVersions(['Normal', 'Alt']); 
       }
     } else {
-      if (card.set && card.set !== '-') {
-        setSelectedSet(card.set); setIncludeRegular(true);
-      }
+      if (card.set && card.set !== '-') { setSelectedSet(card.set); setIncludeRegular(true); }
     }
   };
 
@@ -950,8 +873,7 @@ export default function App() {
     executeRedirect(); handleResetSearch(); handleResetFilters();
     if (partText.match(/(?:搭乘(?:此|該)|此(?:機體|角色|卡牌|卡|機師)(?:為|作為)共鳴)/) && cardId) setResonanceMatchId(cardId);
 
-    const excludeRegex = /([^，。、]+)以外的/;
-    const exMatch = partText.match(excludeRegex);
+    const excludeRegex = /([^，。、]+)以外的/; const exMatch = partText.match(excludeRegex);
     let excludedTypes = [];
     if (exMatch) {
        const exText = exMatch[1];
@@ -964,39 +886,25 @@ export default function App() {
        }
     }
 
-    const typeRegex = new RegExp(`(${TARGET_TYPES}(?:共鳴)?)$`, 'i');
-    const typeMatch = partText.match(typeRegex);
-    const selfTraitTypeRegex = new RegExp(`(?:若)?此(${SINGLE_TARGET})(?:為|變成|擁有|具有)?\\s*${TRAIT_GROUP}`, 'i');
-    const selfTraitMatch = partText.match(selfTraitTypeRegex);
-    const selfColorTypeRegex = new RegExp(`此(${SINGLE_TARGET})(?:若為|為)(藍色|紅色|綠色|黃色|紫色|白色|黑色)`, 'i');
-    const selfColorMatch = partText.match(selfColorTypeRegex);
+    const typeRegex = new RegExp(`(${TARGET_TYPES}(?:共鳴)?)$`, 'i'); const typeMatch = partText.match(typeRegex);
+    const selfTraitTypeRegex = new RegExp(`(?:若)?此(${SINGLE_TARGET})(?:為|變成|擁有|具有)?\\s*${TRAIT_GROUP}`, 'i'); const selfTraitMatch = partText.match(selfTraitTypeRegex);
+    const selfColorTypeRegex = new RegExp(`此(${SINGLE_TARGET})(?:若為|為)(藍色|紅色|綠色|黃色|紫色|白色|黑色)`, 'i'); const selfColorMatch = partText.match(selfColorTypeRegex);
 
     let typeStr = null;
-    if (typeMatch) typeStr = typeMatch[1];
-    else if (selfTraitMatch) typeStr = selfTraitMatch[1];
-    else if (selfColorMatch) typeStr = selfColorMatch[1];
-    else {
-        const selfTargetRegex = new RegExp(`^此(${SINGLE_TARGET})`, 'i');
-        const selfTargetMatch = partText.match(selfTargetRegex);
-        if (selfTargetMatch) typeStr = selfTargetMatch[1];
-    }
+    if (typeMatch) typeStr = typeMatch[1]; else if (selfTraitMatch) typeStr = selfTraitMatch[1]; else if (selfColorMatch) typeStr = selfColorMatch[1];
+    else { const selfTargetRegex = new RegExp(`^此(${SINGLE_TARGET})`, 'i'); const selfTargetMatch = partText.match(selfTargetRegex); if (selfTargetMatch) typeStr = selfTargetMatch[1]; }
 
     let mappedTypes = [];
     if (typeStr) {
        if (typeStr.includes('共鳴')) { setSelectedResonance('yes'); typeStr = typeStr.replace(/共鳴/g, ''); }
        let tArr = typeStr.split(/[\/／]/);
-       tArr.forEach(t => {
-           let cleanT = t.trim();
-           if (cleanT === '基地' || cleanT === '基地卡' || cleanT === '基地卡牌') mappedTypes.push('BASE');
-           else if (cleanT) mappedTypes.push(...resolveCardTypes(cleanT));
-       });
+       tArr.forEach(t => { let cleanT = t.trim(); if (cleanT === '基地' || cleanT === '基地卡' || cleanT === '基地卡牌') mappedTypes.push('BASE'); else if (cleanT) mappedTypes.push(...resolveCardTypes(cleanT)); });
     }
 
     if (mappedTypes.length === 0) {
         const sourceCard = cardsData.find(c => c.id === cardId || c.displayId === cardId);
         if (sourceCard) {
-            const fullEffect = sourceCard[`effect_${language}`] || '';
-            const partIndex = fullEffect.indexOf(partText);
+            const fullEffect = sourceCard[`effect_${language}`] || ''; const partIndex = fullEffect.indexOf(partText);
             if (partIndex !== -1) {
                 const afterPart = fullEffect.substring(partIndex + partText.length, partIndex + partText.length + 20);
                 const nextNounMatch = afterPart.match(/(機體|機師|角色|駕駛員|指令|據點|基地|卡牌|卡)/);
@@ -1014,42 +922,31 @@ export default function App() {
 
     let targetColorStr = null;
     if (selfColorMatch) targetColorStr = selfColorMatch[2].replace('色', '');
-    else {
-        const genColorMatch = partText.match(/(藍|紅|綠|黃|紫|白|黑)色的?/);
-        if (genColorMatch) targetColorStr = genColorMatch[1];
-    }
+    else { const genColorMatch = partText.match(/(藍|紅|綠|黃|紫|白|黑)色的?/); if (genColorMatch) targetColorStr = genColorMatch[1]; }
 
     if (targetColorStr) {
         const colorMap = { '藍': 'Blue', '紅': 'Red', '綠': 'Green', '黃': 'Yellow', '紫': 'Purple', '白': 'White', '黑': 'Black' };
-        const colorKey = colorMap[targetColorStr];
-        if (colorKey) setSelectedColors([colorKey]);
+        const colorKey = colorMap[targetColorStr]; if (colorKey) setSelectedColors([colorKey]);
     }
 
-    const traitsFound = [];
-    const traitRegexGlobal = /〔([^〕]+)〕/g; let traitMatch;
+    const traitsFound = []; const traitRegexGlobal = /〔([^〕]+)〕/g; let traitMatch;
     while ((traitMatch = traitRegexGlobal.exec(partText)) !== null) traitsFound.push(traitMatch[1].trim());
     if (traitsFound.length > 0) { setTraitSearchText(traitsFound.join('/')); setIsTraitExactMatch(true); }
 
-    const kwMatchRegex = /擁有《([^》]+)》效果(?:的\s*|之\s*|且\s*)?/i;
-    const kwMatch = partText.match(kwMatchRegex);
+    const kwMatchRegex = /擁有《([^》]+)》效果(?:的\s*|之\s*|且\s*)?/i; const kwMatch = partText.match(kwMatchRegex);
     if (kwMatch) setSelectedKeywords([kwMatch[1].trim()]);
 
-    const statusMatchRegex = /擁有【([^】]+)】效果(?:的\s*|之\s*|且\s*)?/i;
-    const statusMatch = partText.match(statusMatchRegex);
+    const statusMatchRegex = /擁有【([^】]+)】效果(?:的\s*|之\s*|且\s*)?/i; const statusMatch = partText.match(statusMatchRegex);
     if (statusMatch) setSelectedTimings([statusMatch[1].trim().split('・')[0]]);
 
-    const nameMatchRegex = /卡牌名稱中(不包含|包含)「([^」]+)」/i;
-    const nMatch = partText.match(nameMatchRegex);
+    const nameMatchRegex = /卡牌名稱中(不包含|包含)「([^」]+)」/i; const nMatch = partText.match(nameMatchRegex);
     if (nMatch) setSearchText(nMatch[1] === '不包含' ? `-${nMatch[2].trim()}` : nMatch[2].trim());
 
     const parseRegex = /(HP|AP|Lv\.?|COST|等級)\s*(為)?\s*(不大於|不高於|不超過|<=|小於等於|不小於|不低於|>=|大於等於|大於|>|小於|<|等於|=)?\s*(?:Lv\.?\s*)?(\d+)\s*(或更高等級|或高等級|或更高|或更低|或以下|或以上|以下|以上)?/i;
     const match = partText.match(parseRegex);
     if (match) {
-        let statRaw = match[1].toLowerCase().replace('.', '');
-        if (statRaw === '等級') statRaw = 'lv';
-        const num = parseInt(match[4], 10);
-        const op = (match[3] || '') + (match[5] || '');
-        let min = 0, max = 9;
+        let statRaw = match[1].toLowerCase().replace('.', ''); if (statRaw === '等級') statRaw = 'lv';
+        const num = parseInt(match[4], 10); const op = (match[3] || '') + (match[5] || ''); let min = 0, max = 9;
         if (['或更低', '或以下', '不大於', '不高於', '不超過', '<=', '小於等於', '以下', '<', '小於'].some(o => op.includes(o))) { min = 0; max = num; if (['<', '小於'].includes(op)) max = num - 1; } 
         else if (['或更高', '或更高等級', '或高等級', '或以上', '不小於', '不低於', '>=', '大於等於', '以上', '>', '大於'].some(o => op.includes(o))) { min = num; max = 9; if (['>', '大於'].includes(op)) min = num + 1; } 
         else { min = num; max = num; }
@@ -1059,6 +956,24 @@ export default function App() {
         if (statRaw === 'lv') setLvRange([Math.max(0, min), Math.min(9, max)]);
         if (statRaw === 'cost') setCostRange([Math.max(0, min), Math.min(9, max)]);
     }
+  };
+
+  const handleSetClick = (setStr) => {
+    if (!setStr || setStr === '-') return;
+    executeRedirect(); handleResetEverything(); setSelectedSet(setStr);
+  };
+
+  const MobileScrollWrapper = ({ children, style }) => {
+    if (isMobile) {
+      return (
+        <View style={styles.mobileGradientContainer}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={[style, styles.mobileHorizontalScroll]}>
+            {children}
+          </ScrollView>
+        </View>
+      );
+    }
+    return <View style={style}>{children}</View>;
   };
 
   const renderKeywordChip = (opt) => {
@@ -1111,106 +1026,56 @@ export default function App() {
               const bgStyleClass = STATUS_COLORS_JSON[matchedKey];
               const theme = STATUS_THEME_STYLES[bgStyleClass] || STATUS_THEME_STYLES["status_bg_DEFAULT"];
               const textColor = (matchedKey === "每回合1次" || matchedKey === "爆發") ? "#ffffff" : "#000000";
-              
-              return (
-                <Text key={j} style={[styles.statusWordBadge, { backgroundColor: theme.bg, color: textColor, marginHorizontal: 2 }]} onPress={onPressAction}>
-                  {cleanText}
-                </Text>
-              );
+              return <Text key={j} style={[styles.statusWordBadge, { backgroundColor: theme.bg, color: textColor, marginHorizontal: 2 }]} onPress={onPressAction}>{cleanText}</Text>;
           }
           return <Text key={j} style={baseStyle} onPress={onPressAction}>{sub}</Text>;
       });
   };
 
   const renderVisualCutoff = (textPart, onPressAction, baseStyle) => {
-      let unclickablePrefix1 = "";
-      let clickableCore = textPart;
-      
+      let unclickablePrefix1 = ""; let clickableCore = textPart;
       const excludeKeywordIndex = clickableCore.search(/以外[的且]/);
       if (excludeKeywordIndex !== -1 && (clickableCore.includes('此機體') || clickableCore.includes('此角色') || clickableCore.includes('此卡'))) {
-          const cutIndex = excludeKeywordIndex + 3;
-          unclickablePrefix1 = clickableCore.substring(0, cutIndex);
-          clickableCore = clickableCore.substring(cutIndex).trim();
+          const cutIndex = excludeKeywordIndex + 3; unclickablePrefix1 = clickableCore.substring(0, cutIndex); clickableCore = clickableCore.substring(cutIndex).trim();
       }
-
-      let unclickablePrefix2 = "";
-      const factionMatch = clickableCore.match(/^(我方|對方|友方|敵方|雙方)(?:的)?\s*/);
-      if (factionMatch) {
-          unclickablePrefix2 = factionMatch[0];
-          clickableCore = clickableCore.substring(factionMatch[0].length).trim();
-      }
-
-      let unclickablePrefix3 = "";
-      const ridingMatch = clickableCore.match(/^搭乘(?:此|該)(?:機體|角色|卡牌|卡)的\s*/);
-      if (ridingMatch) {
-          unclickablePrefix3 = ridingMatch[0];
-          clickableCore = clickableCore.substring(ridingMatch[0].length).trim();
-      }
-
-      if (/^(?:我方|對方|友方|敵方|雙方)?(?:的)?(?:機體|機師|角色|駕駛員|指令|據點|基地|卡牌|卡|機體卡牌|機師卡牌)$/.test(clickableCore.trim())) {
-          return renderRichText(textPart, undefined, undefined); 
-      }
-
+      let unclickablePrefix2 = ""; const factionMatch = clickableCore.match(/^(我方|對方|友方|敵方|雙方)(?:的)?\s*/);
+      if (factionMatch) { unclickablePrefix2 = factionMatch[0]; clickableCore = clickableCore.substring(factionMatch[0].length).trim(); }
+      let unclickablePrefix3 = ""; const ridingMatch = clickableCore.match(/^搭乘(?:此|該)(?:機體|角色|卡牌|卡)的\s*/);
+      if (ridingMatch) { unclickablePrefix3 = ridingMatch[0]; clickableCore = clickableCore.substring(ridingMatch[0].length).trim(); }
+      if (/^(?:我方|對方|友方|敵方|雙方)?(?:的)?(?:機體|機師|角色|駕駛員|指令|據點|基地|卡牌|卡|機體卡牌|機師卡牌)$/.test(clickableCore.trim())) return renderRichText(textPart, undefined, undefined); 
       const finalUnclickable = unclickablePrefix1 + unclickablePrefix2 + unclickablePrefix3;
-
-      if (finalUnclickable) {
-          return (
-             <Text>
-                {renderRichText(finalUnclickable, undefined, undefined)}
-                {renderRichText(clickableCore, onPressAction, baseStyle)}
-             </Text>
-          );
-      }
+      if (finalUnclickable) return <Text>{renderRichText(finalUnclickable, undefined, undefined)}{renderRichText(clickableCore, onPressAction, baseStyle)}</Text>;
       return renderRichText(textPart, onPressAction, baseStyle);
   };
 
   const renderInteractiveText = (text, cardId = null) => {
     if (!text || text.trim() === '' || text.trim() === '-') return <Text style={styles.sectionBodyText}>-</Text>;
-    
     let processedText = text.replace(/\/卡牌名稱/g, ' / 卡牌名稱');
-
     const parts = processedText.split(MASTER_SPLIT_REGEX);
     return (
       <Text style={styles.sectionBodyText}>
         {parts.map((part, index) => {
           if (!part) return null;
-
-          if (part === '此機體以外的機體' || part === '此角色以外的角色' || part === '此卡以外的卡' || part === '此卡牌以外的卡牌') {
-              return <Text key={index}>{part}</Text>;
-          }
-          
-          if (IS_PLAYER_LV_REGEX.test(part)) {
-              return <Text key={index}>{part}</Text>;
-          }
+          if (part === '此機體以外的機體' || part === '此角色以外的角色' || part === '此卡以外的卡' || part === '此卡牌以外的卡牌') return <Text key={index}>{part}</Text>;
+          if (IS_PLAYER_LV_REGEX.test(part)) return <Text key={index}>{part}</Text>;
 
           if (/^[【].*[】]$/.test(part)) {
             const cleanText = part.replace(/[【】]/g, '').trim();
             let matchedKey = "DEFAULT";
-            for (const key of Object.keys(STATUS_COLORS_JSON)) { 
-                if (key !== "DEFAULT" && cleanText.startsWith(key)) { matchedKey = key; break; } 
-            }
+            for (const key of Object.keys(STATUS_COLORS_JSON)) { if (key !== "DEFAULT" && cleanText.startsWith(key)) { matchedKey = key; break; } }
             const bgStyleClass = STATUS_COLORS_JSON[matchedKey];
             const theme = STATUS_THEME_STYLES[bgStyleClass] || STATUS_THEME_STYLES["status_bg_DEFAULT"];
             const textColor = (matchedKey === "每回合1次" || matchedKey === "爆發") ? "#ffffff" : "#000000";
             const isBurst = cleanText === '爆發';
-            
             const innerParts = cleanText.split(INNER_SPLIT_REGEX);
             const renderBadgeInner = innerParts.map((bp, i) => {
               if (!bp) return null;
-              
               if (IS_PLAYER_LV_REGEX.test(bp)) return <Text key={i}>{bp}</Text>;
               if (bp === '此機體以外的機體' || bp === '此角色以外的角色' || bp === '此卡以外的卡' || bp === '此卡牌以外的卡牌') return <Text key={i}>{bp}</Text>;
               if (IS_SELF_RESONANCE_REGEX.test(bp)) return <Text key={i} style={{ color: textColor, fontWeight: '900', cursor: 'pointer' }} onPress={() => triggerResonanceDirectSearch(cardId)}>{bp}</Text>;
               if (IS_SELF_TRAIT_REGEX.test(bp)) {
                   const match = bp.match(/^(若?)(.*)$/);
-                  if (match && match[1]) {
-                     return (
-                        <Text key={i}>
-                           {match[1]}
-                           <Text style={{ color: textColor, fontWeight: '900', cursor: 'pointer' }} onPress={() => applyCondition(bp, cardId)}>{match[2]}</Text>
-                        </Text>
-                     );
-                  }
+                  if (match && match[1]) return <Text key={i}>{match[1]}<Text style={{ color: textColor, fontWeight: '900', cursor: 'pointer' }} onPress={() => applyCondition(bp, cardId)}>{match[2]}</Text></Text>;
                   return <Text key={i} style={{ color: textColor, fontWeight: '900', cursor: 'pointer' }} onPress={() => applyCondition(bp, cardId)}>{bp}</Text>;
               }
               if (IS_SELF_COLOR_REGEX.test(bp)) return <Text key={i} style={{ color: textColor, fontWeight: '900', cursor: 'pointer' }} onPress={() => applyCondition(bp, cardId)}>{bp}</Text>;
@@ -1224,11 +1089,7 @@ export default function App() {
                           {subParts.map((sub, j) => {
                               if (/^《[^》]+》$/.test(sub)) {
                                   const cleanText = sub.replace(/[《》]/g, '').trim();
-                                  return (
-                                    <TouchableOpacity key={j} style={styles.hexWrapperText} onPress={() => handleKeywordHexClick(cleanText)} activeOpacity={0.7}>
-                                      <Text style={styles.hexInnerText}>{cleanText}</Text>
-                                    </TouchableOpacity>
-                                  );
+                                  return <TouchableOpacity key={j} style={styles.hexWrapperText} onPress={() => handleKeywordHexClick(cleanText)} activeOpacity={0.7}><Text style={styles.hexInnerText}>{cleanText}</Text></TouchableOpacity>;
                               }
                               return <Text key={j} style={{ color: textColor, fontWeight: '900', cursor: 'pointer' }} onPress={() => handleExactTokenClick(m[1], m[2])}>{sub}</Text>;
                           })}
@@ -1241,28 +1102,17 @@ export default function App() {
 
             return (
               <Text key={index} style={styles.badgeWrapperText}>
-                <Text style={[styles.statusWordBadge, { backgroundColor: theme.bg, color: textColor }, isBurst && { cursor: 'pointer' }]} onPress={isBurst ? () => handleKeywordHexClick('爆發') : undefined}>
-                  {renderBadgeInner}
-                </Text>
+                <Text style={[styles.statusWordBadge, { backgroundColor: theme.bg, color: textColor }, isBurst && { cursor: 'pointer' }]} onPress={isBurst ? () => handleKeywordHexClick('爆發') : undefined}>{renderBadgeInner}</Text>
               </Text>
             );
           }
 
           if (IS_SELF_RESONANCE_REGEX.test(part)) return <Text key={index} style={styles.interactiveBoldToken} onPress={() => triggerResonanceDirectSearch(cardId)}>{part}</Text>;
-
           if (IS_SELF_TRAIT_REGEX.test(part)) {
               const match = part.match(/^(若?)(.*)$/);
-              if (match && match[1]) {
-                 return (
-                    <Text key={index}>
-                       {match[1]}
-                       <Text style={styles.interactiveBoldToken} onPress={() => applyCondition(part, cardId)}>{match[2]}</Text>
-                    </Text>
-                 );
-              }
+              if (match && match[1]) return <Text key={index}>{match[1]}<Text style={styles.interactiveBoldToken} onPress={() => applyCondition(part, cardId)}>{match[2]}</Text></Text>;
               return <Text key={index} style={styles.interactiveBoldToken} onPress={() => applyCondition(part, cardId)}>{part}</Text>;
           }
-
           if (IS_SELF_COLOR_REGEX.test(part)) return <Text key={index} style={styles.interactiveBoldToken} onPress={() => applyCondition(part, cardId)}>{part}</Text>;
 
           const tokenCardMatch = part.match(/^「([^」]+)」[（\(]([^）\)]+)[）\)](?:的機體替代卡)?$/);
@@ -1273,11 +1123,7 @@ export default function App() {
                       {subParts.map((sub, i) => {
                           if (/^《[^》]+》$/.test(sub)) {
                               const cleanText = sub.replace(/[《》]/g, '').trim();
-                              return (
-                                <TouchableOpacity key={i} style={styles.hexWrapperText} onPress={() => handleKeywordHexClick(cleanText)} activeOpacity={0.7}>
-                                  <Text style={styles.hexInnerText}>{cleanText}</Text>
-                                </TouchableOpacity>
-                              );
+                              return <TouchableOpacity key={i} style={styles.hexWrapperText} onPress={() => handleKeywordHexClick(cleanText)} activeOpacity={0.7}><Text style={styles.hexInnerText}>{cleanText}</Text></TouchableOpacity>;
                           }
                           return <Text key={i} style={styles.interactiveBoldToken} onPress={() => handleExactTokenClick(tokenCardMatch[1], tokenCardMatch[2])}>{sub}</Text>;
                       })}
@@ -1287,32 +1133,53 @@ export default function App() {
           
           if (IS_SMART_REGEX.test(part) || IS_PURE_RESONANCE_REGEX.test(part) || IS_SELF_COMPLEX_REGEX.test(part)) return <Text key={index}>{renderVisualCutoff(part, () => applyCondition(part, cardId), styles.interactiveBoldToken)}</Text>;
           if (IS_STAT_COND_REGEX.test(part)) return <Text key={index} style={styles.interactiveBoldToken} onPress={() => applyCondition(part, cardId)}>{part}</Text>;
-          
           const isClickableBracket = /^〔[^〕]+〕$/.test(part) || /^「[^」]+」$/.test(part);
           if (isClickableBracket) return <Text key={index} style={styles.interactiveBoldToken} onPress={() => handleTokenClick(part.replace(/[〔〕長裝」]/g, '').replace(/[〔〕「」]/g, '').trim(), part.startsWith('〔'))}>{part}</Text>;
-          
           if (/^[《].*[》]$/.test(part)) {
             const cleanText = part.replace(/[《》]/g, '').trim();
-            return (
-              <TouchableOpacity key={index} style={styles.hexWrapperText} onPress={() => handleKeywordHexClick(cleanText)} activeOpacity={0.7}>
-                <Text style={styles.hexInnerText}>{cleanText}</Text>
-              </TouchableOpacity>
-            );
+            return <TouchableOpacity key={index} style={styles.hexWrapperText} onPress={() => handleKeywordHexClick(cleanText)} activeOpacity={0.7}><Text style={styles.hexInnerText}>{cleanText}</Text></TouchableOpacity>;
           }
-
           return <Text key={index}>{part}</Text>;
         })}
       </Text>
     );
   };
 
+  const renderResonanceText = (text) => {
+    if (!text || text.trim() === '' || text.trim() === '-') return <Text style={styles.sectionBodyText}>-</Text>;
+    let processedText = text;
+    if (processedText.includes('特徵') || processedText.includes('特徴')) {
+       const matchedTrait = processedText.match(/〔([^〕]+)〕/);
+       if (matchedTrait) {
+          const trait = matchedTrait[1];
+          return (
+             <Text style={styles.interactiveBoldToken} onPress={() => { executeRedirect(); handleResetSearch(); handleResetFilters(); setTraitSearchText(trait); setSelectedTypes(['PILOT', 'COMMAND_PILOT']); setIsTraitExactMatch(true); }}>
+                特徴〔{trait}〕
+             </Text>
+          );
+       }
+    }
+    if (!processedText.includes('〔') && !processedText.includes('「') && !processedText.includes('〕') && !processedText.includes('」')) processedText = `「${processedText}」`;
+    const parts = processedText.split(/(〔[^〕]+〕|「[^」]+」)/g);
+    return (
+      <Text style={styles.sectionBodyText}>
+         {parts.map((part, index) => {
+             if (part.startsWith('〔') && part.endsWith('〕')) {
+                 const trait = part.slice(1, -1);
+                 return <Text key={index} style={styles.interactiveBoldToken} onPress={() => { executeRedirect(); handleResetSearch(); handleResetFilters(); setTraitSearchText(trait); setSelectedTypes(['PILOT', 'COMMAND_PILOT']); setIsTraitExactMatch(true); }}>{part}</Text>;
+             } else if (part.startsWith('「') && part.endsWith('」')) {
+                 const name = part.slice(1, -1);
+                 return <Text key={index} style={styles.interactiveBoldToken} onPress={() => { executeRedirect(); handleResetSearch(); handleResetFilters(); setSearchText(name); setSelectedTypes(['PILOT', 'COMMAND_PILOT']); }}>{part}</Text>;
+             }
+             return <Text key={index}>{part}</Text>;
+         })}
+      </Text>
+    );
+  };
+
   const shouldShowResonanceButton = (card) => {
     if (!card) return false;
-    const type = card.type || '';
-    const effect = card[`effect_${language}`] || '';
-    const traits = card[`traits_${language}`] || '';
-    const link = card[`link_${language}`] || '';
-
+    const type = card.type || ''; const effect = card[`effect_${language}`] || ''; const traits = card[`traits_${language}`] || ''; const link = card[`link_${language}`] || '';
     if (type === 'UNIT' || type === 'UNIT TOKEN' || type === 'TOKEN') return link.trim() !== '' && link.trim() !== '-';
     if (type === 'PILOT') return true;
     if (type === 'COMMAND') return effect.includes('【機師】') || traits.includes('【機師】') || traits.includes('機師');
@@ -1327,7 +1194,6 @@ export default function App() {
         </TouchableWithoutFeedback>
       )}
 
-      {/* 🌟 標題列：彈性佈局防爆與縮小字體 */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.titleContainer} onPress={() => Linking.openURL('https://www.youtube.com/@FLCdesu')} activeOpacity={0.8}>
           <Text style={[styles.titleTextMain, isMobile && { fontSize: 16 }]} numberOfLines={1} adjustsFontSizeToFit>
@@ -1586,7 +1452,6 @@ export default function App() {
                       </View>
                     </View>
 
-                    {/* 🌟 修正：重置按鈕移動至右側，單行佈局 */}
                     <View style={styles.panelRow}>
                       <View style={{ flexDirection: 'row', alignItems: 'center', width: 75, flexShrink: 0 }}>
                         <Text style={[styles.panelLabel, { width: 'auto' }]}>關鍵字</Text>
@@ -1677,10 +1542,10 @@ export default function App() {
 
       <Modal visible={selectedCard !== null} animationType="fade" transparent={true}>
         {selectedCard && (
-          // 🌟 修正：手機板支援 Swipe 滑動切換
+          // 🌟 修正：實裝彈窗滑動手勢
           <View style={[styles.modalOverlay, isMobile && { padding: 10 }]} onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEndHandler}>
             
-            {/* 🌟 方案 1：懸浮於卡圖左右邊緣的大箭頭 (單箭頭) */}
+            {/* 🌟 修正：單箭頭設計 */}
             {!isMobile && <TouchableOpacity style={[styles.floatingArrowButton, styles.leftArrowPosition, !hasPrev && styles.arrowDisabled]} onPress={handlePrevCard} disabled={!hasPrev}><Text style={styles.floatingArrowText}>&lt;</Text></TouchableOpacity>}
             
             <TouchableOpacity activeOpacity={1} style={[styles.modalContentBox, isMobile && { maxHeight: '96%' }]}>
@@ -1732,7 +1597,6 @@ export default function App() {
                 <View style={[styles.modalFlexRow, isMobile && { flexDirection: 'column', alignItems: 'center' }]}>
                   <View style={[styles.modalLeftColumn, isMobile && { marginRight: 0, marginBottom: 15 }]}>
                     
-                    {/* 🌟 方案 1：手機版的箭頭懸浮在圖片上 (若不滑動也能點) */}
                     {isMobile && <TouchableOpacity style={[styles.floatingArrowButton, styles.mobileFloatingLeftArrow, !hasPrev && styles.arrowDisabled]} onPress={handlePrevCard} disabled={!hasPrev}><Text style={[styles.floatingArrowText, {fontSize: 14}]}>&lt;</Text></TouchableOpacity>}
                     
                     {cardImages[selectedCard.id] ? 
@@ -1921,9 +1785,8 @@ const styles = StyleSheet.create({
   rangeTracksWrapper: { paddingLeft: 4, gap: 4, marginTop: 8 },
   rangeTrackContainer: { flexDirection: 'row', alignItems: 'center', marginBottom: 12 },
   
-  // 🌟 對齊修正：標籤固定寬度，強制不換行
   panelLabel: { fontSize: 13, fontWeight: 'bold', color: '#475569', width: 75, whiteSpace: 'nowrap', flexShrink: 0, cursor: 'default' },
-  rangeTrackLabel: { width: 50, fontSize: 13, fontWeight: 'bold', color: '#475569', cursor: 'default' },
+  rangeTrackLabel: { width: 50, fontSize: 13, fontWeight: 'bold', color: '#475569', cursor: 'default', flexShrink: 0 },
   rangeTrackBox: { flexDirection: 'row', backgroundColor: '#f1f5f9', borderRadius: 15, borderWidth: 1, borderColor: '#e2e8f0', overflow: 'hidden' },
   rangeNumberCell: { width: 28, height: 28, justifyContent: 'center', alignItems: 'center', cursor: 'pointer' },
   rangeNumberCellActive: { backgroundColor: '#376171' }, 
@@ -1959,7 +1822,6 @@ const styles = StyleSheet.create({
   exactMatchBtnText: { fontSize: 11, color: '#475569', fontWeight: 'bold', letterSpacing: 0.5 },
   exactMatchBtnTextActive: { color: '#ffffff' },
 
-  // 🌟 手機專屬：漸層遮罩讓左右有透明漸變效果，且移除了造成走位的額外 wrapper
   mobileGradientContainer: { position: 'relative', flex: 1, overflow: 'hidden', maskImage: 'linear-gradient(to right, transparent, #000 8px, #000 calc(100% - 8px), transparent)', webkitMaskImage: 'linear-gradient(to right, transparent, #000 8px, #000 calc(100% - 8px), transparent)' },
   mobileHorizontalScroll: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 8 },
   
@@ -1982,7 +1844,6 @@ const styles = StyleSheet.create({
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.4)', backdropFilter: 'blur(10px)', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: 20, position: 'relative' },
   modalContentBox: { backgroundColor: '#fff', width: '100%', maxWidth: 920, maxHeight: '92%', borderRadius: 12, overflow: 'hidden', shadowColor: '#000', shadowOpacity: 0.25, shadowRadius: 15, elevation: 10, mx: 20, display: 'flex', flexDirection: 'column', flexShrink: 1 },
   
-  // 🌟 單箭頭 ＆ 手機版圖片邊緣懸浮
   floatingArrowButton: { position: 'absolute', top: '50%', marginTop: -27, width: 54, height: 54, borderRadius: 27, backgroundColor: 'rgba(0, 0, 0, 0.6)', justifyContent: 'center', alignItems: 'center', cursor: 'pointer', zIndex: 999999 },
   leftArrowPosition: { left: 40 },
   rightArrowPosition: { right: 40 },
