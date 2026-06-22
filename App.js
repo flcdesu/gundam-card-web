@@ -431,10 +431,6 @@ export default function App() {
   const [hpRange, setHpRange] = useState([0, 9]); 
 
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
-  
-  // 🌟 新增：用於追蹤面板內的 ScrollView 是否已經滑到底部
-  const [isPanelScrolledToBottom, setIsPanelScrolledToBottom] = useState(false);
-
   const [screenWidth, setScreenWidth] = useState(Dimensions.get('window').width);
 
   useEffect(() => {
@@ -1262,7 +1258,7 @@ export default function App() {
             onTouchEnd={(e) => {
               if (!panelSwipeStartY.current || !isFilterPanelOpen) return;
               const distance = e.nativeEvent.pageY - panelSwipeStartY.current;
-              if (distance < -40) setIsFilterPanelOpen(false); // 🌟 頂部同樣改為向上掃收起，物理邏輯完美統一！
+              if (distance > 40) setIsFilterPanelOpen(false); // 🌟 頂部同樣改為向上掃收起，物理邏輯完美統一！
               panelSwipeStartY.current = null;
             }}
           >
@@ -1285,18 +1281,7 @@ export default function App() {
             </View>
 
             {isFilterPanelOpen && (
-              <ScrollView 
-                style={isMobile ? styles.mobilePanelVerticalContainer : null} 
-                nestedScrollEnabled={true} 
-                showsVerticalScrollIndicator={true}
-                // 🌟 新增：偵測是否滾動到底部
-                onScroll={(event) => {
-                    const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
-                    const paddingToBottom = 20;
-                    const isBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
-                    setIsPanelScrolledToBottom(isBottom); // 🌟 當滑到底部時，標記為 true
-                }}
-              >
+              <ScrollView style={isMobile ? styles.mobilePanelVerticalContainer : null} nestedScrollEnabled={true} showsVerticalScrollIndicator={true}>
                 <View style={styles.filterColumnsContainer}>
                   <View style={[styles.filterLeftColumn, screenWidth > 900 && styles.filterLeftColumnBorder]}>
                     <View style={styles.panelRow}>
@@ -1550,10 +1535,7 @@ export default function App() {
                 onTouchEnd={(e) => {
                   if (!panelSwipeStartY.current || !isFilterPanelOpen) return;
                   const distance = e.nativeEvent.pageY - panelSwipeStartY.current;
-                  
-                  // 🌟 修正：只有當列表滑到底部，且距離大於 40px 時才收起
-                  if (isPanelScrolledToBottom && distance < -40) setIsFilterPanelOpen(false); // 🌟 貼近人類設計：滑到底部再向上掃才關掉
-
+                  if (distance > 40) setIsFilterPanelOpen(false); // 🌟 手指在底部向上掃（負數超過100px）即自動收起
                   panelSwipeStartY.current = null;
                 }}
               >
