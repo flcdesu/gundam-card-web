@@ -1286,7 +1286,8 @@ export default function App() {
                 </TouchableOpacity>
                 {isSetDropdownOpen && (
                   <View style={[styles.dropdownList, isMobile && { width: '100%' }]}>
-                    <ScrollView style={{ maxHeight: 250 }} nestedScrollEnabled={true} keyboardShouldPersistTaps="handled">
+                    {/* 🌟 修正：加入 showsVerticalScrollIndicator 與 persistentScrollbar 強制顯示滾動條提示 */}
+                    <ScrollView style={{ maxHeight: 250 }} nestedScrollEnabled={true} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={true} persistentScrollbar={true}>
                       {AVAILABLE_SETS.map((setOpt) => (
                         <TouchableOpacity 
                           key={setOpt} 
