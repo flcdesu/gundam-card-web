@@ -1524,23 +1524,23 @@ export default function App() {
                     </View>
                   </View>
                 </View>
-                
-                {/* 🌟 底部新增：額外的下拉手勢空間 (讓用戶滑到底部也能關閉面板) */}
-                {isFilterPanelOpen && isMobile && (
-                  <View 
-                    style={styles.bottomDragSpace} 
-                    onTouchStart={(e) => { bottomSwipeStartY.current = e.nativeEvent.pageY; }}
-                    onTouchEnd={(e) => {
-                      if (!bottomSwipeStartY.current || !isFilterPanelOpen) return;
-                      const distance = e.nativeEvent.pageY - bottomSwipeStartY.current;
-                      if (distance > 40) setIsFilterPanelOpen(false);
-                      bottomSwipeStartY.current = null;
-                    }}
-                  >
-                    <View style={styles.dragHandlePill} />
-                  </View>
-                )}
               </ScrollView>
+            )}
+
+            {/* 🌟 修正：把小灰線移出 ScrollView，讓它永遠貼在白色面板的最底部 */}
+            {isFilterPanelOpen && isMobile && (
+              <View 
+                style={styles.bottomDragSpace} 
+                onTouchStart={(e) => { panelSwipeStartY.current = e.nativeEvent.pageY; }}
+                onTouchEnd={(e) => {
+                  if (!panelSwipeStartY.current || !isFilterPanelOpen) return;
+                  const distance = e.nativeEvent.pageY - panelSwipeStartY.current;
+                  if (distance > 40) setIsFilterPanelOpen(false);
+                  panelSwipeStartY.current = null;
+                }}
+              >
+                <View style={styles.dragHandlePill} />
+              </View>
             )}
           </View>
 
@@ -1790,7 +1790,7 @@ const styles = StyleSheet.create({
   dragHandleContainer: { width: '100%', alignItems: 'center', paddingBottom: 10, paddingTop: 0, marginTop: -6 },
   dragHandlePill: { width: 40, height: 5, backgroundColor: '#cbd5e1', borderRadius: 3 },
   // 🌟 底部新增拉把空間樣式
-  bottomDragSpace: { width: '100%', alignItems: 'center', paddingVertical: 15, marginTop: 10 },
+  bottomDragSpace: { width: '100%', alignItems: 'center', paddingTop: 10, paddingBottom: 0, cursor: 'pointer' },
   
   panelHeaderRow: { flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', paddingRight: 4 },
   
