@@ -4,6 +4,29 @@ import rawCardsData from './cards.json';
 import { cardImages, keywordImages } from './imageDictionary'; 
 const safeKeywordImages = keywordImages || {};
 
+// 🌟 強制注入 Web 專用的客製化捲軸樣式
+if (typeof document !== 'undefined') {
+  const style = document.createElement('style');
+  style.type = 'text/css';
+  style.innerHTML = `
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 8px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f5f9; 
+      border-radius: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background-color: #cbd5e1; 
+      border-radius: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background-color: #94a3b8; 
+    }
+  `;
+  document.head.appendChild(style);
+}
+
 // ====================================================
 // 🌟 核心魔法：異畫卡與重印卡全自動解構分身術
 // ====================================================
@@ -1286,8 +1309,8 @@ export default function App() {
                 </TouchableOpacity>
                 {isSetDropdownOpen && (
                   <View style={[styles.dropdownList, isMobile && { width: '100%' }]}>
-                    {/* 🌟 修正：加入 showsVerticalScrollIndicator 與 persistentScrollbar 強制顯示滾動條提示 */}
-                    <ScrollView style={{ maxHeight: 250 }} nestedScrollEnabled={true} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={true} persistentScrollbar={true}>
+                   {/* 🌟 修正：加入 custom-scrollbar 強制顯示明顯的灰色捲軸 */}
+                    <ScrollView style={{ maxHeight: 250 }} nestedScrollEnabled={true} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={true} persistentScrollbar={true} className="custom-scrollbar">
                       {AVAILABLE_SETS.map((setOpt) => (
                         <TouchableOpacity 
                           key={setOpt} 
