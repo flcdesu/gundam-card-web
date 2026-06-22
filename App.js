@@ -631,7 +631,6 @@ export default function App() {
     const currentSet = (card.set || '').toLowerCase();
     const allValidNames = getAliasNames(card, language).map(n => n.toLowerCase());
     
-    // 🌟 核心引擎重構：完美對齊 3 大共鳴條件的 OR 邏輯檢測器
     if (resonanceMatchId.trim() !== '') {
        const targetId = resonanceMatchId.trim().toLowerCase();
        const baseMatchCard = cardsData.find(c => (c.displayId || c.id).toLowerCase() === targetId);
@@ -660,40 +659,27 @@ export default function App() {
 
        let isResonanceMatch = false;
 
-       // 🌟 統一共鳴比對器
        const evaluateResonance = (linkToParse, pilotCardObj, pilotTraitRaw) => {
            if (!linkToParse || linkToParse === '-') return false;
-           
-           // 解析 Link 內的所有 Case(1) [名稱] 與 Case(2) [特徵]
            const nameConditions = [...linkToParse.matchAll(/「([^」]+)」/g)].map(m => m[1].trim());
            const traitConditions = [...linkToParse.matchAll(/〔([^〕]+)〕/g)].map(m => m[1].trim());
-           
-           // 解析 PILOT 卡的 實際名稱(含化名) 與 實際特徵
            const pilotAliases = getAliasNames(pilotCardObj, language);
            const pilotTraits = ((pilotTraitRaw || '').match(/〔([^〕]+)〕/g) || []).map(t => t.replace(/[〔〕]/g, '').trim());
 
-           // 比對 Case 1
            const hasNameMatch = nameConditions.length > 0 && pilotAliases.some(alias => 
                nameConditions.some(n => alias.includes(n) || n.includes(alias))
            );
-           
-           // 比對 Case 2
            const hasTraitMatch = traitConditions.length > 0 && pilotTraits.some(t => 
                traitConditions.includes(t)
            );
-
            return hasNameMatch || hasTraitMatch;
        };
 
        if (baseIsUnit && targetIsPilot) {
-           // Case A: 查 UNIT，篩選出符合其 link 條件的 PILOT。
            isResonanceMatch = evaluateResonance(baseLinkRaw, card, traitRaw);
        } else if (baseIsPilot && targetIsUnit) {
-           // Case B: 查 PILOT，篩選出其 link 條件包容此 PILOT 的 UNIT。
            isResonanceMatch = evaluateResonance(linkRaw, baseMatchCard, baseTraitRaw);
-       } else {
-           return false; // 同種類不共鳴
-       }
+       } else return false; 
        
        if (!isResonanceMatch) return false;
     }
@@ -805,7 +791,6 @@ export default function App() {
   const handlePrevCard = () => { if (hasPrev) setSelectedCard(filteredCards[currentCardIndex - 1]); };
   const handleNextCard = () => { if (hasNext) setSelectedCard(filteredCards[currentCardIndex + 1]); };
 
-  // 🌟 新增：彈窗防爆手勢 Swipe 邏輯
   const minSwipeDistance = 50;
   const onTouchStart = (e) => { setTouchEnd(null); setTouchStart(e.nativeEvent.pageX); };
   const onTouchMove = (e) => setTouchEnd(e.nativeEvent.pageX);
@@ -1542,10 +1527,8 @@ export default function App() {
 
       <Modal visible={selectedCard !== null} animationType="fade" transparent={true}>
         {selectedCard && (
-          // 🌟 修正：實裝彈窗滑動手勢
           <View style={[styles.modalOverlay, isMobile && { padding: 10 }]} onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEndHandler}>
             
-            {/* 🌟 修正：單箭頭設計 */}
             {!isMobile && <TouchableOpacity style={[styles.floatingArrowButton, styles.leftArrowPosition, !hasPrev && styles.arrowDisabled]} onPress={handlePrevCard} disabled={!hasPrev}><Text style={styles.floatingArrowText}>&lt;</Text></TouchableOpacity>}
             
             <TouchableOpacity activeOpacity={1} style={[styles.modalContentBox, isMobile && { maxHeight: '96%' }]}>
@@ -1574,15 +1557,17 @@ export default function App() {
                   {selectedCard.youtube_url && (
                     <TouchableOpacity style={[styles.ytPromoButton, isMobile && { paddingHorizontal: 6, paddingVertical: 4 }]} onPress={() => Linking.openURL(selectedCard.youtube_url)} activeOpacity={0.8}>
                       <Text style={[styles.ytPromoIcon, isMobile && { fontSize: 10, marginRight: 2 }]}>▶</Text>
-                      <Text style={[styles.ytPromoText, isMobile && { fontSize: 10 }]}>講座</Text>
+                      {/* 🌟 修正：改回卡牌講座 */}
+                      <Text style={[styles.ytPromoText, isMobile && { fontSize: 10 }]}>卡牌講座</Text>
                     </TouchableOpacity>
                   )}
                   <TouchableOpacity style={[styles.closeButton, isMobile && { width: 28, height: 28 }]} onPress={() => { setLastState(null); setSelectedCard(null); }}><Text style={[styles.closeButtonText, isMobile && { fontSize: 14 }]}>X</Text></TouchableOpacity>
                 </View>
               </View>
 
+              {/* 🌟 修正：防擠壓的 padding 調整 */}
               {isMobile && (
-                <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingBottom: 8, borderBottomWidth: 1, borderBottomColor: '#eee', backgroundColor: '#fafafa', flexWrap: 'wrap', gap: 6 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingTop: 10, paddingBottom: 10, borderBottomWidth: 1, borderBottomColor: '#eee', backgroundColor: '#fafafa', flexWrap: 'wrap', gap: 6 }}>
                   <Text style={styles.modalHeaderId}>{selectedCard.displayId}</Text>
                   <Text style={styles.modalHeaderRarity}>{selectedCard.rarity || 'C'}</Text>
                   {selectedCard.isBetaCard && <Text style={[styles.modalHeaderBetaBadge, { marginLeft: 0 }]}>BETA</Text>}
@@ -1597,13 +1582,14 @@ export default function App() {
                 <View style={[styles.modalFlexRow, isMobile && { flexDirection: 'column', alignItems: 'center' }]}>
                   <View style={[styles.modalLeftColumn, isMobile && { marginRight: 0, marginBottom: 15 }]}>
                     
-                    {isMobile && <TouchableOpacity style={[styles.floatingArrowButton, styles.mobileFloatingLeftArrow, !hasPrev && styles.arrowDisabled]} onPress={handlePrevCard} disabled={!hasPrev}><Text style={[styles.floatingArrowText, {fontSize: 14}]}>&lt;</Text></TouchableOpacity>}
+                    {/* 🌟 修正：箭頭往外推至 -15 */}
+                    {isMobile && <TouchableOpacity style={[styles.floatingArrowButton, styles.mobileFloatingLeftArrow, !hasPrev && styles.arrowDisabled]} onPress={handlePrevCard} disabled={!hasPrev}><Text style={[styles.floatingArrowText, {fontSize: 18}]}>&lt;</Text></TouchableOpacity>}
                     
                     {cardImages[selectedCard.id] ? 
                       <Image source={{ uri: cardImages[selectedCard.id] }} style={[styles.cardImage, isMobile && { width: 250, height: 347 }]} resizeMode="contain" /> 
                       : <View style={[styles.cardImage, styles.noImagePlaceholder, isMobile && { width: 250, height: 347 }]}><Text style={styles.noImageText}>圖片準備中</Text></View>}
                       
-                    {isMobile && <TouchableOpacity style={[styles.floatingArrowButton, styles.mobileFloatingRightArrow, !hasNext && styles.arrowDisabled]} onPress={handleNextCard} disabled={!hasNext}><Text style={[styles.floatingArrowText, {fontSize: 14}]}>&gt;</Text></TouchableOpacity>}
+                    {isMobile && <TouchableOpacity style={[styles.floatingArrowButton, styles.mobileFloatingRightArrow, !hasNext && styles.arrowDisabled]} onPress={handleNextCard} disabled={!hasNext}><Text style={[styles.floatingArrowText, {fontSize: 18}]}>&gt;</Text></TouchableOpacity>}
                   </View>
 
                   <View style={[styles.modalRightColumn, isMobile && { minWidth: '100%' }]}>
@@ -1749,7 +1735,8 @@ const styles = StyleSheet.create({
   dropdownItemText: { fontSize: 13, color: '#475569' },
 
   searchInputWrapper: { flex: 1, minWidth: 260, maxWidth: 350, flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderRadius: 20, paddingLeft: 14, paddingRight: 6, height: 38, borderWidth: 1, borderColor: '#e2e8f0' },
-  officialSearchInput: { flex: 1, height: '100%', fontSize: 13, color: '#1e293b', outlineWidth: 0 },
+  // 🌟 修正：輸入框字體設定為 16px 以上，避免 iOS Safari 自動放大
+  officialSearchInput: { flex: 1, height: '100%', fontSize: 16, color: '#1e293b', outlineWidth: 0 },
   searchIconButton: { paddingHorizontal: 12, height: 28, borderRadius: 14, backgroundColor: '#376171', justifyContent: 'center', alignItems: 'center', cursor: 'pointer' },
   searchIconText: { fontSize: 11, color: '#fff', fontWeight: 'bold' },
   officialResetButton: { paddingHorizontal: 16, height: 38, borderRadius: 19, backgroundColor: '#111827', justifyContent: 'center', alignItems: 'center', cursor: 'pointer', borderWidth: 1, borderColor: '#374151' },
@@ -1810,10 +1797,12 @@ const styles = StyleSheet.create({
 
   filterChipWithInput: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#f1f5f9', borderRadius: 12, borderWidth: 1, borderColor: '#e2e8f0', overflow: 'hidden' },
   filterChipInner: { paddingHorizontal: 11, paddingVertical: 5, cursor: 'pointer' },
-  keywordValInput: { width: 24, height: '100%', fontSize: 12, textAlign: 'center', color: '#1e293b', borderLeftWidth: 1, borderLeftColor: '#cbd5e1', outlineWidth: 0 },
+  // 🌟 修正：輸入框字體設定為 16px 以上
+  keywordValInput: { width: 24, height: '100%', fontSize: 16, textAlign: 'center', color: '#1e293b', borderLeftWidth: 1, borderLeftColor: '#cbd5e1', outlineWidth: 0 },
   keywordValInputActive: { color: '#ffffff', borderLeftColor: '#475569' },
 
-  traitShortInput: { width: 180, height: 32, backgroundColor: '#ffffff', borderRadius: 16, paddingHorizontal: 14, borderWidth: 1, borderColor: '#cbd5e1', fontSize: 12, outlineWidth: 0, color: '#1e293b', marginRight: 8 },
+  // 🌟 修正：輸入框字體設定為 16px 以上
+  traitShortInput: { width: 180, height: 32, backgroundColor: '#ffffff', borderRadius: 16, paddingHorizontal: 14, borderWidth: 1, borderColor: '#cbd5e1', fontSize: 16, outlineWidth: 0, color: '#1e293b', marginRight: 8 },
   traitResetButton: { paddingHorizontal: 12, height: 32, borderRadius: 16, backgroundColor: '#111827', justifyContent: 'center', alignItems: 'center', cursor: 'pointer', borderWidth: 1, borderColor: '#000000' },
   traitResetButtonText: { fontSize: 11, color: '#ffffff', fontWeight: 'bold', letterSpacing: 0.5 },
 
@@ -1847,8 +1836,9 @@ const styles = StyleSheet.create({
   floatingArrowButton: { position: 'absolute', top: '50%', marginTop: -27, width: 54, height: 54, borderRadius: 27, backgroundColor: 'rgba(0, 0, 0, 0.6)', justifyContent: 'center', alignItems: 'center', cursor: 'pointer', zIndex: 999999 },
   leftArrowPosition: { left: 40 },
   rightArrowPosition: { right: 40 },
-  mobileFloatingLeftArrow: { left: 5, width: 44, height: 44, borderRadius: 22, marginTop: -22 },
-  mobileFloatingRightArrow: { right: 5, width: 44, height: 44, borderRadius: 22, marginTop: -22 },
+  // 🌟 修正 3：把箭頭外推，減少遮擋
+  mobileFloatingLeftArrow: { left: -15, width: 44, height: 44, borderRadius: 22, marginTop: -22 },
+  mobileFloatingRightArrow: { right: -15, width: 44, height: 44, borderRadius: 22, marginTop: -22 },
 
   floatingArrowText: { color: '#ffffff', fontSize: 18, fontWeight: 'bold', letterSpacing: -1 },
   arrowDisabled: { opacity: 0.15, cursor: 'default' },
