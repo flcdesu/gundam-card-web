@@ -1564,7 +1564,7 @@ export default function App() {
 
       <Modal visible={selectedCard !== null} animationType="fade" transparent={true}>
         {selectedCard && (
-          <View style={[styles.modalOverlay, isMobile && { padding: 10 }]} onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEndHandler}>
+          <View style={[styles.modalOverlay, isMobile && { padding: 10 }]}>
             
             {!isMobile && <TouchableOpacity style={[styles.floatingArrowButton, styles.leftArrowPosition, !hasPrev && styles.arrowDisabled]} onPress={handlePrevCard} disabled={!hasPrev}><Text style={styles.floatingArrowText}>&lt;</Text></TouchableOpacity>}
             
