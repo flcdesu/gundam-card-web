@@ -1257,14 +1257,10 @@ export default function App() {
             onTouchStart={(e) => { panelSwipeStartY.current = e.nativeEvent.pageY; }}
             onTouchEnd={(e) => {
               if (!panelSwipeStartY.current || !isFilterPanelOpen) return;
-              const distance = e.nativeEvent.pageY - panelSwipeStartY.current;
-<<<<<<< Updated upstream
-              if (distance > 40) setIsFilterPanelOpen(false); // 🌟 頂部同樣改為向上掃收起，物理邏輯完美統一！
-=======
-              if (distance > 40) setIsFilterPanelOpen(false); // 🌟 reverse direction
->>>>>>> Stashed changes
-              panelSwipeStartY.current = null;
-            }}
+                const distance = e.nativeEvent.pageY - panelSwipeStartY.current;
+                if (distance > 40) setIsFilterPanelOpen(false);
+                panelSwipeStartY.current = null;
+              }}
           >
             {isFilterPanelOpen && isMobile && (
               <View style={styles.dragHandleContainer}>
