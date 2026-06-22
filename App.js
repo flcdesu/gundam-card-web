@@ -1565,8 +1565,11 @@ export default function App() {
       <Modal visible={selectedCard !== null} animationType="fade" transparent={true}>
         {selectedCard && (
           <View style={[styles.modalOverlay, isMobile && { padding: 10 }]}>
+            {/* 🌟 左箭嘴：強制固定在左側 4px 處 */}
+            <TouchableOpacity style={[styles.floatingArrowButton, isMobile ? { left: 4, width: 42, height: 42, borderRadius: 21, marginTop: -21, backgroundColor: 'rgba(0,0,0,0.7)' } : styles.leftArrowPosition, !hasPrev && styles.arrowDisabled]} onPress={handlePrevCard} disabled={!hasPrev}>
+              <Text style={[styles.floatingArrowText, isMobile && {fontSize: 18}]}>&lt;</Text>
+            </TouchableOpacity>
             
-            <TouchableOpacity style={[styles.floatingArrowButton, styles.leftArrowPosition, isMobile && styles.mobileFloatingLeftArrow, !hasPrev && styles.arrowDisabled]} onPress={handlePrevCard} disabled={!hasPrev}><Text style={[styles.floatingArrowText, isMobile && {fontSize: 18}]}>&lt;</Text></TouchableOpacity>
 
             <TouchableOpacity activeOpacity={1} style={[styles.modalContentBox, isMobile && { maxHeight: '96%' }]}>
               
@@ -1720,7 +1723,10 @@ export default function App() {
               </ScrollView>
             </TouchableOpacity>
             
-            {!isMobile && <TouchableOpacity style={[styles.floatingArrowButton, styles.rightArrowPosition, !hasNext && styles.arrowDisabled]} onPress={handleNextCard} disabled={!hasNext}><Text style={styles.floatingArrowText}>&gt;</Text></TouchableOpacity>}
+            {/* 🌟 右箭嘴：強制固定在右側 4px 處 */}
+            <TouchableOpacity style={[styles.floatingArrowButton, isMobile ? { right: 4, width: 42, height: 42, borderRadius: 21, marginTop: -21, backgroundColor: 'rgba(0,0,0,0.7)' } : styles.rightArrowPosition, !hasNext && styles.arrowDisabled]} onPress={handleNextCard} disabled={!hasNext}>
+              <Text style={[styles.floatingArrowText, isMobile && {fontSize: 18}]}>&gt;</Text>
+            </TouchableOpacity>
           </View>
         )}
       </Modal>
