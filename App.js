@@ -1535,6 +1535,10 @@ export default function App() {
         <FlatList
           ref={flatListRef}
           onScroll={(e) => setCurrentScrollY(e.nativeEvent.contentOffset.y)}
+          onScrollBeginDrag={() => {
+            // 🌟 選項A魔法：當用家手指碰到卡牌列表並開始滑動時，立刻收起面板
+            if (isMobile && isFilterPanelOpen) setIsFilterPanelOpen(false); 
+          }}
           scrollEventThrottle={16}
           key={numColumns} data={filteredCards} keyExtractor={(item, index) => item.id || index.toString()}
           renderItem={({ item }) => <CardGridItem item={item} dynamicCardWidth={dynamicCardWidth} language={language} onPress={(i) => { setLastState(null); setSelectedCard(i); }} isMobile={isMobile} />}
@@ -1776,7 +1780,7 @@ const styles = StyleSheet.create({
   dragHandlePill: { width: 40, height: 5, backgroundColor: '#cbd5e1', borderRadius: 3 },
   
   panelHeaderRow: { flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', paddingRight: 4 },
-  
+
   panelTitleToggleClickable: { flexDirection: 'row', alignItems: 'center', gap: 8, cursor: 'pointer', flex: 1, paddingVertical: 4 },
   panelMainTitle: { fontSize: 17, fontWeight: 'bold', color: '#1a2a3a', letterSpacing: 1 }, 
   panelToggleIndicatorText: { fontSize: 13, color: '#475569', fontWeight: '600' },
@@ -1784,7 +1788,7 @@ const styles = StyleSheet.create({
   panelResetBtn: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 14, backgroundColor: '#111827', borderWidth: 1, borderColor: '#000000', cursor: 'pointer', marginLeft: 16 },
   panelResetBtnText: { fontSize: 12, color: '#ffffff', fontWeight: 'bold', letterSpacing: 0.5 },
 
-  mobilePanelVerticalContainer: { maxHeight: 320, overflowY: 'auto' },
+  mobilePanelVerticalContainer: { maxHeight: 250, overflowY: 'auto' },
   filterColumnsContainer: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start', gap: 20 },
   
   filterLeftColumn: { flex: 1, minWidth: 280 },
