@@ -1309,7 +1309,6 @@ export default function App() {
                 </TouchableOpacity>
                 {isSetDropdownOpen && (
                   <View style={[styles.dropdownList, isMobile && { width: '100%' }]}>
-                   {/* 🌟 修正：加入 custom-scrollbar 強制顯示明顯的灰色捲軸 */}
                     <ScrollView style={{ maxHeight: 250 }} nestedScrollEnabled={true} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={true} persistentScrollbar={true} className="custom-scrollbar">
                       {AVAILABLE_SETS.map((setOpt) => (
                         <TouchableOpacity 
@@ -1319,13 +1318,10 @@ export default function App() {
                             setSelectedSet(setOpt); 
                             setIsSetDropdownOpen(false);
                             
-                            // 🌟 新增：BETA 與常規彈的雙向聯動切換魔法
                             if (setOpt && setOpt.includes('Ver.β')) {
-                              // 選到 BETA 彈，切換為 BETA 模式
                               setIncludeRegular(false);
                               setIncludeBeta(true);
                             } else {
-                              // 選到其他彈或「全部」，自動切回預設常規模式
                               setIncludeRegular(true);
                               setIncludeBeta(false);
                             }
@@ -1335,6 +1331,13 @@ export default function App() {
                         </TouchableOpacity>
                       ))}
                     </ScrollView>
+
+                    {/* 🌟 方案 B：手機版專屬下拉提示漸層與箭頭 */}
+                    {isMobile && (
+                      <View style={styles.dropdownScrollHint} pointerEvents="none">
+                        <Text style={styles.dropdownScrollHintText}>▼ 向下滑動</Text>
+                      </View>
+                    )}
                   </View>
                 )}
               </View>
@@ -1915,6 +1918,10 @@ const styles = StyleSheet.create({
   dropdownItem: { paddingVertical: 10, paddingHorizontal: 14, cursor: 'pointer' },
   dropdownItemActive: { backgroundColor: '#376171' },
   dropdownItemText: { fontSize: 13, color: '#475569' },
+
+  // 🌟 新增：方案 B 的漸層提示樣式
+  dropdownScrollHint: { position: 'absolute', bottom: 0, left: 0, right: 0, height: 35, backgroundImage: 'linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.95) 100%)', justifyContent: 'flex-end', alignItems: 'center', paddingBottom: 6, borderBottomLeftRadius: 12, borderBottomRightRadius: 12 },
+  dropdownScrollHintText: { fontSize: 10, color: '#64748b', fontWeight: 'bold', letterSpacing: 1 },
 
   searchInputWrapper: { flex: 1, minWidth: 260, maxWidth: 350, flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderRadius: 20, paddingLeft: 14, paddingRight: 6, height: 38, borderWidth: 1, borderColor: '#e2e8f0' },
   officialSearchInput: { flex: 1, height: '100%', fontSize: 16, color: '#1e293b', outlineWidth: 0 },
