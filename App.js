@@ -397,6 +397,7 @@ export default function App() {
   
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
+  const panelSwipeStartY = useRef(null); // 🌟 新增：用於記錄面板下拉的手勢起點
 
   const [language, setLanguage] = useState('hk'); 
   const [selectedColors, setSelectedColors] = useState(['all']);
@@ -1250,17 +1251,33 @@ export default function App() {
           </View>
 
           <View style={[styles.bottomFilterSection, !isFilterPanelOpen && { paddingVertical: 10 }]}>
-            <View style={[styles.panelHeaderRow, isFilterPanelOpen && { marginBottom: 12 }]}>
-              <TouchableOpacity style={styles.panelTitleToggleClickable} onPress={() => setIsFilterPanelOpen(!isFilterPanelOpen)} activeOpacity={0.7}>
-                <Text style={styles.panelMainTitle}>篩選卡牌</Text>
-                <Text style={styles.panelToggleIndicatorText}>{isFilterPanelOpen ? '▲ 收起' : '▼ 展開'}</Text>
-              </TouchableOpacity>
-              
-              {isFilterPanelOpen && (
-                <TouchableOpacity style={styles.panelResetBtn} onPress={handleResetFilters}>
-                  <Text style={styles.panelResetBtnText}>重置面板</Text>
-                </TouchableOpacity>
+            {/* 🌟 新增：手勢感應區塊與 Drag Handle */}
+            <View 
+              onTouchStart={(e) => { panelSwipeStartY.current = e.nativeEvent.pageY; }}
+              onTouchEnd={(e) => {
+                if (!panelSwipeStartY.current || !isFilterPanelOpen) return;
+                const distance = e.nativeEvent.pageY - panelSwipeStartY.current;
+                if (distance > 40) setIsFilterPanelOpen(false); // 大力向下滑動超過 40px 即自動收起
+                panelSwipeStartY.current = null;
+              }}
+            >
+              {isFilterPanelOpen && isMobile && (
+                <View style={styles.dragHandleContainer}>
+                  <View style={styles.dragHandlePill} />
+                </View>
               )}
+              <View style={[styles.panelHeaderRow, isFilterPanelOpen && { marginBottom: 12 }]}>
+                <TouchableOpacity style={styles.panelTitleToggleClickable} onPress={() => setIsFilterPanelOpen(!isFilterPanelOpen)} activeOpacity={0.7}>
+                  <Text style={styles.panelMainTitle}>篩選卡牌</Text>
+                  <Text style={styles.panelToggleIndicatorText}>{isFilterPanelOpen ? '▲ 收起' : '▼ 展開'}</Text>
+                </TouchableOpacity>
+                
+                {isFilterPanelOpen && (
+                  <TouchableOpacity style={styles.panelResetBtn} onPress={handleResetFilters}>
+                    <Text style={styles.panelResetBtnText}>重置面板</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
             </View>
 
             {isFilterPanelOpen && (
@@ -1753,6 +1770,11 @@ const styles = StyleSheet.create({
   backToCardBtnText: { fontSize: 12, color: '#ffffff', fontWeight: 'bold', letterSpacing: 0.5 },
 
   bottomFilterSection: { backgroundColor: 'rgba(211, 224, 227, 0.45)', borderRadius: 24, paddingVertical: 16, paddingHorizontal: 25, zIndex: 900 },
+  
+  // 🌟 新增：Drag Handle 小橫條樣式
+  dragHandleContainer: { width: '100%', alignItems: 'center', paddingBottom: 10, paddingTop: 0, marginTop: -6 },
+  dragHandlePill: { width: 40, height: 5, backgroundColor: '#cbd5e1', borderRadius: 3 },
+  
   panelHeaderRow: { flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', paddingRight: 4 },
   
   panelTitleToggleClickable: { flexDirection: 'row', alignItems: 'center', gap: 8, cursor: 'pointer', flex: 1, paddingVertical: 4 },
