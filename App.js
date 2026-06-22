@@ -1535,7 +1535,7 @@ export default function App() {
                 onTouchEnd={(e) => {
                   if (!panelSwipeStartY.current || !isFilterPanelOpen) return;
                   const distance = e.nativeEvent.pageY - panelSwipeStartY.current;
-                  if (distance < -40) setIsFilterPanelOpen(false); // 🌟 向上滑動(負數)超過 40px 收起
+                  if (distance < 40) setIsFilterPanelOpen(false); // 🌟 向上滑動(負數)超過 40px 收起
                   panelSwipeStartY.current = null;
                 }}
               >
