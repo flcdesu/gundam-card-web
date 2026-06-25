@@ -10,15 +10,15 @@
     "react-dom": "19.2.3",
     "react-native": "0.85.3",
     "react-native-web": "^0.21.2",
-    "sharp": "^0.35.1",
+    "sharp": "^0.35.2",
     "xlsx": "^0.18.5"
   },
   "scripts": {
-  "update-data": "node excelToJson.js && node cleanImages.js && node generateDict.js",
-  "start": "npm run update-data && expo start",
-  "android": "npm run update-data && expo start --android",
-  "ios": "npm run update-data && expo start --ios",
-  "web": "npm run update-data && expo start --web"
-},
+    "update-data": "node excelToJson.js && node cleanImages.js && node generateDict.js",
+    "start": "npm run update-data && expo start",
+    "android": "npm run update-data && expo start --android",
+    "ios": "npm run update-data && expo start --ios",
+    "web": "npm run update-data && expo start --web"
+  },
   "private": true
 }
