@@ -1367,7 +1367,7 @@ export default function App() {
           }}
           scrollEventThrottle={16}
           key={numColumns} data={filteredCards} keyExtractor={(item, index) => item.id || index.toString()}
-          renderItem={({ item }) => <CardGridItem item={item} dynamicCardWidth={dynamicCardWidth} language={language} onPress={(i) => { setLastState(null); setSelectedCard(i); }} isMobile={isMobile} />}
+          renderItem={({ item }) => <CardGridItem item={item} dynamicCardWidth={dynamicCardWidth} language={language} onPress={(i) => { setSelectedCard(i); }} isMobile={isMobile} />}
           numColumns={numColumns} ListEmptyComponent={<Text style={styles.emptyText}>找不到符合的卡片</Text>} contentContainerStyle={{ paddingBottom: 20 }}
         />
       </View>
