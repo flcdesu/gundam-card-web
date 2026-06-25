@@ -57,6 +57,7 @@ export default function App() {
 
   const [selectedCard, setSelectedCard] = useState(null);
   const [lastState, setLastState] = useState(null);
+  const [isCopied, setIsCopied] = useState(false);
 
   const flatListRef = useRef(null);
   const modalScrollRef = useRef(null); 
@@ -236,6 +237,15 @@ export default function App() {
     });
     setSelectedCard(null);
     if (flatListRef.current) flatListRef.current.scrollToOffset({ offset: 0, animated: false });
+  };
+
+  const handleCopyLink = () => {
+    if (typeof window !== 'undefined') {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000);
+      });
+    }
   };
 
   useEffect(() => {
@@ -1419,6 +1429,15 @@ export default function App() {
                 )}
                 
                 <View style={[styles.modalTopRightControls, isMobile && { gap: 4, flexShrink: 0 }]}>
+                  {/* 🌟 複製連結按鈕 */}
+                    <TouchableOpacity 
+                      style={[styles.ytPromoButton, { backgroundColor: isCopied ? '#22c55e' : '#475569' }, isMobile && { paddingHorizontal: 6, paddingVertical: 4 }]} 
+                      onPress={handleCopyLink} 
+                      activeOpacity={0.8}
+                    >
+                      <Text style={[styles.ytPromoText, isMobile && { fontSize: 10 }]}>{isCopied ? '✅' : '🔗'}</Text>
+                    </TouchableOpacity>
+                
                   {selectedCard.youtube_url && (
                     <TouchableOpacity style={[styles.ytPromoButton, isMobile && { paddingHorizontal: 6, paddingVertical: 4 }]} onPress={() => Linking.openURL(selectedCard.youtube_url)} activeOpacity={0.8}>
                       <Text style={[styles.ytPromoIcon, isMobile && { fontSize: 10, marginRight: 2 }]}>▶</Text>
