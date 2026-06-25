@@ -18,7 +18,8 @@ function getAllImageFiles(dirPath, arrayOfFiles) {
         if (fs.statSync(fullPath).isDirectory()) {
             arrayOfFiles = getAllImageFiles(fullPath, arrayOfFiles);
         } else {
-            if (file.toLowerCase().endsWith('.png') || file.toLowerCase().endsWith('.jpg')) {
+            // 🌟 修正：加入對 .webp 檔案的掃描支援
+            if (/\.(png|jpg|jpeg|webp)$/i.test(file)) {
                 // 🌟 核心改變：不再使用 require()，直接存成相對網址路徑
                 const relativeUrl = fullPath.replace('public\\', '').replace('public/', '/').replace(/\\/g, '/');
                 // 確保路徑是以 / 開頭
