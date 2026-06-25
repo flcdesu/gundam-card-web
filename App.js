@@ -132,9 +132,42 @@ export default function App() {
   const marginSpace = isMobile ? (numColumns * 6) : (numColumns * 10);
   const dynamicCardWidth = (screenWidth - paddingSpace - marginSpace) / numColumns;
 
+  // 🌟 新功能 1：網頁初次載入時，攔截 URL 並自動彈出卡片 Modal
   useEffect(() => {
-    if (selectedCard && modalScrollRef.current) {
-      modalScrollRef.current.scrollTo({ y: 0, animated: false });
+    if (typeof window !== 'undefined') {
+      const path = window.location.pathname;
+      // 支援兩種寫法： /card/GD01-001 或 /?card=GD01-001
+      const urlParams = new URLSearchParams(window.location.search);
+      let targetId = urlParams.get('card');
+
+      if (path.startsWith('/card/')) {
+        targetId = path.split('/card/')[1];
+      }
+
+      if (targetId) {
+        // 尋找對應的卡片 (忽略大小寫以防萬一)
+        const targetCard = cardsData.find(c => 
+          (c.displayId && c.displayId.toLowerCase() === targetId.toLowerCase()) || 
+          (c.id && c.id.toLowerCase() === targetId.toLowerCase())
+        );
+        if (targetCard) {
+          setSelectedCard(targetCard);
+        }
+      }
+    }
+  }, []);
+
+  // 🌟 新功能 2：當玩家點擊卡片或關閉 Modal 時，靜默更新網址列
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if (selectedCard) {
+        // 玩家打開卡片，把網址換成專屬連結 (使用 replaceState 不會製造多餘的上一步歷史紀錄)
+        const targetId = selectedCard.displayId || selectedCard.id;
+        window.history.replaceState(null, '', `/card/${targetId}`);
+      } else {
+        // 玩家關閉卡片，把網址退回首頁乾淨狀態
+        window.history.replaceState(null, '', '/');
+      }
     }
   }, [selectedCard]);
 
