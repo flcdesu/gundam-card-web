@@ -555,7 +555,7 @@ export default function App() {
       if (!selectedCard) return; 
       if (event.key === 'ArrowLeft') handlePrevCard();
       else if (event.key === 'ArrowRight') handleNextCard();
-      else if (event.key === 'Escape') { setLastState(null); setSelectedCard(null); }
+      else if (event.key === 'Escape') { setSelectedCard(null); }
     };
     document.addEventListener('keydown', handleGlobalKeyDown);
     return () => document.removeEventListener('keydown', handleGlobalKeyDown);
@@ -1385,6 +1385,21 @@ export default function App() {
               
               <View style={[styles.modalTopBar, isMobile && { paddingHorizontal: 8, paddingVertical: 8, flexWrap: 'nowrap', gap: 4 }]}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: isMobile ? 4 : 8, flexShrink: 1 }}>
+                  
+                  {/* 🌟 終極 UX 升級：在卡片詳情裡直接顯示返回上一層的按鈕 */}
+                  {lastState && (
+                    <TouchableOpacity 
+                      style={[styles.backToCardBtn, { backgroundColor: '#334155', marginRight: 4 }, isMobile && { height: 28, paddingHorizontal: 8 }]} 
+                      onPress={restoreHistoryState} 
+                      activeOpacity={0.8}
+                    >
+                      <Text style={[styles.backToCardBtnText, { color: '#fff' }, isMobile && { fontSize: 10 }]}>
+                        🔙 返回 ({lastState.card.displayId || lastState.card.id})
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+
+                  {/* 🌟 修復的語系按鈕區塊 (已經移除重複的標籤) */}
                   <View style={[styles.langButtonGroup, isMobile && { padding: 2 }]}>
                     <TouchableOpacity style={[styles.langBtn, language === 'hk' ? styles.langBtnActive : styles.langBtnInactive, isMobile && { paddingHorizontal: 8, paddingVertical: 4 }]} onPress={() => setLanguage('hk')} activeOpacity={0.8}><Text style={[styles.langBtnText, isMobile && { fontSize: 11 }]}>港譯</Text></TouchableOpacity>
                     <TouchableOpacity style={[styles.langBtn, language === 'tw' ? styles.langBtnActive : styles.langBtnInactive, isMobile && { paddingHorizontal: 8, paddingVertical: 4 }]} onPress={() => setLanguage('tw')} activeOpacity={0.8}><Text style={[styles.langBtnText, isMobile && { fontSize: 11 }]}>台譯</Text></TouchableOpacity>
@@ -1410,7 +1425,8 @@ export default function App() {
                       <Text style={[styles.ytPromoText, isMobile && { fontSize: 10 }]}>卡牌講座</Text>
                     </TouchableOpacity>
                   )}
-                  <TouchableOpacity style={[styles.closeButton, isMobile && { width: 28, height: 28 }]} onPress={() => { setLastState(null); setSelectedCard(null); }}><Text style={[styles.closeButtonText, isMobile && { fontSize: 14 }]}>X</Text></TouchableOpacity>
+                  {/* 🌟 已經修復失憶咒的關閉按鈕 */}
+                  <TouchableOpacity style={[styles.closeButton, isMobile && { width: 28, height: 28 }]} onPress={() => { setSelectedCard(null); }}><Text style={[styles.closeButtonText, isMobile && { fontSize: 14 }]}>X</Text></TouchableOpacity>
                 </View>
               </View>
 
@@ -1529,7 +1545,6 @@ export default function App() {
                       </TouchableOpacity>
                     </View>
                     
-                    {/* 🌟 新增：登場作品顯示區塊，可點擊連動篩選 */}
                     <View style={styles.officialSectionDivider}>
                       <Text style={styles.sectionTitle}>登場作品</Text>
                       <TouchableOpacity activeOpacity={0.7} onPress={() => handleSeriesClick(selectedCard[`series_${language}`] || selectedCard.series_source)}>
@@ -1554,4 +1569,3 @@ export default function App() {
     </SafeAreaView>
   );
 }
-
