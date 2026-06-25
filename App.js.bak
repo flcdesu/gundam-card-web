@@ -1,30 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { StyleSheet, Text, View, TextInput, SafeAreaView, FlatList, TouchableOpacity, Image, Modal, ScrollView, Dimensions, Linking, TouchableWithoutFeedback } from 'react-native';
-
-// ====== 從模組化檔案 import ======
-import styles from './src/styles';
-import {
-  OPTIMAL_CARD_WIDTH, STATUS_COLORS_JSON, STATUS_THEME_STYLES,
-  COLOR_OPTIONS, COLOR_TRANSLATION_MAP, TYPE_OPTIONS, RARITY_OPTIONS,
-  VERSION_OPTIONS, RESONANCE_OPTIONS, KEYWORD_OPTIONS, TIMING_OPTIONS,
-  TYPE_NAME_MAP
-} from './src/constants';
-import { cardsData, cardImages, keywordImages, AVAILABLE_SETS } from './src/data/cardDatabase';
-import {
-  SINGLE_TARGET, TARGET_TYPES, TRAIT_GROUP, STAT_COND, NAME_COND,
-  KEYWORD_COND, STATUS_WORD_COND, COLOR_COND, FACTION_COND,
-  EXCLUDE_COND, RIDING_COND, PLAYER_LV_COND, SMART_PREFIX,
-  SMART_COND_STR, SELF_COMPLEX_COND_STR, PURE_RESONANCE_TARGET,
-  SELF_RESONANCE_STR, SELF_TRAIT_STR, SELF_COLOR_STR, TOKEN_REGEX,
-  MASTER_SPLIT_REGEX, INNER_SPLIT_REGEX,
-  IS_SMART_REGEX, IS_PURE_RESONANCE_REGEX, IS_SELF_RESONANCE_REGEX,
-  IS_SELF_TRAIT_REGEX, IS_SELF_COLOR_REGEX, IS_SELF_COMPLEX_REGEX,
-  IS_STAT_COND_REGEX, IS_PLAYER_LV_REGEX
-} from './src/logic/regexPatterns';
-import { resolveCardTypes, getAliasNames } from './src/logic/searchHelpers';
-import CardGridItem from './src/components/CardGridItem';
-import RangeTrack from './src/components/RangeTrack';
-
+import rawCardsData from './cards.json'; 
+import { cardImages, keywordImages } from './imageDictionary'; 
 const safeKeywordImages = keywordImages || {};
 
 // 🌟 強制注入 Web 專用的客製化捲軸樣式
@@ -49,6 +26,406 @@ if (typeof document !== 'undefined') {
   `;
   document.head.appendChild(style);
 }
+
+// ====================================================
+// 🌟 核心魔法：異畫卡與重印卡全自動解構分身術
+// ====================================================
+const generateFullCardDatabase = () => {
+  const baseCards = rawCardsData.map(card => {
+      let isAlt = false;
+      if ((card.isLimitedCard || card.isPromoCard) && card.rarity) {
+          if (card.rarity.includes('+') || card.rarity.toUpperCase().includes('SP')) {
+              isAlt = true;
+          }
+      }
+
+      // 🌟 Beta卡完美繼承母卡登場作品邏輯
+      let series_hk = card.series_hk;
+      let series_tw = card.series_tw;
+      let series_source = card.series_source;
+      let series_sort = card.series_sort;
+      
+      if (card.isBetaCard) {
+          const baseId = card.id.replace('_BETA', '');
+          const baseCard = rawCardsData.find(c => c.id === baseId);
+          if (baseCard && (!series_source || series_source === '-' || series_source === '其他' || series_source === 'その他')) {
+              series_hk = baseCard.series_hk;
+              series_tw = baseCard.series_tw;
+              series_source = baseCard.series_source;
+              series_sort = baseCard.series_sort;
+          }
+      }
+
+      return { 
+          ...card, 
+          series_hk,
+          series_tw,
+          series_source,
+          series_sort,
+          _isAltArt: isAlt, 
+          _isReprint: false,
+          displayId: card.displayId || card.id.replace('_BETA', '')
+      };
+  });
+  
+  const generatedCards = [];
+
+  Object.keys(cardImages).forEach(imageKey => {
+    if (baseCards.some(c => c.id === imageKey)) return;
+
+    const isReprintToken = imageKey.includes('_RE_');
+    let baseId = imageKey;
+    let targetSetShort = null;
+    let targetSetFull = null; 
+    let raritySuffix = null;
+    let isAltArt = false;
+    let isReprint = false;
+
+    if (isReprintToken) {
+      isReprint = true;
+      const parts = imageKey.split('_RE_'); 
+      baseId = parts[0];
+      const rightPart = parts[1]; 
+      
+      if (rightPart.includes('_')) {
+        const subParts = rightPart.split('_'); 
+        targetSetShort = subParts[0];
+        raritySuffix = subParts.slice(1).join(' '); 
+        isAltArt = true;
+      } else {
+        targetSetShort = rightPart;
+      }
+
+      const referenceCard = baseCards.find(c => c.id && c.id.startsWith(`${targetSetShort}-`));
+      targetSetFull = referenceCard && referenceCard.set ? referenceCard.set : targetSetShort;
+    } 
+    else {
+      if (imageKey.includes('_BETA_')) {
+          isAltArt = true;
+          const parts = imageKey.split('_BETA_');
+          baseId = parts[0] + '_BETA'; 
+          raritySuffix = parts[1].replace(/_/g, ' '); 
+      } 
+      else if (imageKey.includes('_')) {
+        isAltArt = true;
+        const parts = imageKey.split('_');
+        baseId = parts[0];
+        raritySuffix = parts.slice(1).join(' '); 
+      }
+    }
+
+    const baseCard = baseCards.find(c => c.id === baseId);
+    if (baseCard) {
+      let finalRarity = baseCard.rarity || "C";
+      if (isAltArt && raritySuffix) {
+        let displaySuffix = raritySuffix.toUpperCase();
+        if (displaySuffix.includes('PLUSPLUS')) displaySuffix = displaySuffix.replace('PLUSPLUS', ' ++');
+        else if (displaySuffix.includes('PLUS')) displaySuffix = displaySuffix.replace('PLUS', ' +');
+        finalRarity = `${displaySuffix}`;
+      }
+
+      generatedCards.push({
+        ...baseCard,
+        id: imageKey,                               
+        displayId: baseCard.displayId, 
+        set: isReprint ? targetSetFull : baseCard.set, 
+        rarity: finalRarity,
+        _isAltArt: isAltArt,
+        _isReprint: isReprint,
+        isBetaCard: baseCard.isBetaCard || false,
+        isLimitedCard: baseCard.isLimitedCard || false,
+        isPromoCard: baseCard.isPromoCard || false
+      });
+    }
+  });
+
+  return [...baseCards, ...generatedCards];
+};
+
+const getPrefixOrder = (id) => {
+  const match = id.match(/^([A-Za-z]+)/); 
+  if (!match) return 999;
+  const prefix = match[1].toUpperCase();
+  const orderPriority = ['ST', 'GD', 'EB', 'T']; 
+  const index = orderPriority.indexOf(prefix);
+  return index === -1 ? 999 : index; 
+};
+
+const baseCardsData = generateFullCardDatabase();
+const cardsData = [...baseCardsData].sort((a, b) => {
+  const idA = a.displayId || a.id;
+  const idB = b.displayId || b.id;
+  if (getPrefixOrder(idA) !== getPrefixOrder(idB)) return getPrefixOrder(idA) - getPrefixOrder(idB);
+  
+  const idCompare = idA.localeCompare(idB, undefined, { numeric: true, sensitivity: 'base' });
+  if (idCompare !== 0) return idCompare;
+
+  if (a.isBetaCard !== b.isBetaCard) return a.isBetaCard ? 1 : -1;
+  if (a._isAltArt !== b._isAltArt) return a._isAltArt ? 1 : -1;
+  if (a._isReprint !== b._isReprint) return a._isReprint ? 1 : -1;
+  return 0;
+});
+
+const rawSets = Array.from(new Set(cardsData.map(c => c.set).filter(Boolean)));
+const sortedSets = rawSets.sort((a, b) => {
+  const getCode = (str) => {
+    const m = str.match(/\[([A-Za-z0-9-]+)\]/);
+    return m ? m[1] : str;
+  };
+  const codeA = getCode(a);
+  const codeB = getCode(b);
+  
+  const prefixOrder = ['ST', 'GD', 'EB', 'T'];
+  const getPrefixWeight = (code) => {
+    const m = code.match(/^([A-Za-z]+)/);
+    if (!m) return 999;
+    const idx = prefixOrder.indexOf(m[1].toUpperCase());
+    return idx === -1 ? 999 : idx;
+  };
+  
+  const weightA = getPrefixWeight(codeA);
+  const weightB = getPrefixWeight(codeB);
+  
+  if (weightA !== weightB) {
+    return weightA - weightB;
+  }
+  return codeA.localeCompare(codeB, undefined, { numeric: true, sensitivity: 'base' });
+});
+
+const AVAILABLE_SETS = ['all', ...sortedSets];
+const OPTIMAL_CARD_WIDTH = 220;
+
+const STATUS_COLORS_JSON = Object.freeze({
+  "搭乘時": "status_bg_pink", "搭乘中": "status_bg_pink", "共鳴中": "status_bg_yellow", "共鳴時": "status_bg_yellow",
+  "攻擊時": "status_bg_lightblue", "破壞時": "status_bg_lightblue", "配置時": "status_bg_lightblue",
+  "啟動・主要": "status_bg_blue", "啟動・瞬動": "status_bg_blue", "每回合1次": "status_bg_red", "爆發": "status_bg_orange",
+  "主要": "status_bg_blue", "瞬動": "status_bg_blue", "啟動": "status_bg_blue", "DEFAULT": "status_bg_DEFAULT"
+});
+const STATUS_THEME_STYLES = Object.freeze({
+  "status_bg_pink": { bg: '#cd6e99' }, "status_bg_yellow": { bg: '#faee01' }, "status_bg_lightblue": { bg: '#77b8bb' }, 
+  "status_bg_blue": { bg: '#68ade1' }, "status_bg_red": { bg: '#a2131d' }, "status_bg_orange": { bg: '#d78604' }, "status_bg_DEFAULT": { bg: '#f1f5f9' }   
+});
+
+const COLOR_OPTIONS = Object.freeze([
+  { label: '全部', value: 'all', activeBg: '#334155', activeText: '#fff' },
+  { label: '藍', value: 'Blue', activeBg: '#0070b9', activeText: '#fff' },
+  { label: '綠', value: 'Green', activeBg: '#63a63d', activeText: '#fff' },
+  { label: '紅', value: 'Red', activeBg: '#be0453', activeText: '#fff' },
+  { label: '紫', value: 'Purple', activeBg: '#744b92', activeText: '#fff' },
+  { label: '白', value: 'White', activeBg: '#cbd5e1', activeText: '#0f172a' }, 
+]);
+const COLOR_TRANSLATION_MAP = Object.freeze({ 'Blue': '藍', 'Red': '紅', 'Green': '綠', 'Yellow': '黃', 'Purple': '紫', 'White': '白', 'Black': '黑' });
+
+const TYPE_OPTIONS = Object.freeze([
+  { label: '全部', value: 'all', activeBg: '#334155', activeText: '#fff' },
+  { label: 'UNIT', value: 'UNIT', activeBg: '#334155', activeText: '#fff' },
+  { label: 'PILOT', value: 'PILOT', activeBg: '#334155', activeText: '#fff' },
+  { label: 'COMMAND', value: 'COMMAND', activeBg: '#334155', activeText: '#fff' },
+  { label: 'COMMAND【PILOT】', value: 'COMMAND_PILOT', activeBg: '#334155', activeText: '#fff' }, 
+  { label: 'BASE', value: 'BASE', activeBg: '#334155', activeText: '#fff' },
+  { label: 'UNIT TOKEN', value: 'TOKEN', activeBg: '#334155', activeText: '#fff' }, 
+  { label: 'RESOURCE', value: 'RESOURCE', activeBg: '#334155', activeText: '#fff' }, 
+  { label: 'EX BASE', value: 'EX BASE', activeBg: '#334155', activeText: '#fff' }, 
+  { label: 'EX RESOURCE', value: 'EX RESOURCE', activeBg: '#334155', activeText: '#fff' }, 
+]);
+
+const RARITY_OPTIONS = Object.freeze([
+  { label: '全部', value: 'all', activeBg: '#334155', activeText: '#fff' },
+  { label: 'C', value: 'C', activeBg: '#64748b', activeText: '#fff' },
+  { label: 'U', value: 'U', activeBg: '#10b981', activeText: '#fff' },
+  { label: 'R', value: 'R', activeBg: '#3b82f6', activeText: '#fff' },
+  { label: 'LR', value: 'LR', activeBg: '#8b5cf6', activeText: '#fff' },
+  { label: 'P', value: 'P', activeBg: '#f59e0b', activeText: '#fff' },
+]);
+
+const VERSION_OPTIONS = Object.freeze([
+  { label: '全部', value: 'all', activeBg: '#334155', activeText: '#fff' },
+  { label: '普畫', value: 'Normal', activeBg: '#2563eb', activeText: '#fff' }, 
+  { label: '異畫 (全開)', value: 'Alt', activeBg: '#d97706', activeText: '#fff' },   
+  { label: '異畫 +', value: 'Alt_Plus', activeBg: '#b45309', activeText: '#fff' },   
+  { label: '異畫 ++', value: 'Alt_PlusPlus', activeBg: '#92400e', activeText: '#fff' },   
+  { label: '異畫 (SP)', value: 'Alt_SP', activeBg: '#78350f', activeText: '#fff' },   
+]);
+
+const RESONANCE_OPTIONS = Object.freeze([
+  { label: '全部', value: 'all', activeBg: '#334155', activeText: '#fff' },
+  { label: '有', value: 'yes', activeBg: '#334155', activeText: '#fff' },
+  { label: '無', value: 'no', activeBg: '#334155', activeText: '#fff' },
+]);
+
+const KEYWORD_OPTIONS = Object.freeze([
+  { label: '全部', value: 'all', activeBg: '#334155', activeText: '#fff' },
+  { label: '爆發', value: '爆發', activeBg: '#334155', activeText: '#fff' },
+  { label: '修復', value: '修復', activeBg: '#334155', activeText: '#fff' },
+  { label: '阻擋者', value: '阻擋者', activeBg: '#334155', activeText: '#fff' },
+  { label: '突破', value: '突破', activeBg: '#334155', activeText: '#fff' },
+  { label: '高機動', value: '高機動', activeBg: '#334155', activeText: '#fff' },
+  { label: '支援', value: '支援', activeBg: '#334155', activeText: '#fff' },
+  { label: '先制攻擊', value: '先制攻擊', activeBg: '#334155', activeText: '#fff' },
+  { label: '壓制', value: '壓制', activeBg: '#334155', activeText: '#fff' },
+]);
+
+const TIMING_OPTIONS = Object.freeze([
+  { label: '全部', value: 'all', activeBg: '#334155', activeText: '#fff' },
+  { label: '配置時', value: '配置時', activeBg: '#77b8bb', activeText: '#000' },
+  { label: '搭乘時', value: '搭乘時', activeBg: '#cd6e99', activeText: '#000' },
+  { label: '搭乘中', value: '搭乘中', activeBg: '#cd6e99', activeText: '#000' },
+  { label: '共鳴時', value: '共鳴時', activeBg: '#faee01', activeText: '#000' },
+  { label: '共鳴中', value: '共鳴中', activeBg: '#faee01', activeText: '#000' },
+  { label: '啟動', value: '啟動', activeBg: '#68ade1', activeText: '#000' },
+  { label: '攻擊時', value: '攻擊時', activeBg: '#77b8bb', activeText: '#000' },
+  { label: '破壞時', value: '破壞時', activeBg: '#77b8bb', activeText: '#000' },
+]);
+
+const TYPE_NAME_MAP = Object.freeze({ 
+  '機體': ['UNIT'], 'unit': ['UNIT'],
+  '機師': ['PILOT', 'COMMAND_PILOT'], 'pilot': ['PILOT', 'COMMAND_PILOT'],
+  '指令': ['COMMAND'], 'command': ['COMMAND'],
+  '據點': ['BASE'], 'base': ['BASE'],
+  '代幣': ['TOKEN'], 'token': ['TOKEN'],
+  '資源': ['RESOURCE'], 'resource': ['RESOURCE'],
+  'ex據點': ['EX BASE'], 'ex base': ['EX BASE'],
+  'ex資源': ['EX RESOURCE'], 'ex resource': ['EX RESOURCE'],
+  '卡牌': ['UNIT', 'PILOT', 'COMMAND', 'BASE'], 
+  '卡': ['UNIT', 'PILOT', 'COMMAND', 'BASE'] 
+});
+
+const resolveCardTypes = (rawTypeStr) => {
+  const s = rawTypeStr.toLowerCase().replace(/共鳴/g, '').trim();
+  if (s === '機師' || s === 'pilot' || s === '駕駛員') return ['PILOT', 'COMMAND_PILOT'];
+  if (s === '機師卡' || s === '機師卡牌' || s === 'pilot卡' || s === 'pilot卡牌' || s === '駕駛員卡' || s === '駕駛員卡牌') return ['PILOT'];
+  if (s === '機體' || s === 'unit') return ['UNIT', 'TOKEN'];
+  if (s === '機體卡' || s === '機體卡牌' || s === 'unit卡' || s === 'unit卡牌') return ['UNIT'];
+  if (s === '指令卡' || s === '指令卡牌' || s === 'command卡' || s === 'command卡牌') return ['COMMAND'];
+  if (s === '基地卡' || s === '基地卡牌' || s === '據點卡' || s === '據點卡牌') return ['BASE'];
+  if (s === '機體替代卡' || s === '替代卡' || s === '代幣' || s === 'token') return ['TOKEN'];
+  return TYPE_NAME_MAP[s] || [s.toUpperCase()];
+};
+
+const getAliasNames = (cardObj, lang) => {
+  const names = [];
+  if (cardObj[`name_${lang}`]) names.push(cardObj[`name_${lang}`]);
+  const effect = cardObj[`effect_${lang}`] || '';
+  const match = effect.match(/【機師】([^\s\n\r、。，！：:（\(]+)/);
+  if (match) names.push(match[1].trim());
+  const aliasMatch = effect.match(/卡牌名也可視為「([^」]+)」/);
+  if (aliasMatch) names.push(aliasMatch[1].trim());
+  return names;
+};
+
+const SINGLE_TARGET = "(?:機體替代卡|替代卡|機體卡牌|機體卡|機體|機師卡牌|機師卡|機師|角色卡牌|角色卡|角色|駕駛員卡牌|駕駛員卡|駕駛員|指令卡牌|指令卡|指令|據點卡牌|據點卡|據點|基地卡牌|基地卡|基地|UNIT\\s*TOKEN|UNIT|PILOT|COMMAND|BASE|TOKEN|代幣|資源卡牌|資源卡|資源|RESOURCE|EX\\s*BASE|EX\\s*據點|EX\\s*RESOURCE|EX\\s*資源|卡牌(?!名稱)|卡(?!組|牌名稱|名稱))";
+const TARGET_TYPES = `(?:(?:共鳴)?${SINGLE_TARGET}(?:\\s*[/／]\\s*(?:共鳴)?${SINGLE_TARGET}(?!\\s*名稱))*)`;
+const TRAIT_GROUP = "(?:〔[^〕]+〕(?:\\s*[\\/／]\\s*〔[^〕]+〕)*)";
+const STAT_COND = "(?:(?:HP|AP|Lv\\.?|COST|等級)\\s*(?:為)?\\s*(?:不大於|不高於|不超過|小於等於|不小於|不低於|大於等於|<=|>=|<|>|=)?\\s*(?:Lv\\.?\\s*)?\\d+\\s*(?:或更高等級|或高等級|或更高|或更低|或以下|或以上|以下|以上)?)";
+const NAME_COND = "(?:卡牌名稱中(?:包含|不包含)「[^」]+」(?:的\\s*|之\\s*)?)";
+const KEYWORD_COND = "(?:擁有《[^》]+》效果(?:的\\s*|之\\s*|且\\s*)?)"; 
+const STATUS_WORD_COND = "(?:擁有【[^】]+】效果(?:的\\s*|之\\s*|且\\s*)?)"; 
+const COLOR_COND = "(?:(?:藍|紅|綠|黃|紫|白|黑)介的?\\s*|(?:藍|紅|綠|黃|紫|白|黑)色的?\\s*)"; 
+const FACTION_COND = "(?:(?:我方|對方|雙方|友方|敵方)\\s*)"; 
+const EXCLUDE_COND = `(?:(?:[^，。、]+此(?:機體|角色|卡|卡牌)以外[的且]|${TARGET_TYPES}以外[的且])\\s*)`; 
+const RIDING_COND = "(?:搭乘(?:此|該)(?:機體|角色|卡牌|卡)的\\s*)";
+const PLAYER_LV_COND = "(?:若)?(?:我方|對方)(?:的等級)?(?:為)?\\s*(?:Lv\\.?\\s*)?\\d+\\s*(?:或更高等級|或高等級|或更高|或更低|或以下|或以上|以下|以上)?";
+const SMART_PREFIX = `(?:(?:${TRAIT_GROUP}\\s*的?\\s*)?${STAT_COND}\\s*(?:的\\s*)?|${NAME_COND}|${KEYWORD_COND}|${STATUS_WORD_COND}|${COLOR_COND}|${FACTION_COND}|${RIDING_COND}|${TRAIT_GROUP}\\s*(?:的\\s*)?|${EXCLUDE_COND})`;
+const SMART_COND_STR = `(?:${SMART_PREFIX}+${TARGET_TYPES}(?:共鳴)?)`;
+const SELF_COMPLEX_COND_STR = `此${SINGLE_TARGET}(?:受到過傷害且|在戰鬥中且)${STAT_COND}`;
+const PURE_RESONANCE_TARGET = `(?:共鳴${SINGLE_TARGET}(?:\\s*[/／]\\s*(?:共鳴)?${SINGLE_TARGET})*|${SINGLE_TARGET}共鳴)`;
+const SELF_RESONANCE_STR = `此(?:機體|機師|角色|指令|卡牌|卡(?!組))(?:為|作為)共鳴(?:機體|機師|角色|指令|卡牌|卡(?!組))?`;
+const SELF_TRAIT_STR = `(?:若)?此(?:${SINGLE_TARGET})(?:為|變成|擁有|具有)?\\s*${TRAIT_GROUP}`;
+const SELF_COLOR_STR = `此(?:${SINGLE_TARGET})(?:若為|為)(?:藍色|紅色|綠色|黃色|紫色|白色|黑色)`;
+const TOKEN_REGEX = `「[^」]+」[（\\(][^）\\)]+[）\\)](?:的機體替代卡)?`;
+
+const MASTER_SPLIT_REGEX = new RegExp(`(${SMART_COND_STR}|${SELF_COMPLEX_COND_STR}|${SELF_RESONANCE_STR}|${SELF_TRAIT_STR}|${SELF_COLOR_STR}|${PURE_RESONANCE_TARGET}|${TOKEN_REGEX}|「[^」]+」|【[^】]+】|《[^》]+》|〔[^〕]+〕|${PLAYER_LV_COND}|${STAT_COND})`, 'gi');
+const INNER_SPLIT_REGEX = new RegExp(`(${SMART_COND_STR}|${SELF_COMPLEX_COND_STR}|${SELF_RESONANCE_STR}|${SELF_TRAIT_STR}|${SELF_COLOR_STR}|${PURE_RESONANCE_TARGET}|${TOKEN_REGEX}|「[^」]+」|【[^】]+】|《[^》]+》|〔[^〕]+〕|${PLAYER_LV_COND}|${STAT_COND})`, 'gi');
+const IS_SMART_REGEX = new RegExp(`^${SMART_COND_STR}$`, 'i');
+const IS_PURE_RESONANCE_REGEX = new RegExp(`^${PURE_RESONANCE_TARGET}$`, 'i');
+const IS_SELF_RESONANCE_REGEX = new RegExp(`^${SELF_RESONANCE_STR}$`, 'i');
+const IS_SELF_TRAIT_REGEX = new RegExp(`^${SELF_TRAIT_STR}$`, 'i');
+const IS_SELF_COLOR_REGEX = new RegExp(`^${SELF_COLOR_STR}$`, 'i');
+const IS_SELF_COMPLEX_REGEX = new RegExp(`^${SELF_COMPLEX_COND_STR}$`, 'i');
+const IS_STAT_COND_REGEX = new RegExp(`^${STAT_COND}$`, 'i');
+const IS_PLAYER_LV_REGEX = new RegExp(`^${PLAYER_LV_COND}$`, 'i'); 
+
+const CardGridItem = ({ item, dynamicCardWidth, language, onPress, isMobile }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const displayName = item[`name_${language}`] || '名稱未定';
+  const infoBackgroundColor = item.color === 'Blue' ? '#e6f3ff' : item.color === 'Red' ? '#fff1f1' : item.color === 'Green' ? '#f0fff4' : '#fff'; 
+  const displayId = item.displayId || item.id;
+
+  return (
+    <TouchableOpacity 
+      style={[styles.gridCard, { width: dynamicCardWidth }, isMobile && { margin: 3 }, isHovered && styles.gridCardHovered]} 
+      onPress={() => onPress(item)} activeOpacity={0.9} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}
+    >
+      <View style={[styles.imageWrapper, { height: dynamicCardWidth * 1.39 }]}>
+        {cardImages[item.id] ? <Image source={{ uri: cardImages[item.id] }} style={styles.gridImage} resizeMode="cover" /> : <View style={styles.gridNoImage}><Text style={styles.gridNoImageText}>圖片準備中</Text></View>}
+      </View>
+      <View style={[styles.gridCardInfo, { backgroundColor: infoBackgroundColor, padding: isMobile ? 4 : 6 }]}>
+        <View style={styles.gridIdRow}>
+          <Text style={[styles.gridCardId, isMobile && { fontSize: 9 }]} numberOfLines={1}>{displayId}</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            {item.isBetaCard && <Text style={[styles.gridBetaBadge, isMobile && { fontSize: 7, paddingHorizontal: 2 }]}>BETA</Text>}
+            {item.isLimitedCard && <Text style={[styles.gridLimitedBadge, isMobile && { fontSize: 7, paddingHorizontal: 2 }, item.isBetaCard && { marginLeft: 4 }]}>LTD</Text>}
+            {item.isPromoCard && <Text style={[styles.gridPromoBadge, isMobile && { fontSize: 7, paddingHorizontal: 2 }, (item.isBetaCard || item.isLimitedCard) && { marginLeft: 4 }]}>PR</Text>}
+            {item._isReprint && <Text style={[styles.gridReprintBadge, isMobile && { fontSize: 7, paddingHorizontal: 2 }, (item.isBetaCard || item.isLimitedCard || item.isPromoCard) && { marginLeft: 4 }]}>RE</Text>}
+            {item._isAltArt && <Text style={[styles.gridAltBadge, isMobile && { fontSize: 7, paddingHorizontal: 2 }, (item._isReprint || item.isBetaCard || item.isLimitedCard || item.isPromoCard) && { marginLeft: 4 }]}>異</Text>}
+          </View>
+        </View>
+        <Text style={[styles.gridCardName, isMobile && { fontSize: 10 }]} numberOfLines={1}>{displayName}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
+
+const RangeTrack = ({ label, range, setRange, minVal = 0, maxVal = 9, onReset, isMobile }) => {
+  const numbers = Array.from({ length: maxVal - minVal + 1 }, (_, i) => minVal + i);
+  const isOffset = !numbers.includes(0);
+  const isFullRange = range[0] === minVal && range[1] === maxVal;
+
+  const handleNumberClick = (num) => {
+    if (isFullRange) setRange([minVal, num]);
+    else if (range[0] === minVal && range[1] === num) setRange([num, num]);
+    else if (range[0] === num && range[1] === num) setRange([num, num]);
+    else if (range[0] === range[1] && num !== range[0]) setRange([Math.min(range[0], num), Math.max(range[0], num)]);
+    else if (range[0] === minVal && range[1] !== maxVal) setRange([minVal, num]);
+    else setRange([minVal, num]);
+  };
+
+  return (
+    <View style={styles.rangeTrackContainer}>
+      <Text style={styles.rangeTrackLabel}>{label}</Text>
+      <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, overflow: 'hidden' }}>
+        {isMobile ? (
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={[styles.rangeTrackBox, isOffset && { marginLeft: 28 }]}>
+            {numbers.map(num => {
+              const inRange = !isFullRange && (num >= range[0] && num <= range[1]);
+              const isFirstActive = !isFullRange && (num === range[0]);
+              const isLastActive = !isFullRange && (num === range[1]);
+              return (
+                <TouchableOpacity key={num} style={[styles.rangeNumberCell, inRange && styles.rangeNumberCellActive, isFirstActive && styles.rangeCellFirst, isLastActive && styles.rangeCellLast]} onPress={() => handleNumberClick(num)} activeOpacity={0.8}>
+                  <Text style={[styles.rangeNumberText, inRange && styles.rangeNumberTextActive]}>{num}</Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        ) : (
+          <View style={[styles.rangeTrackBox, isOffset && { marginLeft: 28 }]}>
+            {numbers.map(num => {
+              const inRange = !isFullRange && (num >= range[0] && num <= range[1]);
+              const isFirstActive = !isFullRange && (num === range[0]);
+              const isLastActive = !isFullRange && (num === range[1]);
+              return (
+                <TouchableOpacity key={num} style={[styles.rangeNumberCell, inRange && styles.rangeNumberCellActive, isFirstActive && styles.rangeCellFirst, isLastActive && styles.rangeCellLast]} onPress={() => handleNumberClick(num)} activeOpacity={0.8}>
+                  <Text style={[styles.rangeNumberText, inRange && styles.rangeNumberTextActive]}>{num}</Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        )}
+      </View>
+      <TouchableOpacity style={styles.trackResetBtn} onPress={onReset} activeOpacity={0.7}><Text style={styles.trackResetBtnText}>↺</Text></TouchableOpacity>
+    </View>
+  );
+};
 
 export default function App() {
   const [searchText, setSearchText] = useState('');
@@ -1507,3 +1884,201 @@ export default function App() {
   );
 }
 
+const styles = StyleSheet.create({
+  fullScreenOverlay: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 9998 }, 
+  container: { flex: 1, backgroundColor: '#f0f2f5' },
+  
+  header: { backgroundColor: '#20353f', paddingVertical: 14, paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', zIndex: 100, flexWrap: 'nowrap' },
+  titleContainer: { flexDirection: 'row', alignItems: 'center', cursor: 'pointer', flex: 1, marginRight: 10, overflow: 'hidden' },
+  titleTextMain: { color: '#ffffff', fontSize: 20, fontWeight: 'bold', letterSpacing: 0.5, flexShrink: 1 },
+  titleLink: { color: '#ffffff', fontSize: 20, fontWeight: 'bold', flexShrink: 0, marginLeft: 4 },
+  youtubeLogo: { width: 22, height: 22, marginLeft: 8, resizeMode: 'contain', flexShrink: 0 },
+  headerLangContainer: { flexShrink: 0 },
+
+  langButtonGroup: { flexDirection: 'row', backgroundColor: 'rgba(0, 0, 0, 0.25)', borderRadius: 20, padding: 3 },
+  langBtn: { paddingVertical: 5, paddingHorizontal: 16, borderRadius: 17, justifyContent: 'center', alignItems: 'center', cursor: 'pointer' },
+  langBtnActive: { backgroundColor: '#376171' }, langBtnInactive: { backgroundColor: 'transparent', opacity: 0.45 },
+  langBtnText: { color: '#ffffff', fontWeight: 'bold', fontSize: 13, letterSpacing: 0.5 },
+  content: { flex: 1, padding: 10, zIndex: 1 },
+  emptyText: { textAlign: 'center', marginTop: 50, fontSize: 16, color: '#888', cursor: 'default' },
+  
+  searchBarSection: { paddingHorizontal: 20, paddingVertical: 20, backgroundColor: '#fff', alignItems: 'center', borderBottomWidth: 1, borderBottomColor: '#eaeaea', zIndex: 9999 },
+  mainControlContainer: { width: '100%', maxWidth: 1400, flexDirection: 'column', gap: 16 },
+  
+  topSearchSection: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(211, 224, 227, 0.45)', borderRadius: 24, paddingVertical: 12, paddingHorizontal: 25, zIndex: 10000, flexWrap: 'wrap', gap: 10 },
+  searchBarMainTitle: { fontSize: 17, fontWeight: 'bold', color: '#1a2a3a', letterSpacing: 1, cursor: 'default' },
+  verticalDivider: { width: 1, height: 24, backgroundColor: '#b4c4c7', marginHorizontal: 16 },
+  topSearchInputs: { flexDirection: 'row', alignItems: 'center', flex: 1, gap: 12, flexWrap: 'wrap' },
+  
+  dropdownWrapper: { position: 'relative', zIndex: 10001 },
+  dropdownBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#fff', borderRadius: 20, paddingHorizontal: 14, height: 38, borderWidth: 1, borderColor: '#e2e8f0', minWidth: 160, cursor: 'pointer' },
+  dropdownBtnText: { fontSize: 13, color: '#1e293b', fontWeight: '500', flex: 1 },
+  dropdownArrow: { fontSize: 10, color: '#94a3b8', marginLeft: 8 },
+  dropdownList: { position: 'absolute', top: 42, left: 0, width: 220, backgroundColor: '#fff', borderRadius: 12, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 8, elevation: 5, paddingVertical: 6, borderWidth: 1, borderColor: '#e2e8f0', zIndex: 10002 },
+  dropdownItem: { paddingVertical: 10, paddingHorizontal: 14, cursor: 'pointer' },
+  dropdownItemActive: { backgroundColor: '#376171' },
+  dropdownItemText: { fontSize: 13, color: '#475569' },
+
+  // 🌟 新增：方案 B 的漸層提示樣式
+  dropdownScrollHint: { position: 'absolute', bottom: 0, left: 0, right: 0, height: 35, backgroundImage: 'linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.95) 100%)', justifyContent: 'flex-end', alignItems: 'center', paddingBottom: 6, borderBottomLeftRadius: 12, borderBottomRightRadius: 12 },
+  dropdownScrollHintText: { fontSize: 10, color: '#64748b', fontWeight: 'bold', letterSpacing: 1 },
+
+  searchInputWrapper: { flex: 1, minWidth: 260, maxWidth: 350, flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderRadius: 20, paddingLeft: 14, paddingRight: 6, height: 38, borderWidth: 1, borderColor: '#e2e8f0' },
+  officialSearchInput: { flex: 1, height: '100%', fontSize: 16, color: '#1e293b', outlineWidth: 0 },
+  searchIconButton: { paddingHorizontal: 12, height: 28, borderRadius: 14, backgroundColor: '#376171', justifyContent: 'center', alignItems: 'center', cursor: 'pointer' },
+  searchIconText: { fontSize: 11, color: '#fff', fontWeight: 'bold' },
+  officialResetButton: { paddingHorizontal: 16, height: 38, borderRadius: 19, backgroundColor: '#111827', justifyContent: 'center', alignItems: 'center', cursor: 'pointer', borderWidth: 1, borderColor: '#374151' },
+  officialResetButtonText: { fontSize: 12, color: '#ffffff', fontWeight: 'bold', letterSpacing: 0.5 },
+
+  masterResetContainer: { marginLeft: 'auto', flexDirection: 'row', alignItems: 'center', gap: 10, flexWrap: 'wrap' },
+  masterResetBtn: { paddingHorizontal: 16, height: 38, borderRadius: 19, backgroundColor: '#be0453', borderWidth: 1, borderColor: '#be0453', cursor: 'pointer', justifyContent: 'center', alignItems: 'center' },
+  masterResetBtnText: { fontSize: 12, color: '#ffffff', fontWeight: 'bold', letterSpacing: 0.5 },
+  
+  scrollToTopBtn: { paddingHorizontal: 16, height: 38, borderRadius: 19, backgroundColor: '#111827', borderWidth: 1, borderColor: '#000', cursor: 'pointer', justifyContent: 'center', alignItems: 'center' },
+  scrollToTopBtnText: { fontSize: 12, color: '#ffffff', fontWeight: 'bold', letterSpacing: 0.5 },
+
+  backToCardBtn: { paddingHorizontal: 16, height: 38, borderRadius: 19, backgroundColor: '#0f766e', borderWidth: 1, borderColor: '#0d9488', cursor: 'pointer', justifyContent: 'center', alignItems: 'center' },
+  backToCardBtnText: { fontSize: 12, color: '#ffffff', fontWeight: 'bold', letterSpacing: 0.5 },
+
+  bottomFilterSection: { backgroundColor: 'rgba(211, 224, 227, 0.45)', borderRadius: 24, paddingVertical: 16, paddingHorizontal: 25, zIndex: 900 },
+  
+  dragHandleContainer: { width: '100%', alignItems: 'center', paddingBottom: 10, paddingTop: 0, marginTop: -6 },
+  dragHandlePill: { width: 40, height: 5, backgroundColor: '#cbd5e1', borderRadius: 3 },
+  // 🌟 底部新增拉把空間樣式
+  bottomDragSpace: { width: '100%', alignItems: 'center', paddingTop: 10, paddingBottom: 0, cursor: 'pointer' },
+  
+  panelHeaderRow: { flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', paddingRight: 4 },
+  
+  panelTitleToggleClickable: { flexDirection: 'row', alignItems: 'center', gap: 8, cursor: 'pointer', flex: 1, paddingVertical: 4 },
+  panelMainTitle: { fontSize: 17, fontWeight: 'bold', color: '#1a2a3a', letterSpacing: 1 }, 
+  panelToggleIndicatorText: { fontSize: 13, color: '#475569', fontWeight: '600' },
+
+  panelResetBtn: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 14, backgroundColor: '#111827', borderWidth: 1, borderColor: '#000000', cursor: 'pointer', marginLeft: 16 },
+  panelResetBtnText: { fontSize: 12, color: '#ffffff', fontWeight: 'bold', letterSpacing: 0.5 },
+
+  mobilePanelVerticalContainer: { maxHeight: 250, overflowY: 'auto' },
+  filterColumnsContainer: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start', gap: 20 },
+  
+  filterLeftColumn: { flex: 1, minWidth: 280 },
+  filterLeftColumnBorder: { borderRightWidth: 1, borderRightColor: '#cbd5e1', paddingRight: 20 },
+  filterRightColumn: { flex: 1, minWidth: 280 },
+
+  rangeTracksWrapper: { paddingLeft: 4, gap: 4, marginTop: 8 },
+  rangeTrackContainer: { flexDirection: 'row', alignItems: 'center', marginBottom: 12 },
+  
+  panelLabel: { fontSize: 13, fontWeight: 'bold', color: '#475569', width: 75, whiteSpace: 'nowrap', flexShrink: 0, cursor: 'default' },
+  rangeTrackLabel: { width: 50, fontSize: 13, fontWeight: 'bold', color: '#475569', cursor: 'default', flexShrink: 0 },
+  rangeTrackBox: { flexDirection: 'row', backgroundColor: '#f1f5f9', borderRadius: 15, borderWidth: 1, borderColor: '#e2e8f0', overflow: 'hidden' },
+  rangeNumberCell: { width: 28, height: 28, justifyContent: 'center', alignItems: 'center', cursor: 'pointer' },
+  rangeNumberCellActive: { backgroundColor: '#376171' }, 
+  rangeCellFirst: { borderTopLeftRadius: 14, borderBottomLeftRadius: 14 },
+  rangeCellLast: { borderTopRightRadius: 14, borderBottomRightRadius: 14 },
+  rangeNumberText: { fontSize: 13, color: '#64748b', fontWeight: 'bold' },
+  rangeNumberTextActive: { color: '#ffffff' },
+  trackResetBtn: { marginLeft: 10, width: 24, height: 24, borderRadius: 12, backgroundColor: '#e2e8f0', justifyContent: 'center', alignItems: 'center', cursor: 'pointer' },
+  trackResetBtnText: { fontSize: 14, color: '#475569', fontWeight: 'bold', lineHeight: 24 },
+
+  panelRow: { flexDirection: 'row', alignItems: 'center', marginVertical: 6, width: '100%' },
+  typeRowsContainer: { flexDirection: 'column' },
+  chipContainerRow: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 6 },
+  filterChip: { paddingHorizontal: 11, paddingVertical: 5, borderRadius: 12, backgroundColor: '#f1f5f9', borderWidth: 1, borderColor: '#e2e8f0', cursor: 'pointer', whiteSpace: 'nowrap' },
+  chipText: { fontSize: 12, color: '#475569', fontWeight: '500' },
+  
+  reprintTickbox: { paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8, backgroundColor: '#f1f5f9', borderWidth: 1, borderColor: '#cbd5e1', flexDirection: 'row', alignItems: 'center', cursor: 'pointer', whiteSpace: 'nowrap' },
+  reprintTickboxActive: { backgroundColor: '#10b981', borderColor: '#059669' },
+  reprintTickboxText: { fontSize: 12, color: '#475569', fontWeight: 'bold' },
+  reprintTickboxTextActive: { color: '#ffffff' },
+
+  filterChipWithInput: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#f1f5f9', borderRadius: 12, borderWidth: 1, borderColor: '#e2e8f0', overflow: 'hidden' },
+  filterChipInner: { paddingHorizontal: 11, paddingVertical: 5, cursor: 'pointer' },
+  keywordValInput: { width: 24, height: '100%', fontSize: 16, textAlign: 'center', color: '#1e293b', borderLeftWidth: 1, borderLeftColor: '#cbd5e1', outlineWidth: 0 },
+  keywordValInputActive: { color: '#ffffff', borderLeftColor: '#475569' },
+
+  traitShortInput: { width: 180, height: 32, backgroundColor: '#ffffff', borderRadius: 16, paddingHorizontal: 14, borderWidth: 1, borderColor: '#cbd5e1', fontSize: 16, outlineWidth: 0, color: '#1e293b', marginRight: 8 },
+  traitResetButton: { paddingHorizontal: 12, height: 32, borderRadius: 16, backgroundColor: '#111827', justifyContent: 'center', alignItems: 'center', cursor: 'pointer', borderWidth: 1, borderColor: '#000000' },
+  traitResetButtonText: { fontSize: 11, color: '#ffffff', fontWeight: 'bold', letterSpacing: 0.5 },
+
+  exactMatchBtn: { marginLeft: 8, paddingHorizontal: 8, height: 32, borderRadius: 16, borderWidth: 1, borderColor: '#cbd5e1', justifyContent: 'center', alignItems: 'center', backgroundColor: '#f1f5f9', cursor: 'pointer', whiteSpace: 'nowrap' },
+  exactMatchBtnActive: { backgroundColor: '#111827', borderColor: '#000000' },
+  exactMatchBtnText: { fontSize: 11, color: '#475569', fontWeight: 'bold', letterSpacing: 0.5 },
+  exactMatchBtnTextActive: { color: '#ffffff' },
+
+  mobileGradientContainer: { position: 'relative', flex: 1, overflow: 'hidden', maskImage: 'linear-gradient(to right, transparent, #000 8px, #000 calc(100% - 8px), transparent)', webkitMaskImage: 'linear-gradient(to right, transparent, #000 8px, #000 calc(100% - 8px), transparent)' },
+  mobileHorizontalScroll: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 8 },
+  
+  gridCard: { backgroundColor: 'white', borderRadius: 8, margin: 5, overflow: 'hidden', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 3, elevation: 2, cursor: 'pointer', transition: 'transform 0.2s ease, box-shadow 0.2s ease', transform: [{ translateY: 0 }] },
+  gridCardHovered: { transform: [{ translateY: -4 }], shadowOpacity: 0.25, shadowRadius: 8, elevation: 6 },
+  imageWrapper: { width: '100%', backgroundColor: '#eaeaea', position: 'relative' },
+  gridImage: { width: '100%', height: '100%' },
+  gridNoImage: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  gridNoImageText: { color: '#9ca3af', fontSize: 10, fontWeight: 'bold', cursor: 'default' },
+  gridCardInfo: { padding: 6 },
+  gridIdRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 },
+  gridCardId: { flex: 1, fontSize: 11, fontWeight: 'bold', color: '#666', cursor: 'default' },
+  gridBetaBadge: { fontSize: 9, fontWeight: 'bold', backgroundColor: '#ea580c', color: '#ffffff', paddingHorizontal: 4, paddingVertical: 1, borderRadius: 3, overflow: 'hidden' },
+  gridAltBadge: { fontSize: 9, fontWeight: 'bold', backgroundColor: '#fef08a', color: '#854d0e', paddingHorizontal: 4, paddingVertical: 1, borderRadius: 3, overflow: 'hidden' },
+  gridReprintBadge: { fontSize: 9, fontWeight: 'bold', backgroundColor: '#a7f3d0', color: '#065f46', paddingHorizontal: 4, paddingVertical: 1, borderRadius: 3, overflow: 'hidden' },
+  gridLimitedBadge: { fontSize: 9, fontWeight: 'bold', backgroundColor: '#374151', color: '#e5e7eb', paddingHorizontal: 4, paddingVertical: 1, borderRadius: 3, overflow: 'hidden' },
+  gridPromoBadge: { fontSize: 9, fontWeight: 'bold', backgroundColor: '#7e22ce', color: '#fef08a', paddingHorizontal: 4, paddingVertical: 1, borderRadius: 3, overflow: 'hidden' },
+  gridCardName: { fontSize: 13, fontWeight: 'bold', color: '#111', cursor: 'default' },
+  
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.4)', backdropFilter: 'blur(10px)', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: 20, position: 'relative' },
+  modalContentBox: { backgroundColor: '#fff', width: '100%', maxWidth: 920, maxHeight: '92%', borderRadius: 12, overflow: 'hidden', shadowColor: '#000', shadowOpacity: 0.25, shadowRadius: 15, elevation: 10, mx: 20, display: 'flex', flexDirection: 'column', flexShrink: 1 },
+  
+  floatingArrowButton: { position: 'absolute', top: '50%', marginTop: -27, width: 54, height: 54, borderRadius: 27, backgroundColor: 'rgba(0, 0, 0, 0.6)', justifyContent: 'center', alignItems: 'center', cursor: 'pointer', zIndex: 999999 },
+  leftArrowPosition: { left: 40 },
+  rightArrowPosition: { right: 40 },
+  // 🌟 修正：讓手機版箭頭靠緊螢幕最邊緣，拉開距離，永遠固定
+  mobileFloatingLeftArrow: { left: 4, width: 38, height: 38, borderRadius: 19, marginTop: -19, backgroundColor: 'rgba(0, 0, 0, 0.75)' },
+  mobileFloatingRightArrow: { right: 4, width: 38, height: 38, borderRadius: 19, marginTop: -19, backgroundColor: 'rgba(0, 0, 0, 0.75)' },
+
+  floatingArrowText: { color: '#ffffff', fontSize: 18, fontWeight: 'bold', letterSpacing: -1 },
+  arrowDisabled: { opacity: 0.15, cursor: 'default' },
+  
+  modalTopBar: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#eee', backgroundColor: '#fafafa', flexShrink: 0 },
+  
+  modalHeaderIdBox: { flexDirection: 'row', alignItems: 'center' },
+  modalHeaderId: { fontSize: 14, color: '#666', marginRight: 10, fontFamily: 'monospace', cursor: 'default' },
+  modalHeaderRarity: { fontSize: 12, fontWeight: 'bold', backgroundColor: '#e5e7eb', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4, color: '#374151', cursor: 'default' },
+  modalHeaderBetaBadge: { fontSize: 12, fontWeight: 'bold', backgroundColor: '#ea580c', color: '#ffffff', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4, marginLeft: 6, cursor: 'default' },
+  modalHeaderAltBadge: { fontSize: 12, fontWeight: 'bold', backgroundColor: '#fef08a', color: '#854d0e', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4, marginLeft: 6, cursor: 'default' },
+  modalHeaderReprintBadge: { fontSize: 12, fontWeight: 'bold', backgroundColor: '#a7f3d0', color: '#065f46', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4, marginLeft: 6, cursor: 'default' },
+  modalHeaderLimitedBadge: { fontSize: 12, fontWeight: 'bold', backgroundColor: '#374151', color: '#e5e7eb', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4, marginLeft: 6, cursor: 'default' },
+  modalHeaderPromoBadge: { fontSize: 12, fontWeight: 'bold', backgroundColor: '#7e22ce', color: '#fef08a', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4, marginLeft: 6, cursor: 'default' },
+  
+  modalTopRightControls: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  ytPromoButton: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#ef4444', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20, shadowColor: '#ef4444', shadowOpacity: 0.4, shadowRadius: 6, elevation: 3, cursor: 'pointer' },
+  ytPromoIcon: { color: '#ffffff', fontSize: 12, fontWeight: 'bold', marginRight: 6 },
+  ytPromoText: { color: '#ffffff', fontSize: 13, fontWeight: 'bold', letterSpacing: 0.5 },
+  
+  closeButton: { width: 34, height: 34, backgroundColor: '#e5e7eb', borderRadius: 17, justifyContent: 'center', alignItems: 'center', cursor: 'pointer' },
+  closeButtonText: { fontSize: 16, fontWeight: 'bold', color: '#4b5563' },
+  
+  modalScrollBody: { padding: 30, flexGrow: 1 },
+  modalFlexRow: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' },
+  modalLeftColumn: { marginRight: 35, alignItems: 'center', marginBottom: 20, position: 'relative' },
+  modalRightColumn: { flex: 1, minWidth: 280 },
+  cardImage: { width: 320, height: 445, borderRadius: 12 },
+  noImagePlaceholder: { backgroundColor: '#e5e7eb', justifyContent: 'center', alignItems: 'center' },
+  noImageText: { color: '#9ca3af', fontSize: 18, fontWeight: 'bold', cursor: 'default' },
+  
+  officialNameMain: { fontSize: 28, fontWeight: 'bold', color: '#111214', marginBottom: 15, letterSpacing: 0.5, cursor: 'default' },
+  
+  officialSpecsRow: { flexDirection: 'row', paddingBottom: 15, borderBottomWidth: 1, borderBottomColor: '#d1d5db', marginBottom: 15 },
+  specItem: { fontSize: 15, color: '#1f2937', marginRight: 25, fontWeight: '500', cursor: 'default' },
+  specLabel: { color: '#6b7280', fontWeight: 'normal', marginRight: 4 },
+  officialSectionDivider: { paddingBottom: 12, borderBottomWidth: 1, borderBottomColor: '#e5e7eb', marginBottom: 12 },
+  sectionTitle: { fontSize: 13, fontWeight: 'bold', color: '#0f766e', marginBottom: 6, letterSpacing: 0.5, cursor: 'default' }, 
+  sectionBodyText: { fontSize: 15, color: '#1f2937', lineHeight: 24, cursor: 'default' }, 
+  statsRow: { flexDirection: 'row' },
+  
+  interactiveBoldToken: { fontWeight: 'bold', color: '#376171', cursor: 'pointer' }, 
+  
+  badgeWrapperText: { display: 'inline-block', marginVertical: 2, marginRight: 4 },
+  statusWordBadge: { paddingHorizontal: 7, paddingVertical: 1, borderRadius: 3, fontSize: 12, fontWeight: 'bold', overflow: 'hidden', cursor: 'default' },
+  hexWrapperText: { display: 'inline-block', marginLeft: 2, marginRight: 4, filter: 'drop-shadow(0px 0px 2px rgba(0, 0, 0, 0.35))', transform: [{ translateY: -1 }], cursor: 'pointer' },
+  hexInnerText: { display: 'inline-block', backgroundColor: '#ffffff', color: '#000000', fontWeight: '900', fontSize: 11, lineHeight: 15, paddingHorizontal: 10, paddingVertical: 1, clipPath: 'polygon(6px 0%, calc(100% - 6px) 0%, 100% 50%, calc(100% - 6px) 100%, 6px 100%, 0% 50%)', cursor: 'pointer' },
+
+  checkResonanceBtn: { paddingHorizontal: 7, paddingVertical: 1, backgroundColor: '#faee01', borderRadius: 3, marginLeft: 8, filter: 'drop-shadow(0px 0px 1.5px rgba(0, 0, 0, 0.25))', cursor: 'pointer' },
+  checkResonanceBtnText: { color: '#000000', fontSize: 12, fontWeight: 'bold', letterSpacing: 0.5 }
+});

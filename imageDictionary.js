@@ -1,8 +1,8 @@
 // 🚀 此檔案由腳本自動生成 (靜態模式)
 
 export const cardImages = {
-  "EXB-001": "/assets/cards/basic/EXB-001.webp",
   "EXR-001": "/assets/cards/basic/EXR-001.webp",
+  "R-001": "/assets/cards/basic/R-001.png",
   "R-001": "/assets/cards/basic/R-001.webp",
   "EXB-001_BETA": "/assets/cards/beta/EXB-001_BETA.webp",
   "EXR-001_BETA": "/assets/cards/beta/EXR-001_BETA.webp",
