@@ -132,11 +132,10 @@ export default function App() {
   const marginSpace = isMobile ? (numColumns * 6) : (numColumns * 10);
   const dynamicCardWidth = (screenWidth - paddingSpace - marginSpace) / numColumns;
 
-  // 🌟 新功能 1：網頁初次載入時，攔截 URL 並自動彈出卡片 Modal
+  // 🌟 新功能 1：網頁初次載入時，攔截 URL 並精準分流常規與分身卡片
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && cardsData.length > 0) {
       const path = window.location.pathname;
-      // 支援兩種寫法： /card/GD01-001 或 /?card=GD01-001
       const urlParams = new URLSearchParams(window.location.search);
       let targetId = urlParams.get('card');
 
@@ -145,27 +144,43 @@ export default function App() {
       }
 
       if (targetId) {
-        // 尋找對應的卡片 (忽略大小寫以防萬一)
-        const targetCard = cardsData.find(c => 
-          (c.displayId && c.displayId.toLowerCase() === targetId.toLowerCase()) || 
-          (c.id && c.id.toLowerCase() === targetId.toLowerCase())
-        );
+        const decodedTargetId = decodeURIComponent(targetId).toUpperCase();
+
+        // 🔍 第一步：先嘗試「精準匹配」卡片 ID (包含帶有後綴的分身 ID，如 ST09-010_C-PLUS 或 PROMO001)
+        let targetCard = cardsData.find(c => c.id && c.id.toUpperCase() === decodedTargetId);
+
+        // 🔍 第二步：如果第一步找不到，代表玩家輸入的是「純卡號」(例如網址輸入 /card/ST01-001)
+        if (!targetCard) {
+          // 撈出所有 displayId 或是純 id 符合該卡號的所有分身
+          const matches = cardsData.filter(c => 
+            (c.displayId && c.displayId.toUpperCase() === decodedTargetId) ||
+            (c.id && c.id.toUpperCase() === decodedTargetId)
+          );
+          
+          if (matches.length > 0) {
+            // 🌟 核心防呆：從這一堆分身中，優先挑選出「非異畫」且「非重印」且「非BETA」的【常規卡本體】
+            targetCard = matches.find(c => 
+              !c._isAltArt && !c._isReprint && !c.isBetaCard && !c.isPromoCard && !c.isLimitedCard
+            ) || matches[0]; // 如果這張卡本質上就只有出過 PROMO 版，就拿陣列第一張保底
+          }
+        }
+
         if (targetCard) {
           setSelectedCard(targetCard);
         }
       }
     }
-  }, []);
+  }, [cardsData]); // 監聽 cardsData，確保資料庫載入完畢後才會出動
 
-  // 🌟 新功能 2：當玩家點擊卡片或關閉 Modal 時，靜默更新網址列
+  // 🌟 新功能 2：當玩家點開卡片詳情時，將最精準的卡片 ID 靜默同步到網址列
   useEffect(() => {
     if (typeof window !== 'undefined') {
       if (selectedCard) {
-        // 玩家打開卡片，把網址換成專屬連結 (使用 replaceState 不會製造多餘的上一步歷史紀錄)
-        const targetId = selectedCard.displayId || selectedCard.id;
-        window.history.replaceState(null, '', `/card/${targetId}`);
+        // 直接使用 selectedCard.id，它在普卡時是 "ST01-001"，在異畫時是 "ST09-010_C-PLUS"，極度精準！
+        const slug = selectedCard.id;
+        window.history.replaceState(null, '', `/card/${slug}`);
       } else {
-        // 玩家關閉卡片，把網址退回首頁乾淨狀態
+        // 關閉卡片彈窗，網址乾淨回到首頁
         window.history.replaceState(null, '', '/');
       }
     }
