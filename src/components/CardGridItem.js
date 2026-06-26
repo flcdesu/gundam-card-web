@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { cardImages } from '../data/cardDatabase';
-import styles from '../styles';
+import { getStyles } from '../styles';
+import { useMemo } from 'react';
 
-const CardGridItem = ({ item, dynamicCardWidth, language, onPress, isMobile }) => {
+const CardGridItem = ({ item, dynamicCardWidth, language, onPress, isMobile, isDarkMode }) => {
   const [isHovered, setIsHovered] = useState(false);
   const displayName = item[`name_${language}`] || '名稱未定';
   const infoBackgroundColor = item.color === 'Blue' ? '#e6f3ff' : item.color === 'Red' ? '#fff1f1' : item.color === 'Green' ? '#f0fff4' : '#fff'; 
   const displayId = item.displayId || item.id;
+  const styles = useMemo(() => getStyles(isDarkMode), [isDarkMode]);
 
   return (
     <TouchableOpacity 
