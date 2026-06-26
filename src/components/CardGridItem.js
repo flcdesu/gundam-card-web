@@ -1,13 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { cardImages } from '../data/cardDatabase';
 import { getStyles } from '../styles';
-import { useMemo } from 'react';
 
 const CardGridItem = ({ item, dynamicCardWidth, language, onPress, isMobile, isDarkMode }) => {
   const [isHovered, setIsHovered] = useState(false);
   const displayName = item[`name_${language}`] || '名稱未定';
-  const infoBackgroundColor = item.color === 'Blue' ? '#e6f3ff' : item.color === 'Red' ? '#fff1f1' : item.color === 'Green' ? '#f0fff4' : '#fff'; 
+  
+  // 🌟 核心魔法：根據黑夜模式動態分配屬性底色
+  const infoBackgroundColor = useMemo(() => {
+    if (isDarkMode) {
+      // 🌙 黑夜模式：極深色系的屬性底色
+      return item.color === 'Blue' ? '#0f172a' : // 極深藍
+             item.color === 'Red' ? '#2e1015' :  // 極深紅
+             item.color === 'Green' ? '#062016' : // 極深綠
+             '#1e293b';                          // 預設深灰藍
+    } else {
+      // ☀️ 亮色模式：原本的淡雅底色
+      return item.color === 'Blue' ? '#e6f3ff' : 
+             item.color === 'Red' ? '#fff1f1' : 
+             item.color === 'Green' ? '#f0fff4' : 
+             '#ffffff'; 
+    }
+  }, [isDarkMode, item.color]);
+
   const displayId = item.displayId || item.id;
   const styles = useMemo(() => getStyles(isDarkMode), [isDarkMode]);
 
