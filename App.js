@@ -25,17 +25,8 @@ import { resolveCardTypes, getAliasNames } from './src/logic/searchHelpers';
 import CardGridItem from './src/components/CardGridItem';
 import RangeTrack from './src/components/RangeTrack';
 
+// ====== 外層 (Global Scope) ======
 const safeKeywordImages = keywordImages || {};
-
-const [isDarkMode, setIsDarkMode] = useState(false);
-
-  // 🌟 魔法：當 isDarkMode 切換時，自動把網頁最底層的 Body 背景變黑
-  useEffect(() => {
-    if (typeof document !== 'undefined') {
-      document.body.style.backgroundColor = isDarkMode ? '#0f172a' : '#f8fafc';
-    }
-  }, [isDarkMode]);
-
 
 // 🌟 強制注入 Web 專用的客製化捲軸樣式
 if (typeof document !== 'undefined') {
@@ -60,23 +51,25 @@ if (typeof document !== 'undefined') {
   document.head.appendChild(style);
 }
 
+// ====== 組件層 (Component Scope) ======
 export default function App() {
-  const [searchText, setSearchText] = useState('');
-  const [selectedSet, setSelectedSet] = useState('all'); 
-  const [isSetDropdownOpen, setIsSetDropdownOpen] = useState(false); 
-
+  // 🌟 1. 黑夜模式核心狀態
   const [isDarkMode, setIsDarkMode] = useState(false);
   
   // 核心魔法：根據 isDarkMode 動態生成 styles，並且只在切換時重新計算！
   const styles = useMemo(() => getStyles(isDarkMode), [isDarkMode]);
 
-  // 控制網頁最底層 Body 背景同步變黑
+  // 🌟 2. 控制網頁最底層 Body 背景同步變黑
   useEffect(() => {
     if (typeof document !== 'undefined') {
       document.body.style.backgroundColor = isDarkMode ? '#0f172a' : '#f0f2f5';
     }
   }, [isDarkMode]);
 
+  // 🌟 3. 其他所有應用程式狀態
+  const [searchText, setSearchText] = useState('');
+  const [selectedSet, setSelectedSet] = useState('all'); 
+  const [isSetDropdownOpen, setIsSetDropdownOpen] = useState(false); 
 
   const [selectedCard, setSelectedCard] = useState(null);
   const [lastState, setLastState] = useState(null);
@@ -987,6 +980,7 @@ export default function App() {
           <Text style={[styles.titleLink, isMobile && { fontSize: 16 }]}>FLC</Text>
           <Image source={{ uri: 'https://cdn-icons-png.flaticon.com/512/1384/1384060.png' }} style={styles.youtubeLogo} resizeMode="contain" />
         </TouchableOpacity>
+        
         <View style={styles.headerLangContainer}>
           {/* 🌟 黑夜模式切換按鈕 */}
           <TouchableOpacity 
@@ -1045,7 +1039,6 @@ export default function App() {
                       ))}
                     </ScrollView>
 
-                    {/* 🌟 方案 B：手機版專屬下拉提示漸層與箭頭 */}
                     {isMobile && (
                       <View style={styles.dropdownScrollHint} pointerEvents="none">
                         <Text style={styles.dropdownScrollHintText}>▼ 向下滑動</Text>
@@ -1116,12 +1109,12 @@ export default function App() {
                     {/* 🌟 登場作品篩選 (自訂摺疊下拉式) */}
                     <View style={[styles.panelRow, {flexDirection: 'column', alignItems: 'stretch'}]}>
                       <TouchableOpacity 
-                        style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 8, borderBottomWidth: 1, borderBottomColor: '#eee', marginBottom: 10 }}
+                        style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 8, borderBottomWidth: 1, borderBottomColor: isDarkMode ? '#475569' : '#eee', marginBottom: 10 }}
                         onPress={() => setIsSeriesExpanded(!isSeriesExpanded)}
                         activeOpacity={0.7}
                       >
-                        <Text style={styles.panelLabel}>登場作品 : <Text style={{color: '#007BFF'}}>{selectedSeries}</Text></Text>
-                        <Text style={{ fontSize: 16, color: '#666', fontWeight: 'bold' }}>{isSeriesExpanded ? '▲' : '▼'}</Text>
+                        <Text style={styles.panelLabel}>登場作品 : <Text style={{color: isDarkMode ? '#38bdf8' : '#007BFF'}}>{selectedSeries}</Text></Text>
+                        <Text style={{ fontSize: 16, color: isDarkMode ? '#94a3b8' : '#666', fontWeight: 'bold' }}>{isSeriesExpanded ? '▲' : '▼'}</Text>
                       </TouchableOpacity>
                       
                       {isSeriesExpanded && (
@@ -1129,10 +1122,10 @@ export default function App() {
                           {seriesOptions.map(series => (
                             <TouchableOpacity
                               key={series}
-                              style={[styles.filterChip, selectedSeries === series && { backgroundColor: '#334155', borderColor: '#334155' }]}
+                              style={[styles.filterChip, selectedSeries === series && { backgroundColor: isDarkMode ? '#38bdf8' : '#334155', borderColor: isDarkMode ? '#38bdf8' : '#334155' }]}
                               onPress={() => { setSelectedSeries(series); setIsSeriesExpanded(false); }}
                             >
-                              <Text style={[styles.chipText, selectedSeries === series && { color: '#fff', fontWeight: 'bold' }]}>
+                              <Text style={[styles.chipText, selectedSeries === series && { color: isDarkMode ? '#0f172a' : '#fff', fontWeight: 'bold' }]}>
                                 {series}
                               </Text>
                             </TouchableOpacity>
@@ -1291,7 +1284,7 @@ export default function App() {
                     <View style={[styles.panelRow, { marginTop: 4 }]}>
                       <Text style={styles.panelLabel}>符合共鳴</Text>
                       <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <TextInput style={[styles.traitShortInput, { width: 140 }]} placeholder="卡牌編號" placeholderTextColor="#94a3b8" value={resonanceMatchId} onChangeText={setResonanceMatchId} />
+                        <TextInput style={[styles.traitShortInput, { width: 140 }]} placeholder="卡牌編號" placeholderTextColor={isDarkMode ? '#64748b' : '#94a3b8'} value={resonanceMatchId} onChangeText={setResonanceMatchId} />
                         <TouchableOpacity style={styles.traitResetButton} activeOpacity={0.8} onPress={() => setResonanceMatchId('')}>
                           <Text style={styles.traitResetButtonText}>重置</Text>
                         </TouchableOpacity>
@@ -1303,7 +1296,7 @@ export default function App() {
                     <View style={styles.panelRow}>
                       <Text style={styles.panelLabel}>特徵</Text>
                       <View style={{flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 6}}>
-                        <TextInput style={[styles.traitShortInput, { width: 160, marginRight: 0 }]} placeholder="輸入特徵 (例：地球聯邦)" placeholderTextColor="#94a3b8" value={traitSearchText} onChangeText={setTraitSearchText} />
+                        <TextInput style={[styles.traitShortInput, { width: 160, marginRight: 0 }]} placeholder="輸入特徵 (例：地球聯邦)" placeholderTextColor={isDarkMode ? '#64748b' : '#94a3b8'} value={traitSearchText} onChangeText={setTraitSearchText} />
                         <TouchableOpacity style={styles.traitResetButton} activeOpacity={0.8} onPress={() => { setTraitSearchText(''); setIsTraitExactMatch(false); }}>
                           <Text style={styles.traitResetButtonText}>重置</Text>
                         </TouchableOpacity>
@@ -1374,10 +1367,10 @@ export default function App() {
                     </View>
 
                     <View style={styles.rangeTracksWrapper}>
-                      <RangeTrack label="Lv." range={lvRange} setRange={setLvRange} minVal={0} maxVal={9} onReset={() => setLvRange([0, 9])} isMobile={isMobile} />
-                      <RangeTrack label="COST" range={costRange} setRange={setCostRange} minVal={0} maxVal={9} onReset={() => setCostRange([0, 9])} isMobile={isMobile} />
-                      <RangeTrack label="AP" range={apRange} setRange={setApRange} minVal={0} maxVal={9} onReset={() => setApRange([0, 9])} isMobile={isMobile} />
-                      <RangeTrack label="HP" range={hpRange} setRange={setHpRange} minVal={0} maxVal={9} onReset={() => setHpRange([0, 9])} isMobile={isMobile} />
+                      <RangeTrack label="Lv." range={lvRange} setRange={setLvRange} minVal={0} maxVal={9} onReset={() => setLvRange([0, 9])} isMobile={isMobile} isDarkMode={isDarkMode} />
+                      <RangeTrack label="COST" range={costRange} setRange={setCostRange} minVal={0} maxVal={9} onReset={() => setCostRange([0, 9])} isMobile={isMobile} isDarkMode={isDarkMode} />
+                      <RangeTrack label="AP" range={apRange} setRange={setApRange} minVal={0} maxVal={9} onReset={() => setApRange([0, 9])} isMobile={isMobile} isDarkMode={isDarkMode} />
+                      <RangeTrack label="HP" range={hpRange} setRange={setHpRange} minVal={0} maxVal={9} onReset={() => setHpRange([0, 9])} isMobile={isMobile} isDarkMode={isDarkMode} />
                     </View>
                   </View>
                 </View>
@@ -1409,7 +1402,7 @@ export default function App() {
           }}
           scrollEventThrottle={16}
           key={numColumns} data={filteredCards} keyExtractor={(item, index) => item.id || index.toString()}
-          renderItem={({ item }) => <CardGridItem item={item} dynamicCardWidth={dynamicCardWidth} language={language} onPress={(i) => { setSelectedCard(i); }} isMobile={isMobile} />}
+          renderItem={({ item }) => <CardGridItem item={item} dynamicCardWidth={dynamicCardWidth} language={language} onPress={(i) => { setSelectedCard(i); }} isMobile={isMobile} isDarkMode={isDarkMode} />}
           numColumns={numColumns} ListEmptyComponent={<Text style={styles.emptyText}>找不到符合的卡片</Text>} contentContainerStyle={{ paddingBottom: 20 }}
         />
       </View>
@@ -1483,7 +1476,7 @@ export default function App() {
               </View>
 
               {isMobile && (
-                <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingTop: 10, paddingBottom: 10, borderBottomWidth: 1, borderBottomColor: '#eee', backgroundColor: '#fafafa', flexWrap: 'wrap', gap: 6 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingTop: 10, paddingBottom: 10, borderBottomWidth: 1, borderBottomColor: isDarkMode ? '#334155' : '#eee', backgroundColor: isDarkMode ? '#0f172a' : '#fafafa', flexWrap: 'wrap', gap: 6 }}>
                   <Text style={styles.modalHeaderId}>{selectedCard.displayId}</Text>
                   <Text style={styles.modalHeaderRarity}>{selectedCard.rarity || 'C'}</Text>
                   {selectedCard.isBetaCard && <Text style={[styles.modalHeaderBetaBadge, { marginLeft: 0 }]}>BETA</Text>}
