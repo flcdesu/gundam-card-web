@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { StyleSheet, Text, View, TextInput, SafeAreaView, FlatList, TouchableOpacity, Image, Modal, ScrollView, Dimensions, Linking, TouchableWithoutFeedback } from 'react-native';
 
 // ====== 從模組化檔案 import ======
-import styles from './src/styles';
+import { getStyles } from './src/styles';
 import {
   OPTIMAL_CARD_WIDTH, STATUS_COLORS_JSON, STATUS_THEME_STYLES,
   COLOR_OPTIONS, COLOR_TRANSLATION_MAP, TYPE_OPTIONS, RARITY_OPTIONS,
@@ -26,6 +26,16 @@ import CardGridItem from './src/components/CardGridItem';
 import RangeTrack from './src/components/RangeTrack';
 
 const safeKeywordImages = keywordImages || {};
+
+const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // 🌟 魔法：當 isDarkMode 切換時，自動把網頁最底層的 Body 背景變黑
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.body.style.backgroundColor = isDarkMode ? '#0f172a' : '#f8fafc';
+    }
+  }, [isDarkMode]);
+
 
 // 🌟 強制注入 Web 專用的客製化捲軸樣式
 if (typeof document !== 'undefined') {
@@ -54,6 +64,19 @@ export default function App() {
   const [searchText, setSearchText] = useState('');
   const [selectedSet, setSelectedSet] = useState('all'); 
   const [isSetDropdownOpen, setIsSetDropdownOpen] = useState(false); 
+
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  
+  // 核心魔法：根據 isDarkMode 動態生成 styles，並且只在切換時重新計算！
+  const styles = useMemo(() => getStyles(isDarkMode), [isDarkMode]);
+
+  // 控制網頁最底層 Body 背景同步變黑
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.body.style.backgroundColor = isDarkMode ? '#0f172a' : '#f0f2f5';
+    }
+  }, [isDarkMode]);
+
 
   const [selectedCard, setSelectedCard] = useState(null);
   const [lastState, setLastState] = useState(null);
@@ -965,6 +988,15 @@ export default function App() {
           <Image source={{ uri: 'https://cdn-icons-png.flaticon.com/512/1384/1384060.png' }} style={styles.youtubeLogo} resizeMode="contain" />
         </TouchableOpacity>
         <View style={styles.headerLangContainer}>
+          {/* 🌟 黑夜模式切換按鈕 */}
+          <TouchableOpacity 
+            style={[styles.langBtn, { marginRight: 8, backgroundColor: isDarkMode ? '#334155' : '#e2e8f0' }]} 
+            onPress={() => setIsDarkMode(!isDarkMode)} 
+            activeOpacity={0.8}
+          >
+            <Text style={{ fontSize: 16 }}>{isDarkMode ? '🌙' : '☀️'}</Text>
+          </TouchableOpacity>
+
           <View style={styles.langButtonGroup}>
             <TouchableOpacity style={[styles.langBtn, language === 'hk' ? styles.langBtnActive : styles.langBtnInactive]} onPress={() => setLanguage('hk')} activeOpacity={0.8}><Text style={styles.langBtnText}>港譯</Text></TouchableOpacity>
             <TouchableOpacity style={[styles.langBtn, language === 'tw' ? styles.langBtnActive : styles.langBtnInactive]} onPress={() => setLanguage('tw')} activeOpacity={0.8}><Text style={styles.langBtnText}>台譯</Text></TouchableOpacity>
@@ -1394,28 +1426,23 @@ export default function App() {
             <TouchableOpacity activeOpacity={1} style={[styles.modalContentBox, isMobile && { maxHeight: '96%' }]}>
               
               <View style={[styles.modalTopBar, isMobile && { paddingHorizontal: 8, paddingVertical: 8, flexWrap: 'nowrap', gap: 4 }]}>
+                
+                {/* 👈 左側區塊：專屬保留給「返回按鈕」 */}
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: isMobile ? 4 : 8, flexShrink: 1 }}>
-                  
-                  {/* 🌟 終極 UX 升級：在卡片詳情裡直接顯示返回上一層的按鈕 */}
                   {lastState && (
                     <TouchableOpacity 
-                      style={[styles.backToCardBtn, { backgroundColor: '#334155', marginRight: 4 }, isMobile && { height: 28, paddingHorizontal: 8 }]} 
+                      style={[styles.backToCardBtn, isMobile && { height: 28, paddingHorizontal: 8 }]} 
                       onPress={restoreHistoryState} 
                       activeOpacity={0.8}
                     >
-                      <Text style={[styles.backToCardBtnText, { color: '#fff' }, isMobile && { fontSize: 10 }]}>
+                      <Text style={[styles.backToCardBtnText, isMobile && { fontSize: 10 }]}>
                         🔙 返回 ({lastState.card.displayId || lastState.card.id})
                       </Text>
                     </TouchableOpacity>
                   )}
-
-                  {/* 🌟 修復的語系按鈕區塊 (已經移除重複的標籤) */}
-                  <View style={[styles.langButtonGroup, isMobile && { padding: 2 }]}>
-                    <TouchableOpacity style={[styles.langBtn, language === 'hk' ? styles.langBtnActive : styles.langBtnInactive, isMobile && { paddingHorizontal: 8, paddingVertical: 4 }]} onPress={() => setLanguage('hk')} activeOpacity={0.8}><Text style={[styles.langBtnText, isMobile && { fontSize: 11 }]}>港譯</Text></TouchableOpacity>
-                    <TouchableOpacity style={[styles.langBtn, language === 'tw' ? styles.langBtnActive : styles.langBtnInactive, isMobile && { paddingHorizontal: 8, paddingVertical: 4 }]} onPress={() => setLanguage('tw')} activeOpacity={0.8}><Text style={[styles.langBtnText, isMobile && { fontSize: 11 }]}>台譯</Text></TouchableOpacity>
-                  </View>
                 </View>
 
+                {/* 🏷️ 中間區塊：卡號與稀有度 (桌機版顯示) */}
                 {!isMobile && (
                   <View style={styles.modalHeaderIdBox}>
                     <Text style={styles.modalHeaderId}>{selectedCard.displayId}</Text>
@@ -1428,23 +1455,29 @@ export default function App() {
                   </View>
                 )}
                 
-                <View style={[styles.modalTopRightControls, isMobile && { gap: 4, flexShrink: 0 }]}>
-                  {/* 🌟 複製連結按鈕 */}
-                    <TouchableOpacity 
-                      style={[styles.ytPromoButton, { backgroundColor: isCopied ? '#22c55e' : '#475569' }, isMobile && { paddingHorizontal: 6, paddingVertical: 4 }]} 
-                      onPress={handleCopyLink} 
-                      activeOpacity={0.8}
-                    >
-                      <Text style={[styles.ytPromoText, isMobile && { fontSize: 10 }]}>{isCopied ? '✅' : '🔗'}</Text>
-                    </TouchableOpacity>
-                
+                {/* 👉 右側區塊：語系切換 + 複製 + YouTube + 關閉 */}
+                <View style={[styles.modalTopRightControls, { flexDirection: 'row', alignItems: 'center' }, isMobile && { gap: 4, flexShrink: 0 }]}>
+                  
+                  <View style={[styles.langButtonGroup, { marginRight: 4 }, isMobile && { padding: 2 }]}>
+                    <TouchableOpacity style={[styles.langBtn, language === 'hk' ? styles.langBtnActive : styles.langBtnInactive, isMobile && { paddingHorizontal: 8, paddingVertical: 4 }]} onPress={() => setLanguage('hk')} activeOpacity={0.8}><Text style={[styles.langBtnText, isMobile && { fontSize: 11 }]}>港譯</Text></TouchableOpacity>
+                    <TouchableOpacity style={[styles.langBtn, language === 'tw' ? styles.langBtnActive : styles.langBtnInactive, isMobile && { paddingHorizontal: 8, paddingVertical: 4 }]} onPress={() => setLanguage('tw')} activeOpacity={0.8}><Text style={[styles.langBtnText, isMobile && { fontSize: 11 }]}>台譯</Text></TouchableOpacity>
+                  </View>
+
+                  <TouchableOpacity 
+                    style={[styles.ytPromoButton, { backgroundColor: isCopied ? '#22c55e' : (isDarkMode ? '#334155' : '#475569') }, isMobile && { paddingHorizontal: 6, paddingVertical: 4 }]} 
+                    onPress={handleCopyLink} 
+                    activeOpacity={0.8}
+                  >
+                    <Text style={[styles.ytPromoText, isMobile && { fontSize: 10 }]}>{isCopied ? '✅' : '🔗'}</Text>
+                  </TouchableOpacity>
+
                   {selectedCard.youtube_url && (
                     <TouchableOpacity style={[styles.ytPromoButton, isMobile && { paddingHorizontal: 6, paddingVertical: 4 }]} onPress={() => Linking.openURL(selectedCard.youtube_url)} activeOpacity={0.8}>
                       <Text style={[styles.ytPromoIcon, isMobile && { fontSize: 10, marginRight: 2 }]}>▶</Text>
                       <Text style={[styles.ytPromoText, isMobile && { fontSize: 10 }]}>卡牌講座</Text>
                     </TouchableOpacity>
                   )}
-                  {/* 🌟 已經修復失憶咒的關閉按鈕 */}
+                  
                   <TouchableOpacity style={[styles.closeButton, isMobile && { width: 28, height: 28 }]} onPress={() => { setSelectedCard(null); }}><Text style={[styles.closeButtonText, isMobile && { fontSize: 14 }]}>X</Text></TouchableOpacity>
                 </View>
               </View>
