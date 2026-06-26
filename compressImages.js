@@ -63,12 +63,20 @@ imageFiles.forEach(inputFile => {
     }
 
     sharp(inputFile)
-        .resize({ width: 600 })  // 把寬度縮小到 600px，高度會自動等比例縮放
-        .webp({ quality: 75 })   // 轉成超輕量 WebP，品質維持在肉眼難辨的 75
+        .resize({ width: 600 })
+        .webp({ quality: 75 })
         .toFile(outputFile)
         .then(info => {
             processedCount++;
-            console.log(`✅ [${processedCount}/${imageFiles.length}] 成功: ${path.basename(inputFile)} -> 縮水為 ${(info.size / 1024).toFixed(2)} KB`);
+            
+            // 🌟 終極自動化：壓縮成功後，直接刪除原來的 PNG/JPG 肥大檔案！
+            try {
+                fs.unlinkSync(inputFile);
+            } catch (err) {
+                console.error(`⚠️ 刪除原圖失敗: ${inputFile}`);
+            }
+
+            console.log(`✅ [${processedCount}/${imageFiles.length}] 成功: ${path.basename(inputFile)} -> ${(info.size / 1024).toFixed(2)} KB (已刪除原圖)`);
             
             if (processedCount === imageFiles.length) {
                 console.log(`\n🎉 全部處理完畢！準備起飛！`);
