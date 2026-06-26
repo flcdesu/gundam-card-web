@@ -96,11 +96,43 @@ const generateFullCardDatabase = () => {
         finalRarity = `${displaySuffix}`;
       }
 
+      // 🌟 終極資料夾覆蓋魔法：從圖片的真實路徑，反查這張卡的實際出處
+      let finalSet = isReprint && targetSetFull ? targetSetFull : baseCard.set;
+      let finalSetHk = baseCard.set_hk;
+      let finalSetTw = baseCard.set_tw;
+
+      const imgPath = cardImages[imageKey];
+      // 嘗試從 "/assets/cards/EB01/..." 中精準抓出 "EB01"
+      const folderMatch = imgPath ? imgPath.match(/\/cards\/([^\/]+)\//) : null;
+      
+      if (folderMatch && folderMatch[1]) {
+         const folderCode = folderMatch[1]; // 例如 "EB01"
+         const basePrefix = baseId.split('-')[0]; // 例如 "ST10"
+         
+         // 如果這張分身卡，被放在了跟本體不同編號的資料夾裡 (例如 ST10 放在了 EB01 資料夾)
+         if (folderCode !== basePrefix) {
+            // 找出那個資料夾裡的隨便一張常規卡，完美繼承它的「入手情報」與「中港台譯名」！
+            const refCard = baseCards.find(c => c.id && c.id.startsWith(`${folderCode}-`));
+            if (refCard) {
+               finalSet = refCard.set;
+               finalSetHk = refCard.set_hk || refCard.set;
+               finalSetTw = refCard.set_tw || refCard.set;
+            } else {
+               // 萬一這是全新的一彈還沒有常規卡，就直接顯示彈數編號
+               finalSet = `[${folderCode}]`;
+               finalSetHk = `[${folderCode}]`;
+               finalSetTw = `[${folderCode}]`;
+            }
+         }
+      }
+
       generatedCards.push({
         ...baseCard,
         id: imageKey,                               
         displayId: baseCard.displayId, 
-        set: isReprint ? targetSetFull : baseCard.set, 
+        set: finalSet,
+        set_hk: finalSetHk,  // 覆寫港譯入手情報
+        set_tw: finalSetTw,  // 覆寫台譯入手情報
         rarity: finalRarity,
         _isAltArt: isAltArt,
         _isReprint: isReprint,
