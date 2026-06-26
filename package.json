@@ -14,11 +14,13 @@
     "xlsx": "^0.18.5"
   },
   "scripts": {
-    "update-data": "node excelToJson.js && node cleanImages.js && node generateDict.js",
-    "start": "npm run update-data && expo start",
-    "android": "npm run update-data && expo start --android",
-    "ios": "npm run update-data && expo start --ios",
-    "web": "npm run update-data && expo start --web"
+    "start": "expo start --web",
+    "build": "expo export --platform web",
+    "update-data": "node excelToJson.js",
+    "fix-names": "node fixNames.js",
+    "compress": "node compressImages.js",
+    "gen-dict": "node generateDict.js",
+    "update-assets": "npm run fix-names && npm run compress && npm run gen-dict"
   },
   "private": true
 }
