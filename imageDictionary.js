@@ -1,6 +1,7 @@
 // 🚀 此檔案由腳本自動生成 (靜態模式)
 
 export const cardImages = {
+  "EXB-001": "/assets/cards/basic/EXB-001.webp",
   "EXR-001": "/assets/cards/basic/EXR-001.webp",
   "R-001": "/assets/cards/basic/R-001.png",
   "R-001": "/assets/cards/basic/R-001.webp",
@@ -1531,6 +1532,12 @@ export const cardImages = {
   "PROMO175": "/assets/special/promo/PROMO175.webp",
   "PROMO176": "/assets/special/promo/PROMO176.webp",
   "PROMO177": "/assets/special/promo/PROMO177.webp",
+  "PROMO178": "/assets/special/promo/PROMO178.png",
+  "PROMO178": "/assets/special/promo/PROMO178.webp",
+  "PROMO179": "/assets/special/promo/PROMO179.png",
+  "PROMO179": "/assets/special/promo/PROMO179.webp",
+  "PROMO180": "/assets/special/promo/PROMO180.png",
+  "PROMO180": "/assets/special/promo/PROMO180.webp",
 };
 
 export const keywordImages = {};
