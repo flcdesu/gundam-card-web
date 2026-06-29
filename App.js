@@ -10,6 +10,21 @@ import {
   TYPE_NAME_MAP
 } from './src/constants';
 import { cardsData, cardImages, keywordImages, AVAILABLE_SETS } from './src/data/cardDatabase';
+
+// ==========================================
+// 🌟 數據層治本攔截：在 React 啟動前，一次性清洗所有底層資料！
+// ==========================================
+cardsData.forEach(card => {
+  // 揪出那些在「影分身」階段被錯誤標記的 [beta]，強行歸化回原本的收錄彈！
+  if (card.set === '[beta]') card.set = 'LIMITED BOX Ver.β';
+  if (card.set_hk === '[beta]') card.set_hk = 'LIMITED BOX Ver.β';
+  if (card.set_tw === '[beta]') card.set_tw = 'LIMITED BOX Ver.β';
+});
+
+// 順便把下拉選單的選項也洗乾淨並去重
+const CLEANED_AVAILABLE_SETS = [...new Set(AVAILABLE_SETS.map(s => s === '[beta]' ? 'LIMITED BOX Ver.β' : s))];
+// ==========================================
+
 import {
   SINGLE_TARGET, TARGET_TYPES, TRAIT_GROUP, STAT_COND, NAME_COND,
   KEYWORD_COND, STATUS_WORD_COND, COLOR_COND, FACTION_COND,
@@ -963,17 +978,21 @@ export default function App() {
                 {isSetDropdownOpen && (
                   <View style={[styles.dropdownList, isMobile && { width: '100%' }]}>
                     <ScrollView style={{ maxHeight: 250 }} nestedScrollEnabled={true} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={true} persistentScrollbar={true} className="custom-scrollbar">
-                      {AVAILABLE_SETS.map((setOpt) => (
+                      {/* 🌟 改用我們洗乾淨的下拉選單陣列 */}
+                      {CLEANED_AVAILABLE_SETS.map((setOpt) => (
                         <TouchableOpacity 
                           key={setOpt} 
                           style={[styles.dropdownItem, selectedSet === setOpt && styles.dropdownItemActive]} 
                           onPress={() => { 
                             setSelectedSet(setOpt); 
                             setIsSetDropdownOpen(false);
+                            
                             if (setOpt && setOpt.includes('Ver.β')) {
-                              setIncludeRegular(false); setIncludeBeta(true);
+                              setIncludeRegular(false);
+                              setIncludeBeta(true);
                             } else {
-                              setIncludeRegular(true); setIncludeBeta(false);
+                              setIncludeRegular(true);
+                              setIncludeBeta(false);
                             }
                           }}
                         >
