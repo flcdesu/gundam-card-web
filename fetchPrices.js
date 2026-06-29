@@ -13,19 +13,19 @@ const LIMITED_EXCEL_PATH = path.join(__dirname, 'excel_data', 'gcg_cardlist_limi
 const HISTORY_EXCEL_PATH = path.join(__dirname, 'excel_data', 'historical_prices.xlsx');
 const OUTPUT_JSON_PATH = path.join(__dirname, 'src', 'data', 'prices.json');
 
-// 🌟 無敵字串清洗機 (消除人為命名差異)
+// 🌟 無敵字串清洗機
 const normalizeForDict = (str) => {
     if (!str) return '';
     return str
-        .replace(/\[.*?\]/g, '') // 移除 [代號] 及其內容
-        .replace(/【.*?】/g, '') // 移除 【代號】 及其內容
-        .replace(/[()（）《》]/g, '') // 移除各種括號外殼
-        .replace(/[\s\u3000・]/g, '') // 移除全半形空白、斷行與中點
-        .replace(/カード/g, '') // 移除 "カード" (卡)
-        .replace(/記念品/g, '') // 移除 "記念品"
-        .replace(/参加/g, '')   // 🌟 移除 "参加" (解決 ST04-002 / 010 問題)
-        .replace(/賞/g, '')     // 🌟 移除 "賞" (解決優勝賞、参加賞等問題)
-        .toLowerCase(); // 統一轉小寫 (防呆 SEASON vs season)
+        .replace(/\[.*?\]/g, '') 
+        .replace(/【.*?】/g, '') 
+        .replace(/[()（）《》]/g, '') 
+        .replace(/[\s\u3000・]/g, '') 
+        .replace(/カード/g, '') 
+        .replace(/記念品/g, '') 
+        .replace(/参加/g, '')   
+        .replace(/賞/g, '')     
+        .toLowerCase(); 
 };
 
 async function scrapeYuyutei() {
@@ -124,17 +124,13 @@ async function scrapeYuyutei() {
                         let targetFinalIds = []; 
                         let isDictionaryMatched = false;
 
-                        // 🌟 套用無敵清洗機
                         const cleanAltText = normalizeForDict(altText); 
                         const isSpecialPrefix = /^(RP|EXBP|EXRP)-/i.test(baseId);
 
                         const matchedPromos = promoMapping.filter(m => {
-                            // 🌟 字典內的日文也套用無敵清洗機
                             const cleanJpInfo = normalizeForDict(m.jpInfo);
-                            
                             const isExactMatch = m.baseId === baseId && cleanJpInfo !== '' && cleanAltText.includes(cleanJpInfo);
                             const isSpecialMatch = isSpecialPrefix && m.baseId === baseId;
-
                             return isExactMatch || isSpecialMatch;
                         });
 
@@ -162,21 +158,33 @@ async function scrapeYuyutei() {
                                 }
                             }
 
+                            // 🌟 影分身之術：處理異畫的命名不一致
                             if (altText.includes('パラレル') || altText.includes('++') || altText.includes('+') || altText.includes('異画')) {
                                 const parts = altText.split(' ');
-                                // 順便加入了 SEC (機密稀有) 以防萬一官方以後出這種卡
                                 let rarityMatch = parts.find(p => p.includes('LR') || p.includes('U') || p.includes('C') || p.includes('R') || p.includes('SR') || p.includes('SEC'));
+                                
                                 if (rarityMatch) {
                                     let suffix = rarityMatch.toUpperCase();
-                                    // 🌟 修正為底線 (_PLUS)，精準對齊你的前端路由系統！
-                                    if (suffix.includes('++')) suffix = suffix.replace('++', '_PLUSPLUS');
-                                    else if (suffix.includes('+')) suffix = suffix.replace('+', '_PLUS');
-                                    singleFinalId = `${singleFinalId}_${suffix}`;
+                                    
+                                    // 遇到有 + 號的卡，同時推播 -PLUS 和 _PLUS 兩種版本！
+                                    if (suffix.includes('++')) {
+                                        targetFinalIds.push(`${singleFinalId}_${suffix.replace('++', '-PLUSPLUS')}`);
+                                        targetFinalIds.push(`${singleFinalId}_${suffix.replace('++', '_PLUSPLUS')}`);
+                                    } else if (suffix.includes('+')) {
+                                        targetFinalIds.push(`${singleFinalId}_${suffix.replace('+', '-PLUS')}`);
+                                        targetFinalIds.push(`${singleFinalId}_${suffix.replace('+', '_PLUS')}`);
+                                    } else {
+                                        targetFinalIds.push(`${singleFinalId}_${suffix}`); // 普通異畫 (如 _LR)
+                                    }
+                                } else {
+                                    targetFinalIds.push(singleFinalId);
                                 }
+                            } else {
+                                targetFinalIds.push(singleFinalId);
                             }
-                            targetFinalIds = [singleFinalId];
                         }
 
+                        // 💰 將價格賦予所有的「分身 ID」
                         targetFinalIds.forEach(id => {
                             if (!finalPrices[id] || priceJpy < finalPrices[id]) {
                                 finalPrices[id] = priceJpy;
