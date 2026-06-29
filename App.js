@@ -579,13 +579,20 @@ export default function App() {
     if (!card) return;
     executeRedirect(); handleResetEverything();
     if (card.isLimitedCard || card.isPromoCard) {
-      const acqText = card[`set_${language}`] || card.set || '';
+      let acqText = card[`set_${language}`] || card.set || '';
+      // 🌟 濾鏡：自動將 [beta] 轉為正確名稱
+      acqText = acqText.replace(/\[beta\]/gi, 'LIMITED BOX Ver.β');
+      
       if (acqText && acqText !== '-') {
         setSearchText(acqText); setIncludeRegular(false); setIncludeBeta(false); setIncludeReprint(false); setIncludeLimited(true); setIncludePromo(true);   
         setSelectedVersions(['Normal', 'Alt']); 
       }
     } else {
-      if (card.set && card.set !== '-') { setSelectedSet(card.set); setIncludeRegular(true); }
+      let setStr = card.set || '';
+      // 🌟 濾鏡：自動將 [beta] 轉為正確名稱
+      setStr = setStr.replace(/\[beta\]/gi, 'LIMITED BOX Ver.β');
+      
+      if (setStr && setStr !== '-') { setSelectedSet(setStr); setIncludeRegular(true); }
     }
   };
 
@@ -1543,7 +1550,10 @@ export default function App() {
                     <View style={styles.officialSectionDivider}>
                       <Text style={styles.sectionTitle}>入手情報</Text>
                       <TouchableOpacity activeOpacity={0.7} onPress={() => handleAcquisitionClick(selectedCard)}>
-                        <Text style={[styles.sectionBodyText, styles.interactiveBoldToken]}>{selectedCard[`set_${language}`] || selectedCard.set || '-'}</Text>
+                        <Text style={[styles.sectionBodyText, styles.interactiveBoldToken]}>
+                          {/* 🌟 濾鏡：畫面上強制將 [beta] 渲染成漂亮的全名 */}
+                          {(selectedCard[`set_${language}`] || selectedCard.set || '-').replace(/\[beta\]/gi, 'LIMITED BOX Ver.β')}
+                        </Text>
                       </TouchableOpacity>
                     </View>
                     
