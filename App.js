@@ -24,6 +24,7 @@ import {
 import { resolveCardTypes, getAliasNames } from './src/logic/searchHelpers';
 import CardGridItem from './src/components/CardGridItem';
 import RangeTrack from './src/components/RangeTrack';
+import CardPriceWidget from './src/components/CardPriceWidget';
 
 // ====== 外層 (Global Scope) ======
 const safeKeywordImages = keywordImages || {};
@@ -33,40 +34,27 @@ if (typeof document !== 'undefined') {
   const style = document.createElement('style');
   style.type = 'text/css';
   style.innerHTML = `
-    .custom-scrollbar::-webkit-scrollbar {
-      width: 8px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-track {
-      background: #f1f5f9; 
-      border-radius: 4px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background-color: #cbd5e1; 
-      border-radius: 4px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-      background-color: #94a3b8; 
-    }
+    .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background-color: #94a3b8; }
   `;
   document.head.appendChild(style);
 }
 
 // ====== 組件層 (Component Scope) ======
 export default function App() {
-  // 🌟 1. 黑夜模式核心狀態
   const [isDarkMode, setIsDarkMode] = useState(false);
-  
-  // 核心魔法：根據 isDarkMode 動態生成 styles，並且只在切換時重新計算！
+  const [showPrice, setShowPrice] = useState(true); // 🌟 價格顯示開關
+
   const styles = useMemo(() => getStyles(isDarkMode), [isDarkMode]);
 
-  // 🌟 2. 控制網頁最底層 Body 背景同步變黑
   useEffect(() => {
     if (typeof document !== 'undefined') {
       document.body.style.backgroundColor = isDarkMode ? '#0f172a' : '#f0f2f5';
     }
   }, [isDarkMode]);
 
-  // 🌟 3. 其他所有應用程式狀態
   const [searchText, setSearchText] = useState('');
   const [selectedSet, setSelectedSet] = useState('all'); 
   const [isSetDropdownOpen, setIsSetDropdownOpen] = useState(false); 
@@ -114,11 +102,9 @@ export default function App() {
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
   const [isPanelScrolledToBottom, setIsPanelScrolledToBottom] = useState(false);
   
-  // 🌟 新增：登場作品狀態
   const [selectedSeries, setSelectedSeries] = useState('全部');
   const [isSeriesExpanded, setIsSeriesExpanded] = useState(false);
 
-  // 🌟 新增：動態生成登場作品清單 (並自動依照 series_sort 排序)
   const seriesOptions = useMemo(() => {
     const options = ['全部'];
     const seriesMap = new Map();
@@ -149,63 +135,45 @@ export default function App() {
   const marginSpace = isMobile ? (numColumns * 6) : (numColumns * 10);
   const dynamicCardWidth = (screenWidth - paddingSpace - marginSpace) / numColumns;
 
-  // 🌟 新功能 1：網頁初次載入時，攔截 URL 並精準分流常規與分身卡片
   useEffect(() => {
     if (typeof window !== 'undefined' && cardsData.length > 0) {
       const path = window.location.pathname;
       const urlParams = new URLSearchParams(window.location.search);
       let targetId = urlParams.get('card');
 
-      if (path.startsWith('/card/')) {
-        targetId = path.split('/card/')[1];
-      }
+      if (path.startsWith('/card/')) targetId = path.split('/card/')[1];
 
       if (targetId) {
         const decodedTargetId = decodeURIComponent(targetId).toUpperCase();
-
-        // 🔍 第一步：先嘗試「精準匹配」卡片 ID (包含帶有後綴的分身 ID，如 ST09-010_C-PLUS 或 PROMO001)
         let targetCard = cardsData.find(c => c.id && c.id.toUpperCase() === decodedTargetId);
 
-        // 🔍 第二步：如果第一步找不到，代表玩家輸入的是「純卡號」(例如網址輸入 /card/ST01-001)
         if (!targetCard) {
-          // 撈出所有 displayId 或是純 id 符合該卡號的所有分身
           const matches = cardsData.filter(c => 
             (c.displayId && c.displayId.toUpperCase() === decodedTargetId) ||
             (c.id && c.id.toUpperCase() === decodedTargetId)
           );
-          
           if (matches.length > 0) {
-            // 🌟 核心防呆：從這一堆分身中，優先挑選出「非異畫」且「非重印」且「非BETA」的【常規卡本體】
             targetCard = matches.find(c => 
               !c._isAltArt && !c._isReprint && !c.isBetaCard && !c.isPromoCard && !c.isLimitedCard
-            ) || matches[0]; // 如果這張卡本質上就只有出過 PROMO 版，就拿陣列第一張保底
+            ) || matches[0];
           }
         }
-
-        if (targetCard) {
-          setSelectedCard(targetCard);
-        }
+        if (targetCard) setSelectedCard(targetCard);
       }
     }
-  }, [cardsData]); // 監聽 cardsData，確保資料庫載入完畢後才會出動
+  }, [cardsData]);
 
-  // 🌟 新功能 2：當玩家點開卡片詳情時，將最精準的卡片 ID 靜默同步到網址列
   useEffect(() => {
     if (typeof window !== 'undefined') {
       if (selectedCard) {
-        // 直接使用 selectedCard.id，它在普卡時是 "ST01-001"，在異畫時是 "ST09-010_C-PLUS"，極度精準！
-        const slug = selectedCard.id;
-        window.history.replaceState(null, '', `/card/${slug}`);
+        window.history.replaceState(null, '', `/card/${selectedCard.id}`);
       } else {
-        // 關閉卡片彈窗，網址乾淨回到首頁
         window.history.replaceState(null, '', '/');
       }
     }
   }, [selectedCard]);
 
-  const handleResetSearch = () => {
-    setSearchText(''); setSelectedSet('all');
-  };
+  const handleResetSearch = () => { setSearchText(''); setSelectedSet('all'); };
   
   const handleResetFilters = () => {
     setLvRange([0, 9]); setCostRange([0, 9]); setApRange([0, 9]); setHpRange([0, 9]);
@@ -216,13 +184,11 @@ export default function App() {
     setSelectedResonance('all'); setResonanceMatchId(''); 
     setSupportValue(''); setBreakthroughValue(''); setRepairValue(''); 
     setTraitSearchText(''); setIsTraitExactMatch(false); 
-    // 🌟 新增：重置作品篩選
     setSelectedSeries('全部'); setIsSeriesExpanded(false);
   };
 
   const handleResetEverything = () => {
-    handleResetSearch();
-    handleResetFilters();
+    handleResetSearch(); handleResetFilters();
     if (flatListRef.current) flatListRef.current.scrollToOffset({ offset: 0, animated: true });
   };
 
@@ -239,7 +205,7 @@ export default function App() {
       setSupportValue(lastState.supportValue); setBreakthroughValue(lastState.breakthroughValue); setRepairValue(lastState.repairValue);
       setTraitSearchText(lastState.traitSearchText); setIsTraitExactMatch(lastState.isTraitExactMatch || false);
       setLvRange(lastState.lvRange); setCostRange(lastState.costRange); setApRange(lastState.apRange); setHpRange(lastState.hpRange);
-      setSelectedSeries(lastState.selectedSeries || '全部'); // 🌟 歷史還原
+      setSelectedSeries(lastState.selectedSeries || '全部');
       setSelectedCard(lastState.card); setPendingScrollY(lastState.scrollY || 0); setLastState(null);
     }
   };
@@ -248,8 +214,7 @@ export default function App() {
     if (selectedCard) setLastState({
         card: selectedCard, searchText, selectedSet, selectedColors, selectedTypes, selectedRarity, selectedVersions, includeRegular, includeBeta, includeReprint, includeLimited, includePromo, selectedResonance, resonanceMatchId,
         selectedKeywords, selectedTimings, supportValue, breakthroughValue, repairValue, traitSearchText, isTraitExactMatch, lvRange, costRange, apRange, hpRange,
-        selectedSeries, // 🌟 跳轉時記錄當前作品
-        scrollY: currentScrollY 
+        selectedSeries, scrollY: currentScrollY 
     });
     setSelectedCard(null);
     if (flatListRef.current) flatListRef.current.scrollToOffset({ offset: 0, animated: false });
@@ -276,7 +241,6 @@ export default function App() {
   const triggerResonanceDirectSearch = (targetCardId) => {
     if (!targetCardId) return;
     const baseMatchCard = cardsData.find(c => (c.displayId || c.id).toLowerCase() === targetCardId.trim().toLowerCase());
-    
     executeRedirect(); handleResetSearch(); handleResetFilters();
     setResonanceMatchId(targetCardId);
 
@@ -341,7 +305,6 @@ export default function App() {
        });
        text = text.replace(searchTypeRegex, ''); 
     }
-
     text = text.replace(/^[的、\s]+|[的、\s]+$/g, '').trim();
 
     setHpRange(newHp); setApRange(newAp); setLvRange(newLv); setCostRange(newCost);
@@ -550,7 +513,6 @@ export default function App() {
        if (selectedResonance === 'no') matchesResonance = !hasLink;
     }
 
-    // 🌟 新增：登場作品篩選邏輯
     const cardSeries = card[`series_${language}`] || card.series_source || '其他';
     const matchesSeries = selectedSeries === '全部' || cardSeries === selectedSeries;
 
@@ -627,7 +589,6 @@ export default function App() {
     }
   };
 
-  // 🌟 新增：點擊作品直接觸發篩選
   const handleSeriesClick = (seriesName) => {
     if (!seriesName || seriesName === '-' || seriesName === '全部') return;
     executeRedirect(); 
@@ -635,7 +596,6 @@ export default function App() {
     setSelectedSeries(seriesName);
   };
 
-  // 🌟 新增：監聽語言切換，同步更新作品篩選器的藍字與狀態
   useEffect(() => {
     if (selectedSeries !== '全部') {
       const matchedCard = cardsData.find(c => c.series_hk === selectedSeries || c.series_tw === selectedSeries || c.series_source === selectedSeries);
@@ -739,19 +699,6 @@ export default function App() {
   const handleSetClick = (setStr) => {
     if (!setStr || setStr === '-') return;
     executeRedirect(); handleResetEverything(); setSelectedSet(setStr);
-  };
-
-  const MobileScrollWrapper = ({ children, style }) => {
-    if (isMobile) {
-      return (
-        <View style={styles.mobileGradientContainer}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={[style, styles.mobileHorizontalScroll]}>
-            {children}
-          </ScrollView>
-        </View>
-      );
-    }
-    return <View style={style}>{children}</View>;
   };
 
   const renderKeywordChip = (opt) => {
@@ -923,38 +870,6 @@ export default function App() {
     );
   };
 
-  const renderResonanceText = (text) => {
-    if (!text || text.trim() === '' || text.trim() === '-') return <Text style={styles.sectionBodyText}>-</Text>;
-    let processedText = text;
-    if (processedText.includes('特徵') || processedText.includes('特徴')) {
-       const matchedTrait = processedText.match(/〔([^〕]+)〕/);
-       if (matchedTrait) {
-          const trait = matchedTrait[1];
-          return (
-             <Text style={styles.interactiveBoldToken} onPress={() => { executeRedirect(); handleResetSearch(); handleResetFilters(); setTraitSearchText(trait); setSelectedTypes(['PILOT', 'COMMAND_PILOT']); setIsTraitExactMatch(true); }}>
-                特徴〔{trait}〕
-             </Text>
-          );
-       }
-    }
-    if (!processedText.includes('〔') && !processedText.includes('「') && !processedText.includes('〕') && !processedText.includes('」')) processedText = `「${processedText}」`;
-    const parts = processedText.split(/(〔[^〕]+〕|「[^」]+」)/g);
-    return (
-      <Text style={styles.sectionBodyText}>
-         {parts.map((part, index) => {
-             if (part.startsWith('〔') && part.endsWith('〕')) {
-                 const trait = part.slice(1, -1);
-                 return <Text key={index} style={styles.interactiveBoldToken} onPress={() => { executeRedirect(); handleResetSearch(); handleResetFilters(); setTraitSearchText(trait); setSelectedTypes(['PILOT', 'COMMAND_PILOT']); setIsTraitExactMatch(true); }}>{part}</Text>;
-             } else if (part.startsWith('「') && part.endsWith('」')) {
-                 const name = part.slice(1, -1);
-                 return <Text key={index} style={styles.interactiveBoldToken} onPress={() => { executeRedirect(); handleResetSearch(); handleResetFilters(); setSearchText(name); setSelectedTypes(['PILOT', 'COMMAND_PILOT']); }}>{part}</Text>;
-             }
-             return <Text key={index}>{part}</Text>;
-         })}
-      </Text>
-    );
-  };
-
   const shouldShowResonanceButton = (card) => {
     if (!card) return false;
     const type = card.type || ''; const effect = card[`effect_${language}`] || ''; const traits = card[`traits_${language}`] || ''; const link = card[`link_${language}`] || '';
@@ -972,25 +887,49 @@ export default function App() {
         </TouchableWithoutFeedback>
       )}
 
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.titleContainer} onPress={() => Linking.openURL('https://www.youtube.com/@FLCdesu')} activeOpacity={0.8}>
-          <Text style={[styles.titleTextMain, isMobile && { fontSize: 16 }]} numberOfLines={1} adjustsFontSizeToFit>
-             {isMobile ? "GCG中文資料庫 by " : "GUNDAM CARD GAME中文卡效資料庫 by "}
-          </Text>
-          <Text style={[styles.titleLink, isMobile && { fontSize: 16 }]}>FLC</Text>
-          <Image source={{ uri: 'https://cdn-icons-png.flaticon.com/512/1384/1384060.png' }} style={styles.youtubeLogo} resizeMode="contain" />
-        </TouchableOpacity>
+      {/* 🌟 重新設計的頂部區域 */}
+      <View style={{ zIndex: 100 }}>
         
-        <View style={styles.headerLangContainer}>
-          {/* 🌟 黑夜模式切換按鈕 */}
+        {/* 上半部：標題列 (維持原本的深色) */}
+        <View style={{ backgroundColor: isDarkMode ? '#020617' : '#20353f', paddingVertical: 12, paddingHorizontal: 20, flexDirection: 'row', alignItems: 'center' }}>
+          <TouchableOpacity style={styles.titleContainer} onPress={() => Linking.openURL('https://www.youtube.com/@FLCdesu')} activeOpacity={0.8}>
+            <Text style={[styles.titleTextMain, isMobile && { fontSize: 16 }]} numberOfLines={1} adjustsFontSizeToFit>
+               {isMobile ? "GCG中文資料庫 by " : "GUNDAM CARD GAME中文卡效資料庫 by "}
+            </Text>
+            <Text style={[styles.titleLink, isMobile && { fontSize: 16 }]}>FLC</Text>
+            <Image source={{ uri: 'https://cdn-icons-png.flaticon.com/512/1384/1384060.png' }} style={styles.youtubeLogo} resizeMode="contain" />
+          </TouchableOpacity>
+        </View>
+
+        {/* 下半部：功能面板 (換成對比色，帶有微妙的陰影) */}
+        <View style={{ 
+          backgroundColor: isDarkMode ? '#0f172a' : '#f8fafc', 
+          borderBottomWidth: 1,
+          borderBottomColor: isDarkMode ? '#1e293b' : '#e2e8f0',
+          flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 8, gap: 10 
+        }}>
+          
+          {/* 🌟 極簡 ￥ 開關 */}
           <TouchableOpacity 
-            style={[styles.langBtn, { marginRight: 8, backgroundColor: isDarkMode ? '#334155' : '#e2e8f0' }]} 
+            style={[styles.langBtn, { backgroundColor: showPrice ? (isDarkMode ? '#fbbf24' : '#f59e0b') : (isDarkMode ? '#334155' : '#cbd5e1') }]} 
+            onPress={() => setShowPrice(!showPrice)} 
+            activeOpacity={0.8}
+          >
+            <Text style={{ fontSize: 14, fontWeight: '900', color: showPrice ? (isDarkMode ? '#000' : '#fff') : (isDarkMode ? '#94a3b8' : '#64748b') }}>
+              ￥
+            </Text>
+          </TouchableOpacity>
+
+          {/* 🌟 黑夜模式切換 */}
+          <TouchableOpacity 
+            style={[styles.langBtn, { backgroundColor: isDarkMode ? '#334155' : 'rgba(0,0,0,0.1)' }]} 
             onPress={() => setIsDarkMode(!isDarkMode)} 
             activeOpacity={0.8}
           >
-            <Text style={{ fontSize: 16 }}>{isDarkMode ? '🌙' : '☀️'}</Text>
+            <Text style={{ fontSize: 15 }}>{isDarkMode ? '🌙' : '☀️'}</Text>
           </TouchableOpacity>
 
+          {/* 🌟 語系切換 */}
           <View style={styles.langButtonGroup}>
             <TouchableOpacity style={[styles.langBtn, language === 'hk' ? styles.langBtnActive : styles.langBtnInactive]} onPress={() => setLanguage('hk')} activeOpacity={0.8}><Text style={styles.langBtnText}>港譯</Text></TouchableOpacity>
             <TouchableOpacity style={[styles.langBtn, language === 'tw' ? styles.langBtnActive : styles.langBtnInactive]} onPress={() => setLanguage('tw')} activeOpacity={0.8}><Text style={styles.langBtnText}>台譯</Text></TouchableOpacity>
@@ -1024,13 +963,10 @@ export default function App() {
                           onPress={() => { 
                             setSelectedSet(setOpt); 
                             setIsSetDropdownOpen(false);
-                            
                             if (setOpt && setOpt.includes('Ver.β')) {
-                              setIncludeRegular(false);
-                              setIncludeBeta(true);
+                              setIncludeRegular(false); setIncludeBeta(true);
                             } else {
-                              setIncludeRegular(true);
-                              setIncludeBeta(false);
+                              setIncludeRegular(true); setIncludeBeta(false);
                             }
                           }}
                         >
@@ -1038,7 +974,6 @@ export default function App() {
                         </TouchableOpacity>
                       ))}
                     </ScrollView>
-
                     {isMobile && (
                       <View style={styles.dropdownScrollHint} pointerEvents="none">
                         <Text style={styles.dropdownScrollHintText}>▼ 向下滑動</Text>
@@ -1106,7 +1041,7 @@ export default function App() {
                 <View style={styles.filterColumnsContainer}>
                   <View style={[styles.filterLeftColumn, screenWidth > 900 && styles.filterLeftColumnBorder]}>
                     
-                    {/* 🌟 登場作品篩選 (自訂摺疊下拉式) */}
+                    {/* 🌟 登場作品篩選 */}
                     <View style={[styles.panelRow, {flexDirection: 'column', alignItems: 'stretch'}]}>
                       <TouchableOpacity 
                         style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 8, borderBottomWidth: 1, borderBottomColor: isDarkMode ? '#475569' : '#eee', marginBottom: 10 }}
@@ -1377,7 +1312,6 @@ export default function App() {
               </ScrollView>
             )}
 
-            {/* 🌟 修正：將底部小灰條改為「點擊收起」，加大判定範圍，防呆且直覺 */}
             {isFilterPanelOpen && isMobile && (
               <TouchableOpacity 
                 style={[styles.bottomDragSpace, { paddingBottom: 15, paddingTop: 15 }]} 
@@ -1397,30 +1331,30 @@ export default function App() {
           ref={flatListRef}
           onScroll={(e) => setCurrentScrollY(e.nativeEvent.contentOffset.y)}
           onScrollBeginDrag={() => {
-            // 🌟 捲動即收起魔法
             if (isMobile && isFilterPanelOpen) setIsFilterPanelOpen(false); 
           }}
           scrollEventThrottle={16}
-          key={numColumns} data={filteredCards} keyExtractor={(item, index) => item.id || index.toString()}
-          renderItem={({ item }) => <CardGridItem item={item} dynamicCardWidth={dynamicCardWidth} language={language} onPress={(i) => { setSelectedCard(i); }} isMobile={isMobile} isDarkMode={isDarkMode} />}
-          numColumns={numColumns} ListEmptyComponent={<Text style={styles.emptyText}>找不到符合的卡片</Text>} contentContainerStyle={{ paddingBottom: 20 }}
+          key={numColumns} 
+          data={filteredCards} 
+          keyExtractor={(item, index) => item.id || index.toString()}
+          renderItem={({ item }) => <CardGridItem item={item} dynamicCardWidth={dynamicCardWidth} language={language} onPress={(i) => { setSelectedCard(i); }} isMobile={isMobile} isDarkMode={isDarkMode} showPrice={showPrice} />}
+          numColumns={numColumns} 
+          ListEmptyComponent={<Text style={styles.emptyText}>找不到符合的卡片</Text>} 
+          contentContainerStyle={{ paddingBottom: 20 }}
         />
       </View>
 
       <Modal visible={selectedCard !== null} animationType="fade" transparent={true}>
         {selectedCard && (
           <View style={[styles.modalOverlay, isMobile && { padding: 10 }]}>
-            {/* 🌟 左箭嘴：強制固定在左側 4px 處 */}
             <TouchableOpacity style={[styles.floatingArrowButton, isMobile ? { left: 4, width: 42, height: 42, borderRadius: 21, marginTop: -21, backgroundColor: 'rgba(0,0,0,0.7)' } : styles.leftArrowPosition, !hasPrev && styles.arrowDisabled]} onPress={handlePrevCard} disabled={!hasPrev}>
               <Text style={[styles.floatingArrowText, isMobile && {fontSize: 18}]}>&lt;</Text>
             </TouchableOpacity>
             
-
             <TouchableOpacity activeOpacity={1} style={[styles.modalContentBox, isMobile && { maxHeight: '96%' }]}>
               
               <View style={[styles.modalTopBar, isMobile && { paddingHorizontal: 8, paddingVertical: 8, flexWrap: 'nowrap', gap: 4 }]}>
                 
-                {/* 👈 左側區塊：專屬保留給「返回按鈕」 */}
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: isMobile ? 4 : 8, flexShrink: 1 }}>
                   {lastState && (
                     <TouchableOpacity 
@@ -1435,7 +1369,6 @@ export default function App() {
                   )}
                 </View>
 
-                {/* 🏷️ 中間區塊：卡號與稀有度 (桌機版顯示) */}
                 {!isMobile && (
                   <View style={styles.modalHeaderIdBox}>
                     <Text style={styles.modalHeaderId}>{selectedCard.displayId}</Text>
@@ -1448,7 +1381,7 @@ export default function App() {
                   </View>
                 )}
                 
-                {/* 👉 右側區塊：語系切換 + 複製 + YouTube + 關閉 */}
+                {/* 🌟 Modal 裡面的右上方按鈕群 */}
                 <View style={[styles.modalTopRightControls, { flexDirection: 'row', alignItems: 'center' }, isMobile && { gap: 4, flexShrink: 0 }]}>
                   
                   <View style={[styles.langButtonGroup, { marginRight: 4 }, isMobile && { padding: 2 }]}>
@@ -1470,7 +1403,23 @@ export default function App() {
                       <Text style={[styles.ytPromoText, isMobile && { fontSize: 10 }]}>卡牌講座</Text>
                     </TouchableOpacity>
                   )}
+
+                  {/* 🌟 新增：Modal 裡的價格開關 (￥) */}
+                  <TouchableOpacity 
+                    style={[styles.langBtn, { backgroundColor: showPrice ? (isDarkMode ? '#fbbf24' : '#f59e0b') : (isDarkMode ? '#334155' : '#cbd5e1'), marginHorizontal: 2 }, isMobile && { paddingHorizontal: 6, paddingVertical: 4 }]} 
+                    onPress={() => setShowPrice(!showPrice)} 
+                    activeOpacity={0.8}
+                  >
+                    <Text style={{ fontSize: 14, fontWeight: '900', color: showPrice ? (isDarkMode ? '#000' : '#fff') : (isDarkMode ? '#94a3b8' : '#64748b') }}>
+                      ￥
+                    </Text>
+                  </TouchableOpacity>
                   
+                  {/* Modal 裡的黑夜模式切換 */}
+                  <TouchableOpacity onPress={() => setIsDarkMode(!isDarkMode)}>
+                    <Text style={{ fontSize: 18, marginHorizontal: 4 }}>{isDarkMode ? '🌙' : '☀️'}</Text>
+                  </TouchableOpacity>
+
                   <TouchableOpacity style={[styles.closeButton, isMobile && { width: 28, height: 28 }]} onPress={() => { setSelectedCard(null); }}><Text style={[styles.closeButtonText, isMobile && { fontSize: 14 }]}>X</Text></TouchableOpacity>
                 </View>
               </View>
@@ -1490,15 +1439,23 @@ export default function App() {
               <ScrollView ref={modalScrollRef} contentContainerStyle={[styles.modalScrollBody, isMobile && { padding: 16 }]} showsVerticalScrollIndicator={true}>
                 <View style={[styles.modalFlexRow, isMobile && { flexDirection: 'column', alignItems: 'center' }]}>
                   <View style={[styles.modalLeftColumn, isMobile && { marginRight: 0, marginBottom: 15 }]}>
-                    {cardImages[selectedCard.id] ? 
-                      <Image source={{ uri: cardImages[selectedCard.id] }} style={[styles.cardImage, isMobile && { width: 250, height: 347 }]} resizeMode="contain" /> 
-                      : <View style={[styles.cardImage, styles.noImagePlaceholder, isMobile && { width: 250, height: 347 }]}><Text style={styles.noImageText}>圖片準備中</Text></View>}
+                    
+                    {/* 🌟 圖片容器加上相對定位，並塞入浮動報價 */}
+                    <View style={{ position: 'relative' }}>
+                      {cardImages[selectedCard.id] ? 
+                        <Image source={{ uri: cardImages[selectedCard.id] }} style={[styles.cardImage, isMobile && { width: 250, height: 347 }]} resizeMode="contain" /> 
+                        : <View style={[styles.cardImage, styles.noImagePlaceholder, isMobile && { width: 250, height: 347 }]}><Text style={styles.noImageText}>圖片準備中</Text></View>}
+                      
+                      {/* 🌟 浮動報價積木 */}
+                      {showPrice && <CardPriceWidget cardId={selectedCard.id} isDarkMode={isDarkMode} isAbsolute={true} />}
+                    </View>
+
                   </View>
 
                   <View style={[styles.modalRightColumn, isMobile && { minWidth: '100%' }]}>
                     <Text style={[styles.officialNameMain, isMobile && { fontSize: 22 }]}>{selectedCard[`name_${language}`]}</Text>
                     
-                    <View style={styles.officialSpecsRow}>
+                    <View style={[styles.officialSpecsRow, { alignItems: 'center', flexWrap: 'wrap', gap: 8 }]}>
                       <Text style={styles.specItem}><Text style={styles.specLabel}>Lv.</Text> {selectedCard.lv || '-'}</Text>
                       <Text style={styles.specItem}><Text style={styles.specLabel}>COST</Text> {selectedCard.cost || '0'}</Text>
                       <Text style={styles.specItem}><Text style={styles.specLabel}>色</Text> {COLOR_TRANSLATION_MAP[selectedCard.color] || selectedCard.color || '-'}</Text>
@@ -1527,7 +1484,7 @@ export default function App() {
                                         setTraitSearchText(trait); setSelectedTypes(['PILOT', 'COMMAND_PILOT']);
                                         setIsTraitExactMatch(true); 
                                     }}>
-                                        特徴〔{trait}〕
+                                        特征〔{trait}〕
                                     </Text>
                                  );
                               }
@@ -1604,7 +1561,6 @@ export default function App() {
               </ScrollView>
             </TouchableOpacity>
             
-            {/* 🌟 右箭嘴：強制固定在右側 4px 處 */}
             <TouchableOpacity style={[styles.floatingArrowButton, isMobile ? { right: 4, width: 42, height: 42, borderRadius: 21, marginTop: -21, backgroundColor: 'rgba(0,0,0,0.7)' } : styles.rightArrowPosition, !hasNext && styles.arrowDisabled]} onPress={handleNextCard} disabled={!hasNext}>
               <Text style={[styles.floatingArrowText, isMobile && {fontSize: 18}]}>&gt;</Text>
             </TouchableOpacity>

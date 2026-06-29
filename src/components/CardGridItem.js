@@ -2,8 +2,9 @@ import React, { useState, useMemo } from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { cardImages } from '../data/cardDatabase';
 import { getStyles } from '../styles';
+import CardPriceWidget from './CardPriceWidget';
 
-const CardGridItem = ({ item, dynamicCardWidth, language, onPress, isMobile, isDarkMode }) => {
+const CardGridItem = ({ item, dynamicCardWidth, language, onPress, isMobile, isDarkMode, showPrice }) => {
   const [isHovered, setIsHovered] = useState(false);
   const displayName = item[`name_${language}`] || '名稱未定';
   
@@ -32,9 +33,20 @@ const CardGridItem = ({ item, dynamicCardWidth, language, onPress, isMobile, isD
       style={[styles.gridCard, { width: dynamicCardWidth }, isMobile && { margin: 3 }, isHovered && styles.gridCardHovered]} 
       onPress={() => onPress(item)} activeOpacity={0.9} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}
     >
-      <View style={[styles.imageWrapper, { height: dynamicCardWidth * 1.39 }]}>
-        {cardImages[item.id] ? <Image source={{ uri: cardImages[item.id] }} style={styles.gridImage} resizeMode="cover" /> : <View style={styles.gridNoImage}><Text style={styles.gridNoImageText}>圖片準備中</Text></View>}
+      {/* 🌟 圖片區塊：加上 relative 定位，以便讓價格 Widget 浮動在右上角 */}
+      <View style={[styles.imageWrapper, { height: dynamicCardWidth * 1.39, position: 'relative' }]}>
+        {cardImages[item.id] ? (
+          <Image source={{ uri: cardImages[item.id] }} style={styles.gridImage} resizeMode="cover" />
+        ) : (
+          <View style={styles.gridNoImage}>
+            <Text style={styles.gridNoImageText}>圖片準備中</Text>
+          </View>
+        )}
+
+        {/* 🌟 核心連線：當功能面板開啟 ￥ 時，列表每張卡片右上角會浮現市價 */}
+        {showPrice && <CardPriceWidget cardId={item.id} isDarkMode={isDarkMode} isAbsolute={true} />}
       </View>
+
       <View style={[styles.gridCardInfo, { backgroundColor: infoBackgroundColor, padding: isMobile ? 4 : 6 }]}>
         <View style={styles.gridIdRow}>
           <Text style={[styles.gridCardId, isMobile && { fontSize: 9 }]} numberOfLines={1}>{displayId}</Text>

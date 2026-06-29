@@ -1,0 +1,4010 @@
+[
+  {
+    "yuyu_id": "GD04-017",
+    "yuyu_rarity": "LR++",
+    "price_jpy": 59800,
+    "raw_altText": "GD04-017 LR++ ジオング(パラレル)"
+  },
+  {
+    "yuyu_id": "GD04-050",
+    "yuyu_rarity": "LR++",
+    "price_jpy": 158000,
+    "raw_altText": "GD04-050 LR++ デスティニーガンダム(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-017",
+    "yuyu_rarity": "LR++",
+    "price_jpy": 39800,
+    "raw_altText": "GD03-017 LR++ ケンプファー(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-035",
+    "yuyu_rarity": "LR++",
+    "price_jpy": 59800,
+    "raw_altText": "GD03-035 LR++ GFreD(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-038",
+    "yuyu_rarity": "LR++",
+    "price_jpy": 59800,
+    "raw_altText": "GD02-038 LR++ GQuuuuuuX（オメガ・サイコミュ起動時）(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-054",
+    "yuyu_rarity": "LR++",
+    "price_jpy": 69800,
+    "raw_altText": "GD02-054 LR++ ガンダム・バルバトス（第1形態）(パラレル)"
+  },
+  {
+    "yuyu_id": "GD01-001",
+    "yuyu_rarity": "LR++",
+    "price_jpy": 128000,
+    "raw_altText": "GD01-001 LR++ ガンダム(パラレル)"
+  },
+  {
+    "yuyu_id": "GD01-067",
+    "yuyu_rarity": "LR++",
+    "price_jpy": 69800,
+    "raw_altText": "GD01-067 LR++ ガンダム・エアリアル（改修型）(パラレル)"
+  },
+  {
+    "yuyu_id": "GD04-001",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 980,
+    "raw_altText": "GD04-001 LR+ ガンダム(パラレル)"
+  },
+  {
+    "yuyu_id": "GD04-002",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 980,
+    "raw_altText": "GD04-002 LR+ ペーネロペー（フライト・フォーム）(パラレル)"
+  },
+  {
+    "yuyu_id": "GD04-003",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 3980,
+    "raw_altText": "GD04-003 LR+ Vガンダム(パラレル)"
+  },
+  {
+    "yuyu_id": "GD04-017",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 3480,
+    "raw_altText": "GD04-017 LR+ ジオング(パラレル)"
+  },
+  {
+    "yuyu_id": "GD04-018",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 1280,
+    "raw_altText": "GD04-018 LR+ ガンダム・ファラクト(パラレル)"
+  },
+  {
+    "yuyu_id": "GD04-033",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 3480,
+    "raw_altText": "GD04-033 LR+ ネオ・ジオング(パラレル)"
+  },
+  {
+    "yuyu_id": "GD04-034",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 2980,
+    "raw_altText": "GD04-034 LR+ ガンダムキュリオス(パラレル)"
+  },
+  {
+    "yuyu_id": "GD04-049",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 2980,
+    "raw_altText": "GD04-049 LR+ ガンダムDX(パラレル)"
+  },
+  {
+    "yuyu_id": "GD04-050",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 5980,
+    "raw_altText": "GD04-050 LR+ デスティニーガンダム(パラレル)"
+  },
+  {
+    "yuyu_id": "GD04-065",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 5980,
+    "raw_altText": "GD04-065 LR+ ユニコーンガンダム2号機 バンシィ・ノルン（デストロイモード）(パラレル)"
+  },
+  {
+    "yuyu_id": "GD04-066",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 4980,
+    "raw_altText": "GD04-066 LR+ ユニコーンガンダム（覚醒）(パラレル)"
+  },
+  {
+    "yuyu_id": "GD04-067",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 1780,
+    "raw_altText": "GD04-067 LR+ ∀ガンダム(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-001",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 1480,
+    "raw_altText": "GD03-001 LR+ ガンダムNT-1(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-002",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 2480,
+    "raw_altText": "GD03-002 LR+ ジ・O(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-017",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 980,
+    "raw_altText": "GD03-017 LR+ ケンプファー(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-018",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 1780,
+    "raw_altText": "GD03-018 LR+ アルトロンガンダム(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-019",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 1280,
+    "raw_altText": "GD03-019 LR+ ガンダムAGE-2 ノーマル(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-033",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 3480,
+    "raw_altText": "GD03-033 LR+ プロヴィデンスガンダム(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-034",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 4980,
+    "raw_altText": "GD03-034 LR+ GQuuuuuuX（オメガ・サイコミュ起動時）(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-035",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 4980,
+    "raw_altText": "GD03-035 LR+ GFreD(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-049",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 3480,
+    "raw_altText": "GD03-049 LR+ ガンダムエクシア（トランザム）(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-050",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 4980,
+    "raw_altText": "GD03-050 LR+ ガンダム・バルバトスルプス(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-069",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 1780,
+    "raw_altText": "GD03-069 LR+ グラハム専用ユニオンフラッグカスタム(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-070",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 2980,
+    "raw_altText": "GD03-070 LR+ フリーダムガンダム(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-001",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 1280,
+    "raw_altText": "GD02-001 LR+ サイコ・ガンダム(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-002",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 2980,
+    "raw_altText": "GD02-002 LR+ ガンダムエピオン(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-020",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 580,
+    "raw_altText": "GD02-020 LR+ エルメス(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-021",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 1280,
+    "raw_altText": "GD02-021 LR+ ガンダムAGE-1 ノーマル(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-036",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 1980,
+    "raw_altText": "GD02-036 LR+ キュベレイ(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-037",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 980,
+    "raw_altText": "GD02-037 LR+ ガンダムヴァサーゴ(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-038",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 1480,
+    "raw_altText": "GD02-038 LR+ GQuuuuuuX（オメガ・サイコミュ起動時）(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-053",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 2480,
+    "raw_altText": "GD02-053 LR+ ガンダムX(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-054",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 5980,
+    "raw_altText": "GD02-054 LR+ ガンダム・バルバトス（第1形態）(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-055",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 4980,
+    "raw_altText": "GD02-055 LR+ ガンダム・グシオンリベイク(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-069",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 1480,
+    "raw_altText": "GD02-069 LR+ Zガンダム(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-070",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 680,
+    "raw_altText": "GD02-070 LR+ ガンダム・キマリス(パラレル)"
+  },
+  {
+    "yuyu_id": "GD01-001",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 780,
+    "raw_altText": "GD01-001 LR+ ガンダム(パラレル)"
+  },
+  {
+    "yuyu_id": "GD01-002",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 2480,
+    "raw_altText": "GD01-002 LR+ ユニコーンガンダム（デストロイモード）(パラレル)"
+  },
+  {
+    "yuyu_id": "GD01-003",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 1480,
+    "raw_altText": "GD01-003 LR+ ユニコーンガンダム2号機 バンシィ（デストロイモード）(パラレル)"
+  },
+  {
+    "yuyu_id": "GD01-023",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 980,
+    "raw_altText": "GD01-023 LR+ シャア専用ゲルググ(パラレル)"
+  },
+  {
+    "yuyu_id": "GD01-024",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 14800,
+    "raw_altText": "GD01-024 LR+ ウイングガンダムゼロ(パラレル)"
+  },
+  {
+    "yuyu_id": "GD01-025",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 1980,
+    "raw_altText": "GD01-025 LR+ ガンダムデスサイズ(パラレル)"
+  },
+  {
+    "yuyu_id": "GD01-044",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 4980,
+    "raw_altText": "GD01-044 LR+ クシャトリヤ(パラレル)"
+  },
+  {
+    "yuyu_id": "GD01-045",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 580,
+    "raw_altText": "GD01-045 LR+ デュエルガンダム アサルトシュラウド(パラレル)"
+  },
+  {
+    "yuyu_id": "GD01-046",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 580,
+    "raw_altText": "GD01-046 LR+ バスターガンダム(パラレル)"
+  },
+  {
+    "yuyu_id": "GD01-065",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 3980,
+    "raw_altText": "GD01-065 LR+ フリーダムガンダム(パラレル)"
+  },
+  {
+    "yuyu_id": "GD01-066",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 4980,
+    "raw_altText": "GD01-066 LR+ ジャスティスガンダム(パラレル)"
+  },
+  {
+    "yuyu_id": "GD01-067",
+    "yuyu_rarity": "LR+",
+    "price_jpy": 3980,
+    "raw_altText": "GD01-067 LR+ ガンダム・エアリアル（改修型）(パラレル)"
+  },
+  {
+    "yuyu_id": "GD04-001",
+    "yuyu_rarity": "LR",
+    "price_jpy": 220,
+    "raw_altText": "GD04-001 LR ガンダム"
+  },
+  {
+    "yuyu_id": "GD04-002",
+    "yuyu_rarity": "LR",
+    "price_jpy": 120,
+    "raw_altText": "GD04-002 LR ペーネロペー（フライト・フォーム）"
+  },
+  {
+    "yuyu_id": "GD04-003",
+    "yuyu_rarity": "LR",
+    "price_jpy": 780,
+    "raw_altText": "GD04-003 LR Vガンダム"
+  },
+  {
+    "yuyu_id": "GD04-017",
+    "yuyu_rarity": "LR",
+    "price_jpy": 980,
+    "raw_altText": "GD04-017 LR ジオング"
+  },
+  {
+    "yuyu_id": "GD04-018",
+    "yuyu_rarity": "LR",
+    "price_jpy": 180,
+    "raw_altText": "GD04-018 LR ガンダム・ファラクト"
+  },
+  {
+    "yuyu_id": "GD04-033",
+    "yuyu_rarity": "LR",
+    "price_jpy": 980,
+    "raw_altText": "GD04-033 LR ネオ・ジオング"
+  },
+  {
+    "yuyu_id": "GD04-034",
+    "yuyu_rarity": "LR",
+    "price_jpy": 980,
+    "raw_altText": "GD04-034 LR ガンダムキュリオス"
+  },
+  {
+    "yuyu_id": "GD04-049",
+    "yuyu_rarity": "LR",
+    "price_jpy": 220,
+    "raw_altText": "GD04-049 LR ガンダムDX"
+  },
+  {
+    "yuyu_id": "GD04-050",
+    "yuyu_rarity": "LR",
+    "price_jpy": 1280,
+    "raw_altText": "GD04-050 LR デスティニーガンダム"
+  },
+  {
+    "yuyu_id": "GD04-065",
+    "yuyu_rarity": "LR",
+    "price_jpy": 1280,
+    "raw_altText": "GD04-065 LR ユニコーンガンダム2号機 バンシィ・ノルン（デストロイモード）"
+  },
+  {
+    "yuyu_id": "GD04-066",
+    "yuyu_rarity": "LR",
+    "price_jpy": 980,
+    "raw_altText": "GD04-066 LR ユニコーンガンダム（覚醒）"
+  },
+  {
+    "yuyu_id": "GD04-067",
+    "yuyu_rarity": "LR",
+    "price_jpy": 420,
+    "raw_altText": "GD04-067 LR ∀ガンダム"
+  },
+  {
+    "yuyu_id": "GD03-001",
+    "yuyu_rarity": "LR",
+    "price_jpy": 500,
+    "raw_altText": "GD03-001 LR ガンダムNT-1"
+  },
+  {
+    "yuyu_id": "GD03-002",
+    "yuyu_rarity": "LR",
+    "price_jpy": 500,
+    "raw_altText": "GD03-002 LR ジ・O"
+  },
+  {
+    "yuyu_id": "GD03-017",
+    "yuyu_rarity": "LR",
+    "price_jpy": 220,
+    "raw_altText": "GD03-017 LR ケンプファー"
+  },
+  {
+    "yuyu_id": "GD03-018",
+    "yuyu_rarity": "LR",
+    "price_jpy": 320,
+    "raw_altText": "GD03-018 LR アルトロンガンダム"
+  },
+  {
+    "yuyu_id": "GD03-019",
+    "yuyu_rarity": "LR",
+    "price_jpy": 220,
+    "raw_altText": "GD03-019 LR ガンダムAGE-2 ノーマル"
+  },
+  {
+    "yuyu_id": "GD03-033",
+    "yuyu_rarity": "LR",
+    "price_jpy": 680,
+    "raw_altText": "GD03-033 LR プロヴィデンスガンダム"
+  },
+  {
+    "yuyu_id": "GD03-034",
+    "yuyu_rarity": "LR",
+    "price_jpy": 2480,
+    "raw_altText": "GD03-034 LR GQuuuuuuX（オメガ・サイコミュ起動時）"
+  },
+  {
+    "yuyu_id": "GD03-035",
+    "yuyu_rarity": "LR",
+    "price_jpy": 1780,
+    "raw_altText": "GD03-035 LR GFreD"
+  },
+  {
+    "yuyu_id": "GD03-049",
+    "yuyu_rarity": "LR",
+    "price_jpy": 780,
+    "raw_altText": "GD03-049 LR ガンダムエクシア（トランザム）"
+  },
+  {
+    "yuyu_id": "GD03-050",
+    "yuyu_rarity": "LR",
+    "price_jpy": 500,
+    "raw_altText": "GD03-050 LR ガンダム・バルバトスルプス"
+  },
+  {
+    "yuyu_id": "GD03-069",
+    "yuyu_rarity": "LR",
+    "price_jpy": 320,
+    "raw_altText": "GD03-069 LR グラハム専用ユニオンフラッグカスタム"
+  },
+  {
+    "yuyu_id": "GD03-070",
+    "yuyu_rarity": "LR",
+    "price_jpy": 220,
+    "raw_altText": "GD03-070 LR フリーダムガンダム"
+  },
+  {
+    "yuyu_id": "GD02-001",
+    "yuyu_rarity": "LR",
+    "price_jpy": 220,
+    "raw_altText": "GD02-001 LR サイコ・ガンダム"
+  },
+  {
+    "yuyu_id": "GD02-002",
+    "yuyu_rarity": "LR",
+    "price_jpy": 320,
+    "raw_altText": "GD02-002 LR ガンダムエピオン"
+  },
+  {
+    "yuyu_id": "GD02-020",
+    "yuyu_rarity": "LR",
+    "price_jpy": 120,
+    "raw_altText": "GD02-020 LR エルメス"
+  },
+  {
+    "yuyu_id": "GD02-021",
+    "yuyu_rarity": "LR",
+    "price_jpy": 220,
+    "raw_altText": "GD02-021 LR ガンダムAGE-1 ノーマル"
+  },
+  {
+    "yuyu_id": "GD02-036",
+    "yuyu_rarity": "LR",
+    "price_jpy": 500,
+    "raw_altText": "GD02-036 LR キュベレイ"
+  },
+  {
+    "yuyu_id": "GD02-037",
+    "yuyu_rarity": "LR",
+    "price_jpy": 120,
+    "raw_altText": "GD02-037 LR ガンダムヴァサーゴ"
+  },
+  {
+    "yuyu_id": "GD02-038",
+    "yuyu_rarity": "LR",
+    "price_jpy": 420,
+    "raw_altText": "GD02-038 LR GQuuuuuuX（オメガ・サイコミュ起動時）"
+  },
+  {
+    "yuyu_id": "GD02-053",
+    "yuyu_rarity": "LR",
+    "price_jpy": 500,
+    "raw_altText": "GD02-053 LR ガンダムX"
+  },
+  {
+    "yuyu_id": "GD02-054",
+    "yuyu_rarity": "LR",
+    "price_jpy": 2980,
+    "raw_altText": "GD02-054 LR ガンダム・バルバトス（第1形態）"
+  },
+  {
+    "yuyu_id": "GD02-055",
+    "yuyu_rarity": "LR",
+    "price_jpy": 980,
+    "raw_altText": "GD02-055 LR ガンダム・グシオンリベイク"
+  },
+  {
+    "yuyu_id": "GD02-069",
+    "yuyu_rarity": "LR",
+    "price_jpy": 220,
+    "raw_altText": "GD02-069 LR Zガンダム"
+  },
+  {
+    "yuyu_id": "GD02-070",
+    "yuyu_rarity": "LR",
+    "price_jpy": 120,
+    "raw_altText": "GD02-070 LR ガンダム・キマリス"
+  },
+  {
+    "yuyu_id": "GD01-001",
+    "yuyu_rarity": "LR",
+    "price_jpy": 180,
+    "raw_altText": "GD01-001 LR ガンダム"
+  },
+  {
+    "yuyu_id": "GD01-002",
+    "yuyu_rarity": "LR",
+    "price_jpy": 500,
+    "raw_altText": "GD01-002 LR ユニコーンガンダム（デストロイモード）"
+  },
+  {
+    "yuyu_id": "GD01-003",
+    "yuyu_rarity": "LR",
+    "price_jpy": 220,
+    "raw_altText": "GD01-003 LR ユニコーンガンダム2号機 バンシィ（デストロイモード）"
+  },
+  {
+    "yuyu_id": "GD01-023",
+    "yuyu_rarity": "LR",
+    "price_jpy": 320,
+    "raw_altText": "GD01-023 LR シャア専用ゲルググ"
+  },
+  {
+    "yuyu_id": "GD01-024",
+    "yuyu_rarity": "LR",
+    "price_jpy": 1980,
+    "raw_altText": "GD01-024 LR ウイングガンダムゼロ"
+  },
+  {
+    "yuyu_id": "GD01-025",
+    "yuyu_rarity": "LR",
+    "price_jpy": 220,
+    "raw_altText": "GD01-025 LR ガンダムデスサイズ"
+  },
+  {
+    "yuyu_id": "GD01-044",
+    "yuyu_rarity": "LR",
+    "price_jpy": 1780,
+    "raw_altText": "GD01-044 LR クシャトリヤ"
+  },
+  {
+    "yuyu_id": "GD01-045",
+    "yuyu_rarity": "LR",
+    "price_jpy": 220,
+    "raw_altText": "GD01-045 LR デュエルガンダム アサルトシュラウド"
+  },
+  {
+    "yuyu_id": "GD01-046",
+    "yuyu_rarity": "LR",
+    "price_jpy": 180,
+    "raw_altText": "GD01-046 LR バスターガンダム"
+  },
+  {
+    "yuyu_id": "GD01-065",
+    "yuyu_rarity": "LR",
+    "price_jpy": 780,
+    "raw_altText": "GD01-065 LR フリーダムガンダム"
+  },
+  {
+    "yuyu_id": "GD01-066",
+    "yuyu_rarity": "LR",
+    "price_jpy": 1780,
+    "raw_altText": "GD01-066 LR ジャスティスガンダム"
+  },
+  {
+    "yuyu_id": "GD01-067",
+    "yuyu_rarity": "LR",
+    "price_jpy": 320,
+    "raw_altText": "GD01-067 LR ガンダム・エアリアル（改修型）"
+  },
+  {
+    "yuyu_id": "GD04-006",
+    "yuyu_rarity": "R+",
+    "price_jpy": 1980,
+    "raw_altText": "GD04-006 R+ Vダッシュガンダム(パラレル)"
+  },
+  {
+    "yuyu_id": "GD04-009",
+    "yuyu_rarity": "R+",
+    "price_jpy": 500,
+    "raw_altText": "GD04-009 R+ ガンキャノン（108）&ガンキャノン（109）(パラレル)"
+  },
+  {
+    "yuyu_id": "GD04-021",
+    "yuyu_rarity": "R+",
+    "price_jpy": 980,
+    "raw_altText": "GD04-021 R+ ガンダム・ルブリス・ソーン(パラレル)"
+  },
+  {
+    "yuyu_id": "GD04-022",
+    "yuyu_rarity": "R+",
+    "price_jpy": 580,
+    "raw_altText": "GD04-022 R+ キケロガ（MS形態）（GQ)(パラレル)"
+  },
+  {
+    "yuyu_id": "GD04-036",
+    "yuyu_rarity": "R+",
+    "price_jpy": 1780,
+    "raw_altText": "GD04-036 R+ ガンダムスローネアイン(パラレル)"
+  },
+  {
+    "yuyu_id": "GD04-053",
+    "yuyu_rarity": "R+",
+    "price_jpy": 980,
+    "raw_altText": "GD04-053 R+ ブレイズザクファントム（レイ専用機）(パラレル)"
+  },
+  {
+    "yuyu_id": "GD04-068",
+    "yuyu_rarity": "R+",
+    "price_jpy": 6980,
+    "raw_altText": "GD04-068 R+ シルヴァ・バレト(パラレル)"
+  },
+  {
+    "yuyu_id": "GD04-071",
+    "yuyu_rarity": "R+",
+    "price_jpy": 980,
+    "raw_altText": "GD04-071 R+ グラハム専用ユニオンフラッグカスタムII（GNフラッグ）(パラレル)"
+  },
+  {
+    "yuyu_id": "GD04-081",
+    "yuyu_rarity": "R+",
+    "price_jpy": 1980,
+    "raw_altText": "GD04-081 R+ ウッソ・エヴィン(パラレル)"
+  },
+  {
+    "yuyu_id": "GD04-085",
+    "yuyu_rarity": "R+",
+    "price_jpy": 12800,
+    "raw_altText": "GD04-085 R+ スレッタ・マーキュリー(パラレル)"
+  },
+  {
+    "yuyu_id": "GD04-089",
+    "yuyu_rarity": "R+",
+    "price_jpy": 1980,
+    "raw_altText": "GD04-089 R+ ネーナ・トリニティ(パラレル)"
+  },
+  {
+    "yuyu_id": "GD04-093",
+    "yuyu_rarity": "R+",
+    "price_jpy": 1280,
+    "raw_altText": "GD04-093 R+ レイ・ザ・バレル(パラレル)"
+  },
+  {
+    "yuyu_id": "GD04-097",
+    "yuyu_rarity": "R+",
+    "price_jpy": 1980,
+    "raw_altText": "GD04-097 R+ ロラン・セアック(パラレル)"
+  },
+  {
+    "yuyu_id": "GD04-105",
+    "yuyu_rarity": "R+",
+    "price_jpy": 580,
+    "raw_altText": "GD04-105 R+ 邂逅(パラレル)"
+  },
+  {
+    "yuyu_id": "GD04-117",
+    "yuyu_rarity": "R+",
+    "price_jpy": 6980,
+    "raw_altText": "GD04-117 R+ 優雅な物腰(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-003",
+    "yuyu_rarity": "R+",
+    "price_jpy": 1280,
+    "raw_altText": "GD03-003 R+ メッサーラ(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-020",
+    "yuyu_rarity": "R+",
+    "price_jpy": 980,
+    "raw_altText": "GD03-020 R+ ザクII改(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-022",
+    "yuyu_rarity": "R+",
+    "price_jpy": 780,
+    "raw_altText": "GD03-022 R+ ガンダムキュリオス(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-036",
+    "yuyu_rarity": "R+",
+    "price_jpy": 780,
+    "raw_altText": "GD03-036 R+ Ξガンダム（フライト・フォーム）(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-037",
+    "yuyu_rarity": "R+",
+    "price_jpy": 580,
+    "raw_altText": "GD03-037 R+ ベルティゴ(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-052",
+    "yuyu_rarity": "R+",
+    "price_jpy": 500,
+    "raw_altText": "GD03-052 R+ ガンダムヴァーチェ(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-053",
+    "yuyu_rarity": "R+",
+    "price_jpy": 780,
+    "raw_altText": "GD03-053 R+ ガンダム・グシオンリベイクフルシティ(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-071",
+    "yuyu_rarity": "R+",
+    "price_jpy": 980,
+    "raw_altText": "GD03-071 R+ Ζガンダム（バイオセンサー起動時）(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-073",
+    "yuyu_rarity": "R+",
+    "price_jpy": 500,
+    "raw_altText": "GD03-073 R+ グレイズ・アイン(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-084",
+    "yuyu_rarity": "R+",
+    "price_jpy": 1480,
+    "raw_altText": "GD03-084 R+ パプテマス・シロッコ(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-088",
+    "yuyu_rarity": "R+",
+    "price_jpy": 980,
+    "raw_altText": "GD03-088 R+ アセム・アスノ(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-091",
+    "yuyu_rarity": "R+",
+    "price_jpy": 1980,
+    "raw_altText": "GD03-091 R+ ラウ・ル・クルーゼ(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-094",
+    "yuyu_rarity": "R+",
+    "price_jpy": 1980,
+    "raw_altText": "GD03-094 R+ ゼハート・ガレット(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-098",
+    "yuyu_rarity": "R+",
+    "price_jpy": 980,
+    "raw_altText": "GD03-098 R+ グラハム・エーカー(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-101",
+    "yuyu_rarity": "R+",
+    "price_jpy": 1280,
+    "raw_altText": "GD03-101 R+ 旺盛な好奇心(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-105",
+    "yuyu_rarity": "R+",
+    "price_jpy": 1780,
+    "raw_altText": "GD03-105 R+ ブリッジクルー(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-109",
+    "yuyu_rarity": "R+",
+    "price_jpy": 5980,
+    "raw_altText": "GD03-109 R+ 戦技の向上(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-114",
+    "yuyu_rarity": "R+",
+    "price_jpy": 1980,
+    "raw_altText": "GD03-114 R+ 決意の眼差し(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-118",
+    "yuyu_rarity": "R+",
+    "price_jpy": 4980,
+    "raw_altText": "GD03-118 R+ 能力の覚醒(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-003",
+    "yuyu_rarity": "R+",
+    "price_jpy": 320,
+    "raw_altText": "GD02-003 R+ ガンダムMk-II（ティターンズ仕様）(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-005",
+    "yuyu_rarity": "R+",
+    "price_jpy": 780,
+    "raw_altText": "GD02-005 R+ トールギス(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-023",
+    "yuyu_rarity": "R+",
+    "price_jpy": 580,
+    "raw_altText": "GD02-023 R+ ガンダムAGE-1 スパロー(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-024",
+    "yuyu_rarity": "R+",
+    "price_jpy": 780,
+    "raw_altText": "GD02-024 R+ 赤いガンダム(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-040",
+    "yuyu_rarity": "R+",
+    "price_jpy": 500,
+    "raw_altText": "GD02-040 R+ ガンダムアシュタロン(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-041",
+    "yuyu_rarity": "R+",
+    "price_jpy": 420,
+    "raw_altText": "GD02-041 R+ ゲルググ スガイ機（GQ）(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-072",
+    "yuyu_rarity": "R+",
+    "price_jpy": 1480,
+    "raw_altText": "GD02-072 R+ 百式(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-073",
+    "yuyu_rarity": "R+",
+    "price_jpy": 420,
+    "raw_altText": "GD02-073 R+ グレイズリッター（カルタ機／地上戦仕様）(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-085",
+    "yuyu_rarity": "R+",
+    "price_jpy": 980,
+    "raw_altText": "GD02-085 R+ フォウ・ムラサメ(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-088",
+    "yuyu_rarity": "R+",
+    "price_jpy": 2480,
+    "raw_altText": "GD02-088 R+ フリット・アスノ(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-091",
+    "yuyu_rarity": "R+",
+    "price_jpy": 1780,
+    "raw_altText": "GD02-091 R+ ハマーン・カーン(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-094",
+    "yuyu_rarity": "R+",
+    "price_jpy": 2980,
+    "raw_altText": "GD02-094 R+ ガロード・ラン＆ティファ・アディール(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-097",
+    "yuyu_rarity": "R+",
+    "price_jpy": 980,
+    "raw_altText": "GD02-097 R+ カミーユ・ビダン(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-100",
+    "yuyu_rarity": "R+",
+    "price_jpy": 420,
+    "raw_altText": "GD02-100 R+ 逆転の一手(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-103",
+    "yuyu_rarity": "R+",
+    "price_jpy": 980,
+    "raw_altText": "GD02-103 R+ AGEデバイス(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-107",
+    "yuyu_rarity": "R+",
+    "price_jpy": 980,
+    "raw_altText": "GD02-107 R+ オールレンジ攻撃(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-110",
+    "yuyu_rarity": "R+",
+    "price_jpy": 2980,
+    "raw_altText": "GD02-110 R+ 目覚める力(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-112",
+    "yuyu_rarity": "R+",
+    "price_jpy": 1480,
+    "raw_altText": "GD02-112 R+ 憩いのひととき(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-129",
+    "yuyu_rarity": "R+",
+    "price_jpy": 1280,
+    "raw_altText": "GD02-129 R+ アーガマ(パラレル)"
+  },
+  {
+    "yuyu_id": "GD01-005",
+    "yuyu_rarity": "R+",
+    "price_jpy": 1480,
+    "raw_altText": "GD01-005 R+ ユニコーンガンダム（ユニコーンモード）(パラレル)(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-006",
+    "yuyu_rarity": "R+",
+    "price_jpy": 1980,
+    "raw_altText": "GD01-006 R+ デルタプラス(パラレル)"
+  },
+  {
+    "yuyu_id": "GD01-027",
+    "yuyu_rarity": "R+",
+    "price_jpy": 580,
+    "raw_altText": "GD01-027 R+ ビグ・ザム(パラレル)"
+  },
+  {
+    "yuyu_id": "GD01-029",
+    "yuyu_rarity": "R+",
+    "price_jpy": 1480,
+    "raw_altText": "GD01-029 R+ シェンロンガンダム(パラレル)"
+  },
+  {
+    "yuyu_id": "GD01-047",
+    "yuyu_rarity": "R+",
+    "price_jpy": 420,
+    "raw_altText": "GD01-047 R+ シャンブロ(パラレル)"
+  },
+  {
+    "yuyu_id": "GD01-050",
+    "yuyu_rarity": "R+",
+    "price_jpy": 780,
+    "raw_altText": "GD01-050 R+ ラゴゥ(パラレル)"
+  },
+  {
+    "yuyu_id": "GD01-069",
+    "yuyu_rarity": "R+",
+    "price_jpy": 980,
+    "raw_altText": "GD01-069 R+ ストライクルージュ(パラレル)"
+  },
+  {
+    "yuyu_id": "GD01-071",
+    "yuyu_rarity": "R+",
+    "price_jpy": 580,
+    "raw_altText": "GD01-071 R+ ガンダム・ファラクト(パラレル)"
+  },
+  {
+    "yuyu_id": "GD01-087",
+    "yuyu_rarity": "R+",
+    "price_jpy": 980,
+    "raw_altText": "GD01-087 R+ セイラ・マス(パラレル)"
+  },
+  {
+    "yuyu_id": "GD01-090",
+    "yuyu_rarity": "R+",
+    "price_jpy": 1280,
+    "raw_altText": "GD01-090 R+ デュオ・マックスウェル(パラレル)"
+  },
+  {
+    "yuyu_id": "GD01-093",
+    "yuyu_rarity": "R+",
+    "price_jpy": 5980,
+    "raw_altText": "GD01-093 R+ マリーダ・クルス(パラレル)"
+  },
+  {
+    "yuyu_id": "GD01-096",
+    "yuyu_rarity": "R+",
+    "price_jpy": 3980,
+    "raw_altText": "GD01-096 R+ カガリ・ユラ・アスハ(パラレル)"
+  },
+  {
+    "yuyu_id": "GD01-105",
+    "yuyu_rarity": "R+",
+    "price_jpy": 420,
+    "raw_altText": "GD01-105 R+ 立てよ国民！(パラレル)(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-111",
+    "yuyu_rarity": "R+",
+    "price_jpy": 1480,
+    "raw_altText": "GD01-111 R+ エースの戦い(パラレル)"
+  },
+  {
+    "yuyu_id": "GD01-117",
+    "yuyu_rarity": "R+",
+    "price_jpy": 1980,
+    "raw_altText": "GD01-117 R+ 魔女と花嫁(パラレル)(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD04-004",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD04-004 R サイコ・ガンダムMk-II"
+  },
+  {
+    "yuyu_id": "GD04-006",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD04-006 R Vダッシュガンダム"
+  },
+  {
+    "yuyu_id": "GD04-007",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD04-007 R Vガンダムヘキサ"
+  },
+  {
+    "yuyu_id": "GD04-009",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD04-009 R ガンキャノン（108）&ガンキャノン（109）"
+  },
+  {
+    "yuyu_id": "GD04-019",
+    "yuyu_rarity": "R",
+    "price_jpy": 120,
+    "raw_altText": "GD04-019 R GNアーマー TYPE-D（トランザム）"
+  },
+  {
+    "yuyu_id": "GD04-020",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD04-020 R ガンダム・ルブリス・ウル"
+  },
+  {
+    "yuyu_id": "GD04-021",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD04-021 R ガンダム・ルブリス・ソーン"
+  },
+  {
+    "yuyu_id": "GD04-022",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD04-022 R キケロガ（MS形態）（GQ)"
+  },
+  {
+    "yuyu_id": "GD04-035",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD04-035 R Ξガンダム"
+  },
+  {
+    "yuyu_id": "GD04-036",
+    "yuyu_rarity": "R",
+    "price_jpy": 120,
+    "raw_altText": "GD04-036 R ガンダムスローネアイン"
+  },
+  {
+    "yuyu_id": "GD04-037",
+    "yuyu_rarity": "R",
+    "price_jpy": 120,
+    "raw_altText": "GD04-037 R ガンダムキュリオス（トランザム）"
+  },
+  {
+    "yuyu_id": "GD04-038",
+    "yuyu_rarity": "R",
+    "price_jpy": 320,
+    "raw_altText": "GD04-038 R ガンダムエクシア"
+  },
+  {
+    "yuyu_id": "GD04-051",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD04-051 R ガンダムエアマスターバースト"
+  },
+  {
+    "yuyu_id": "GD04-052",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD04-052 R ガンダムレオパルドデストロイ"
+  },
+  {
+    "yuyu_id": "GD04-053",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD04-053 R ブレイズザクファントム（レイ専用機）"
+  },
+  {
+    "yuyu_id": "GD04-054",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD04-054 R ガンダムヴァーチェ（トランザム）"
+  },
+  {
+    "yuyu_id": "GD04-068",
+    "yuyu_rarity": "R",
+    "price_jpy": 980,
+    "raw_altText": "GD04-068 R シルヴァ・バレト"
+  },
+  {
+    "yuyu_id": "GD04-069",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD04-069 R ∀ガンダム"
+  },
+  {
+    "yuyu_id": "GD04-070",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD04-070 R サーシェス専用AEUイナクトカスタム（モラリア開発実験型）"
+  },
+  {
+    "yuyu_id": "GD04-071",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD04-071 R グラハム専用ユニオンフラッグカスタムII（GNフラッグ）"
+  },
+  {
+    "yuyu_id": "GD04-081",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD04-081 R ウッソ・エヴィン"
+  },
+  {
+    "yuyu_id": "GD04-085",
+    "yuyu_rarity": "R",
+    "price_jpy": 120,
+    "raw_altText": "GD04-085 R スレッタ・マーキュリー"
+  },
+  {
+    "yuyu_id": "GD04-089",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD04-089 R ネーナ・トリニティ"
+  },
+  {
+    "yuyu_id": "GD04-093",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD04-093 R レイ・ザ・バレル"
+  },
+  {
+    "yuyu_id": "GD04-097",
+    "yuyu_rarity": "R",
+    "price_jpy": 120,
+    "raw_altText": "GD04-097 R ロラン・セアック"
+  },
+  {
+    "yuyu_id": "GD04-101",
+    "yuyu_rarity": "R",
+    "price_jpy": 180,
+    "raw_altText": "GD04-101 R 優しい心根"
+  },
+  {
+    "yuyu_id": "GD04-105",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD04-105 R 邂逅"
+  },
+  {
+    "yuyu_id": "GD04-109",
+    "yuyu_rarity": "R",
+    "price_jpy": 220,
+    "raw_altText": "GD04-109 R 強大な圧力"
+  },
+  {
+    "yuyu_id": "GD04-113",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD04-113 R ダメージコントロール"
+  },
+  {
+    "yuyu_id": "GD04-117",
+    "yuyu_rarity": "R",
+    "price_jpy": 580,
+    "raw_altText": "GD04-117 R 優雅な物腰"
+  },
+  {
+    "yuyu_id": "GD04-121",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD04-121 R リーンホースJr."
+  },
+  {
+    "yuyu_id": "GD04-129",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD04-129 R ウィルゲム"
+  },
+  {
+    "yuyu_id": "GD03-003",
+    "yuyu_rarity": "R",
+    "price_jpy": 180,
+    "raw_altText": "GD03-003 R メッサーラ"
+  },
+  {
+    "yuyu_id": "GD03-004",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD03-004 R ハンブラビ"
+  },
+  {
+    "yuyu_id": "GD03-005",
+    "yuyu_rarity": "R",
+    "price_jpy": 120,
+    "raw_altText": "GD03-005 R クシャトリヤ・ベッセルング"
+  },
+  {
+    "yuyu_id": "GD03-006",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD03-006 R ペーネロペー（ミドル・フォーム）"
+  },
+  {
+    "yuyu_id": "GD03-020",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD03-020 R ザクII改"
+  },
+  {
+    "yuyu_id": "GD03-021",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD03-021 R ガンダムデスサイズヘル"
+  },
+  {
+    "yuyu_id": "GD03-022",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD03-022 R ガンダムキュリオス"
+  },
+  {
+    "yuyu_id": "GD03-023",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD03-023 R Gバウンサー"
+  },
+  {
+    "yuyu_id": "GD03-036",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD03-036 R Ξガンダム（フライト・フォーム）"
+  },
+  {
+    "yuyu_id": "GD03-037",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD03-037 R ベルティゴ"
+  },
+  {
+    "yuyu_id": "GD03-038",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD03-038 R ゲイツ（指揮官用）"
+  },
+  {
+    "yuyu_id": "GD03-039",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD03-039 R 赤いガンダム"
+  },
+  {
+    "yuyu_id": "GD03-051",
+    "yuyu_rarity": "R",
+    "price_jpy": 120,
+    "raw_altText": "GD03-051 R ガンダムXディバイダー"
+  },
+  {
+    "yuyu_id": "GD03-052",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD03-052 R ガンダムヴァーチェ"
+  },
+  {
+    "yuyu_id": "GD03-053",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD03-053 R ガンダム・グシオンリベイクフルシティ"
+  },
+  {
+    "yuyu_id": "GD03-054",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD03-054 R ゼイドラ"
+  },
+  {
+    "yuyu_id": "GD03-055",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD03-055 R ガンダム・端白星（第2形態）"
+  },
+  {
+    "yuyu_id": "GD03-056",
+    "yuyu_rarity": "R",
+    "price_jpy": 500,
+    "raw_altText": "GD03-056 R ガンダム・バルバトスアダプト"
+  },
+  {
+    "yuyu_id": "GD03-071",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD03-071 R Ζガンダム（バイオセンサー起動時）"
+  },
+  {
+    "yuyu_id": "GD03-072",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD03-072 R エールストライクガンダム"
+  },
+  {
+    "yuyu_id": "GD03-073",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD03-073 R グレイズ・アイン"
+  },
+  {
+    "yuyu_id": "GD03-074",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD03-074 R ティエレンタオツー"
+  },
+  {
+    "yuyu_id": "GD03-084",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD03-084 R パプテマス・シロッコ"
+  },
+  {
+    "yuyu_id": "GD03-088",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD03-088 R アセム・アスノ"
+  },
+  {
+    "yuyu_id": "GD03-091",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD03-091 R ラウ・ル・クルーゼ"
+  },
+  {
+    "yuyu_id": "GD03-094",
+    "yuyu_rarity": "R",
+    "price_jpy": 120,
+    "raw_altText": "GD03-094 R ゼハート・ガレット"
+  },
+  {
+    "yuyu_id": "GD03-098",
+    "yuyu_rarity": "R",
+    "price_jpy": 120,
+    "raw_altText": "GD03-098 R グラハム・エーカー"
+  },
+  {
+    "yuyu_id": "GD03-101",
+    "yuyu_rarity": "R",
+    "price_jpy": 120,
+    "raw_altText": "GD03-101 R 旺盛な好奇心"
+  },
+  {
+    "yuyu_id": "GD03-105",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD03-105 R ブリッジクルー"
+  },
+  {
+    "yuyu_id": "GD03-109",
+    "yuyu_rarity": "R",
+    "price_jpy": 980,
+    "raw_altText": "GD03-109 R 戦技の向上"
+  },
+  {
+    "yuyu_id": "GD03-114",
+    "yuyu_rarity": "R",
+    "price_jpy": 120,
+    "raw_altText": "GD03-114 R 決意の眼差し"
+  },
+  {
+    "yuyu_id": "GD03-118",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD03-118 R 能力の覚醒"
+  },
+  {
+    "yuyu_id": "GD03-123",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD03-123 R ジュピトリス"
+  },
+  {
+    "yuyu_id": "GD03-131",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD03-131 R エターナル"
+  },
+  {
+    "yuyu_id": "GD02-003",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD02-003 R ガンダムMk-II（ティターンズ仕様）"
+  },
+  {
+    "yuyu_id": "GD02-004",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD02-004 R バイアラン"
+  },
+  {
+    "yuyu_id": "GD02-005",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD02-005 R トールギス"
+  },
+  {
+    "yuyu_id": "GD02-006",
+    "yuyu_rarity": "R",
+    "price_jpy": 120,
+    "raw_altText": "GD02-006 R フォビドゥンガンダム"
+  },
+  {
+    "yuyu_id": "GD02-022",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD02-022 R Gエグゼス"
+  },
+  {
+    "yuyu_id": "GD02-023",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD02-023 R ガンダムAGE-1 スパロー"
+  },
+  {
+    "yuyu_id": "GD02-024",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD02-024 R 赤いガンダム"
+  },
+  {
+    "yuyu_id": "GD02-039",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD02-039 R ガザC（ハマーン・カーン専用機）"
+  },
+  {
+    "yuyu_id": "GD02-040",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD02-040 R ガンダムアシュタロン"
+  },
+  {
+    "yuyu_id": "GD02-041",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD02-041 R ゲルググ スガイ機（GQ）"
+  },
+  {
+    "yuyu_id": "GD02-056",
+    "yuyu_rarity": "R",
+    "price_jpy": 120,
+    "raw_altText": "GD02-056 R ガンダムX"
+  },
+  {
+    "yuyu_id": "GD02-057",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD02-057 R ゼダス"
+  },
+  {
+    "yuyu_id": "GD02-058",
+    "yuyu_rarity": "R",
+    "price_jpy": 180,
+    "raw_altText": "GD02-058 R 流星号（グレイズ改弐）"
+  },
+  {
+    "yuyu_id": "GD02-071",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD02-071 R ガンダムMk-II（エゥーゴ仕様）"
+  },
+  {
+    "yuyu_id": "GD02-072",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD02-072 R 百式"
+  },
+  {
+    "yuyu_id": "GD02-073",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD02-073 R グレイズリッター（カルタ機／地上戦仕様）"
+  },
+  {
+    "yuyu_id": "GD02-074",
+    "yuyu_rarity": "R",
+    "price_jpy": 120,
+    "raw_altText": "GD02-074 R ガンダム・エアリアル（改修型）"
+  },
+  {
+    "yuyu_id": "GD02-085",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD02-085 R フォウ・ムラサメ"
+  },
+  {
+    "yuyu_id": "GD02-088",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD02-088 R フリット・アスノ"
+  },
+  {
+    "yuyu_id": "GD02-091",
+    "yuyu_rarity": "R",
+    "price_jpy": 180,
+    "raw_altText": "GD02-091 R ハマーン・カーン"
+  },
+  {
+    "yuyu_id": "GD02-094",
+    "yuyu_rarity": "R",
+    "price_jpy": 220,
+    "raw_altText": "GD02-094 R ガロード・ラン＆ティファ・アディール"
+  },
+  {
+    "yuyu_id": "GD02-097",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD02-097 R カミーユ・ビダン"
+  },
+  {
+    "yuyu_id": "GD02-100",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD02-100 R 逆転の一手"
+  },
+  {
+    "yuyu_id": "GD02-103",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD02-103 R AGEデバイス"
+  },
+  {
+    "yuyu_id": "GD02-107",
+    "yuyu_rarity": "R",
+    "price_jpy": 120,
+    "raw_altText": "GD02-107 R オールレンジ攻撃"
+  },
+  {
+    "yuyu_id": "GD02-110",
+    "yuyu_rarity": "R",
+    "price_jpy": 120,
+    "raw_altText": "GD02-110 R 目覚める力"
+  },
+  {
+    "yuyu_id": "GD02-111",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD02-111 R 決戦の切り札"
+  },
+  {
+    "yuyu_id": "GD02-112",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD02-112 R 憩いのひととき"
+  },
+  {
+    "yuyu_id": "GD02-117",
+    "yuyu_rarity": "R",
+    "price_jpy": 120,
+    "raw_altText": "GD02-117 R 新たな鼓動"
+  },
+  {
+    "yuyu_id": "GD02-123",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD02-123 R ソドン"
+  },
+  {
+    "yuyu_id": "GD02-125",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD02-125 R グワダン"
+  },
+  {
+    "yuyu_id": "GD02-129",
+    "yuyu_rarity": "R",
+    "price_jpy": 180,
+    "raw_altText": "GD02-129 R アーガマ"
+  },
+  {
+    "yuyu_id": "GD01-004",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD01-004 R ガンキャノン(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-005",
+    "yuyu_rarity": "R",
+    "price_jpy": 120,
+    "raw_altText": "GD01-005 R ユニコーンガンダム（ユニコーンモード）(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-006",
+    "yuyu_rarity": "R",
+    "price_jpy": 180,
+    "raw_altText": "GD01-006 R デルタプラス"
+  },
+  {
+    "yuyu_id": "GD01-007",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD01-007 R エアリーズ（ノイン機）"
+  },
+  {
+    "yuyu_id": "GD01-010",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD01-010 R ユニコーンガンダム2号機 バンシィ（ユニコーンモード）"
+  },
+  {
+    "yuyu_id": "GD01-026",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD01-026 R ザクII（シャア・アズナブル機）(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-027",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD01-027 R ビグ・ザム"
+  },
+  {
+    "yuyu_id": "GD01-028",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD01-028 R ガンダムサンドロック(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-029",
+    "yuyu_rarity": "R",
+    "price_jpy": 120,
+    "raw_altText": "GD01-029 R シェンロンガンダム"
+  },
+  {
+    "yuyu_id": "GD01-032",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD01-032 R ギャン"
+  },
+  {
+    "yuyu_id": "GD01-047",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD01-047 R シャンブロ"
+  },
+  {
+    "yuyu_id": "GD01-048",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD01-048 R ザクI・スナイパータイプ"
+  },
+  {
+    "yuyu_id": "GD01-049",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD01-049 R ブリッツガンダム"
+  },
+  {
+    "yuyu_id": "GD01-050",
+    "yuyu_rarity": "R",
+    "price_jpy": 120,
+    "raw_altText": "GD01-050 R ラゴゥ"
+  },
+  {
+    "yuyu_id": "GD01-054",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD01-054 R デュエルガンダム"
+  },
+  {
+    "yuyu_id": "GD01-068",
+    "yuyu_rarity": "R",
+    "price_jpy": 120,
+    "raw_altText": "GD01-068 R パーフェクトストライクガンダム(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-069",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD01-069 R ストライクルージュ"
+  },
+  {
+    "yuyu_id": "GD01-070",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD01-070 R ガンダム・エアリアル(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-071",
+    "yuyu_rarity": "R",
+    "price_jpy": 120,
+    "raw_altText": "GD01-071 R ガンダム・ファラクト"
+  },
+  {
+    "yuyu_id": "GD01-074",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD01-074 R デミトレーナー チュチュ専用機"
+  },
+  {
+    "yuyu_id": "GD01-087",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD01-087 R セイラ・マス"
+  },
+  {
+    "yuyu_id": "GD01-090",
+    "yuyu_rarity": "R",
+    "price_jpy": 120,
+    "raw_altText": "GD01-090 R デュオ・マックスウェル"
+  },
+  {
+    "yuyu_id": "GD01-093",
+    "yuyu_rarity": "R",
+    "price_jpy": 320,
+    "raw_altText": "GD01-093 R マリーダ・クルス"
+  },
+  {
+    "yuyu_id": "GD01-096",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD01-096 R カガリ・ユラ・アスハ"
+  },
+  {
+    "yuyu_id": "GD01-099",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD01-099 R 迎撃命令(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-101",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD01-101 R 深い愛情"
+  },
+  {
+    "yuyu_id": "GD01-105",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD01-105 R 立てよ国民！(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-106",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD01-106 R 要塞防衛戦"
+  },
+  {
+    "yuyu_id": "GD01-111",
+    "yuyu_rarity": "R",
+    "price_jpy": 220,
+    "raw_altText": "GD01-111 R エースの戦い"
+  },
+  {
+    "yuyu_id": "GD01-112",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD01-112 R 怨讐の果て"
+  },
+  {
+    "yuyu_id": "GD01-117",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD01-117 R 魔女と花嫁(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-119",
+    "yuyu_rarity": "R",
+    "price_jpy": 80,
+    "raw_altText": "GD01-119 R 鉄拳制裁"
+  },
+  {
+    "yuyu_id": "GD04-042",
+    "yuyu_rarity": "U+",
+    "price_jpy": 580,
+    "raw_altText": "GD04-042 U+ サイコ・ガンダム（GQ）(パラレル)"
+  },
+  {
+    "yuyu_id": "GD04-095",
+    "yuyu_rarity": "U+",
+    "price_jpy": 3980,
+    "raw_altText": "GD04-095 U+ ルナマリア・ホーク(パラレル)"
+  },
+  {
+    "yuyu_id": "GD04-102",
+    "yuyu_rarity": "U+",
+    "price_jpy": 1480,
+    "raw_altText": "GD04-102 U+ 束の間の休息(パラレル)"
+  },
+  {
+    "yuyu_id": "GD04-110",
+    "yuyu_rarity": "U+",
+    "price_jpy": 1280,
+    "raw_altText": "GD04-110 U+ 出資者(パラレル)"
+  },
+  {
+    "yuyu_id": "GD04-114",
+    "yuyu_rarity": "U+",
+    "price_jpy": 420,
+    "raw_altText": "GD04-114 U+ 変革をもたらすもの(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-010",
+    "yuyu_rarity": "U+",
+    "price_jpy": 1780,
+    "raw_altText": "GD03-010 U+ フルアーマー・ユニコーンガンダム（デストロイモード）(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-059",
+    "yuyu_rarity": "U+",
+    "price_jpy": 1280,
+    "raw_altText": "GD02-059 U+ ガンダムエアマスター(パラレル)"
+  },
+  {
+    "yuyu_id": "GD02-060",
+    "yuyu_rarity": "U+",
+    "price_jpy": 580,
+    "raw_altText": "GD02-060 U+ ガンダムレオパルド(パラレル)"
+  },
+  {
+    "yuyu_id": "GD01-100",
+    "yuyu_rarity": "U+",
+    "price_jpy": 7980,
+    "raw_altText": "GD01-100 U+ 覚悟の表れ(パラレル)(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-118",
+    "yuyu_rarity": "U+",
+    "price_jpy": 29800,
+    "raw_altText": "GD01-118 U+ 溢れる慈愛(パラレル)(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD04-008",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD04-008 U ガンダム"
+  },
+  {
+    "yuyu_id": "GD04-010",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD04-010 U ギャプラン"
+  },
+  {
+    "yuyu_id": "GD04-011",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD04-011 U Vガンダム"
+  },
+  {
+    "yuyu_id": "GD04-013",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD04-013 U コア・ファイター"
+  },
+  {
+    "yuyu_id": "GD04-023",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD04-023 U ガンダムキュリオス（テールブースター装備）"
+  },
+  {
+    "yuyu_id": "GD04-024",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD04-024 U ガンダム・エアリアル（改修型）"
+  },
+  {
+    "yuyu_id": "GD04-025",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD04-025 U ガンヴォルヴァ"
+  },
+  {
+    "yuyu_id": "GD04-039",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD04-039 U ローゼン・ズール"
+  },
+  {
+    "yuyu_id": "GD04-040",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD04-040 U シュツルム・ガルス"
+  },
+  {
+    "yuyu_id": "GD04-041",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD04-041 U ガンダムスローネドライ"
+  },
+  {
+    "yuyu_id": "GD04-042",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD04-042 U サイコ・ガンダム（GQ）"
+  },
+  {
+    "yuyu_id": "GD04-055",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD04-055 U グフイグナイテッド（ハイネ・ヴェステンフルス専用機）"
+  },
+  {
+    "yuyu_id": "GD04-056",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD04-056 U ソードインパルスガンダム"
+  },
+  {
+    "yuyu_id": "GD04-057",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD04-057 U ガンダムナドレ"
+  },
+  {
+    "yuyu_id": "GD04-072",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD04-072 U ユニコーンガンダム2号機 バンシィ・ノルン（ユニコーンモード）"
+  },
+  {
+    "yuyu_id": "GD04-073",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD04-073 U ∀ガンダム"
+  },
+  {
+    "yuyu_id": "GD04-074",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD04-074 U カプル"
+  },
+  {
+    "yuyu_id": "GD04-075",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD04-075 U ジンクス"
+  },
+  {
+    "yuyu_id": "GD04-082",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD04-082 U ロザミア・バダム"
+  },
+  {
+    "yuyu_id": "GD04-083",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD04-083 U マーベット・フィンガーハット"
+  },
+  {
+    "yuyu_id": "GD04-086",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD04-086 U ガルマ・ザビ"
+  },
+  {
+    "yuyu_id": "GD04-087",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD04-087 U エラン・ケレス（強化人士5号）"
+  },
+  {
+    "yuyu_id": "GD04-090",
+    "yuyu_rarity": "U",
+    "price_jpy": 80,
+    "raw_altText": "GD04-090 U ハレルヤ・ハプティズム"
+  },
+  {
+    "yuyu_id": "GD04-091",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD04-091 U ドゥー・ムラサメ"
+  },
+  {
+    "yuyu_id": "GD04-094",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD04-094 U パーラ・シス"
+  },
+  {
+    "yuyu_id": "GD04-095",
+    "yuyu_rarity": "U",
+    "price_jpy": 80,
+    "raw_altText": "GD04-095 U ルナマリア・ホーク"
+  },
+  {
+    "yuyu_id": "GD04-098",
+    "yuyu_rarity": "U",
+    "price_jpy": 80,
+    "raw_altText": "GD04-098 U リディ・マーセナス"
+  },
+  {
+    "yuyu_id": "GD04-099",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD04-099 U アリー・アル・サーシェス"
+  },
+  {
+    "yuyu_id": "GD04-102",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD04-102 U 束の間の休息"
+  },
+  {
+    "yuyu_id": "GD04-106",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD04-106 U 無差別な暴力"
+  },
+  {
+    "yuyu_id": "GD04-110",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD04-110 U 出資者"
+  },
+  {
+    "yuyu_id": "GD04-114",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD04-114 U 変革をもたらすもの"
+  },
+  {
+    "yuyu_id": "GD04-118",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD04-118 U 世界の歪み"
+  },
+  {
+    "yuyu_id": "GD04-123",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD04-123 U ア・バオア・クー"
+  },
+  {
+    "yuyu_id": "GD04-125",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD04-125 U トリニティ艦"
+  },
+  {
+    "yuyu_id": "GD04-127",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD04-127 U フリーデンII"
+  },
+  {
+    "yuyu_id": "GD03-007",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-007 U ガンダムNT-1フルアーマー"
+  },
+  {
+    "yuyu_id": "GD03-008",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-008 U ボリノーク・サマーン"
+  },
+  {
+    "yuyu_id": "GD03-009",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-009 U パラス・アテネ"
+  },
+  {
+    "yuyu_id": "GD03-010",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-010 U フルアーマー・ユニコーンガンダム（デストロイモード）"
+  },
+  {
+    "yuyu_id": "GD03-024",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-024 U ハイゴッグ"
+  },
+  {
+    "yuyu_id": "GD03-025",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-025 U ガンダムサンドロック改"
+  },
+  {
+    "yuyu_id": "GD03-026",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-026 U ガンダムデュナメス"
+  },
+  {
+    "yuyu_id": "GD03-040",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-040 U ガンダムヴァサーゴ&ガンダムアシュタロン"
+  },
+  {
+    "yuyu_id": "GD03-041",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-041 U パトゥーリア"
+  },
+  {
+    "yuyu_id": "GD03-042",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-042 U デュエルガンダム アサルトシュラウド"
+  },
+  {
+    "yuyu_id": "GD03-057",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-057 U GNアーマー TYPE-E"
+  },
+  {
+    "yuyu_id": "GD03-058",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-058 U ファルシア"
+  },
+  {
+    "yuyu_id": "GD03-059",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-059 U ゼダスR"
+  },
+  {
+    "yuyu_id": "GD03-060",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-060 U CGSモビルワーカー（指揮官機）"
+  },
+  {
+    "yuyu_id": "GD03-061",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-061 U ガンダム・バルバトス（第6形態）"
+  },
+  {
+    "yuyu_id": "GD03-075",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-075 U スーパーガンダム"
+  },
+  {
+    "yuyu_id": "GD03-076",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-076 U フリーダムガンダム（ミーティア）"
+  },
+  {
+    "yuyu_id": "GD03-077",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-077 U ジャスティスガンダム（ミーティア）"
+  },
+  {
+    "yuyu_id": "GD03-078",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-078 U ティエレン高機動型"
+  },
+  {
+    "yuyu_id": "GD03-085",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-085 U クリスチーナ・マッケンジー"
+  },
+  {
+    "yuyu_id": "GD03-089",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-089 U バーナード・ワイズマン"
+  },
+  {
+    "yuyu_id": "GD03-092",
+    "yuyu_rarity": "U",
+    "price_jpy": 80,
+    "raw_altText": "GD03-092 U ニャアン"
+  },
+  {
+    "yuyu_id": "GD03-095",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-095 U アジー・グルミン"
+  },
+  {
+    "yuyu_id": "GD03-099",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-099 U エマ・シーン"
+  },
+  {
+    "yuyu_id": "GD03-103",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-103 U 部隊指令"
+  },
+  {
+    "yuyu_id": "GD03-104",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-104 U レコアの気配"
+  },
+  {
+    "yuyu_id": "GD03-106",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-106 U M.A.V.戦術"
+  },
+  {
+    "yuyu_id": "GD03-107",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-107 U 河を渡って木立を抜けて"
+  },
+  {
+    "yuyu_id": "GD03-110",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-110 U 標的の排除"
+  },
+  {
+    "yuyu_id": "GD03-111",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-111 U 現地潜入員"
+  },
+  {
+    "yuyu_id": "GD03-115",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-115 U 遠き再会"
+  },
+  {
+    "yuyu_id": "GD03-119",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-119 U 不器用なアプローチ"
+  },
+  {
+    "yuyu_id": "GD03-120",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-120 U 不死身のコーラサワー"
+  },
+  {
+    "yuyu_id": "GD03-125",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-125 U ピースミリオン"
+  },
+  {
+    "yuyu_id": "GD03-127",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-127 U ヤキン・ドゥーエ"
+  },
+  {
+    "yuyu_id": "GD03-129",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD03-129 U ホタルビ"
+  },
+  {
+    "yuyu_id": "GD02-007",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-007 U サイコ・ガンダム（MA形態）"
+  },
+  {
+    "yuyu_id": "GD02-008",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-008 U ガブスレイ"
+  },
+  {
+    "yuyu_id": "GD02-009",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-009 U カラミティガンダム"
+  },
+  {
+    "yuyu_id": "GD02-010",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-010 U レイダーガンダム"
+  },
+  {
+    "yuyu_id": "GD02-011",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-011 U メビウス（ピースメーカー隊）"
+  },
+  {
+    "yuyu_id": "GD02-025",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-025 U ガンダムヘビーアームズ"
+  },
+  {
+    "yuyu_id": "GD02-026",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-026 U ジェノアスカスタム"
+  },
+  {
+    "yuyu_id": "GD02-027",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-027 U ガンダムAGE-1 タイタス"
+  },
+  {
+    "yuyu_id": "GD02-042",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-042 U ガンダムアシュタロン（MA形態）"
+  },
+  {
+    "yuyu_id": "GD02-043",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-043 U ドートレス・ウェポン"
+  },
+  {
+    "yuyu_id": "GD02-044",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-044 U ドートレス・コマンド"
+  },
+  {
+    "yuyu_id": "GD02-045",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-045 U 長距離強行偵察複座型ジン"
+  },
+  {
+    "yuyu_id": "GD02-046",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-046 U セイラ専用軽キャノン"
+  },
+  {
+    "yuyu_id": "GD02-059",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-059 U ガンダムエアマスター"
+  },
+  {
+    "yuyu_id": "GD02-060",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-060 U ガンダムレオパルド"
+  },
+  {
+    "yuyu_id": "GD02-061",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-061 U 百里"
+  },
+  {
+    "yuyu_id": "GD02-062",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-062 U 百錬（アミダ機）"
+  },
+  {
+    "yuyu_id": "GD02-075",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-075 U リック・ディアス（赤）"
+  },
+  {
+    "yuyu_id": "GD02-076",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-076 U バスターガンダム"
+  },
+  {
+    "yuyu_id": "GD02-077",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-077 U シュヴァルベ・グレイズ（アイン機）"
+  },
+  {
+    "yuyu_id": "GD02-078",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-078 U ガンダム・ファラクト"
+  },
+  {
+    "yuyu_id": "GD02-086",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-086 U ジェリド・メサ"
+  },
+  {
+    "yuyu_id": "GD02-089",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-089 U ララァ・スン"
+  },
+  {
+    "yuyu_id": "GD02-092",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-092 U シャギア・フロスト"
+  },
+  {
+    "yuyu_id": "GD02-095",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-095 U ラフタ・フランクランド"
+  },
+  {
+    "yuyu_id": "GD02-098",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-098 U クワトロ・バジーナ"
+  },
+  {
+    "yuyu_id": "GD02-101",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-101 U 仮面の下"
+  },
+  {
+    "yuyu_id": "GD02-104",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-104 U 歴史の分岐点"
+  },
+  {
+    "yuyu_id": "GD02-105",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-105 U 首席卒業生"
+  },
+  {
+    "yuyu_id": "GD02-108",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-108 U あっちの方が強そうじゃない？"
+  },
+  {
+    "yuyu_id": "GD02-113",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-113 U 姉御肌"
+  },
+  {
+    "yuyu_id": "GD02-114",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-114 U その名は流星号"
+  },
+  {
+    "yuyu_id": "GD02-118",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-118 U 仇討ちの決意"
+  },
+  {
+    "yuyu_id": "GD02-119",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-119 U 面壁九年・堅牢堅固"
+  },
+  {
+    "yuyu_id": "GD02-121",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-121 U ドミニオン"
+  },
+  {
+    "yuyu_id": "GD02-127",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD02-127 U フリーデン"
+  },
+  {
+    "yuyu_id": "GD01-008",
+    "yuyu_rarity": "U",
+    "price_jpy": 180,
+    "raw_altText": "GD01-008 U ガンタンク(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-009",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD01-009 U Gファイター(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-011",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD01-011 U ロト(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-012",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD01-012 U リーオー（ゼクス機）"
+  },
+  {
+    "yuyu_id": "GD01-019",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD01-019 U バイアラン・カスタム"
+  },
+  {
+    "yuyu_id": "GD01-030",
+    "yuyu_rarity": "U",
+    "price_jpy": 120,
+    "raw_altText": "GD01-030 U リック・ドム(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-031",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD01-031 U ゲルググ(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-033",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD01-033 U ガンダムデスサイズ"
+  },
+  {
+    "yuyu_id": "GD01-034",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD01-034 U ガンダムヘビーアームズ(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-038",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD01-038 U アッザム"
+  },
+  {
+    "yuyu_id": "GD01-051",
+    "yuyu_rarity": "U",
+    "price_jpy": 80,
+    "raw_altText": "GD01-051 U クシャトリヤ"
+  },
+  {
+    "yuyu_id": "GD01-052",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD01-052 U ギラ・ズール（親衛隊機）"
+  },
+  {
+    "yuyu_id": "GD01-053",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD01-053 U ギラ・ドーガ（重武装仕様）"
+  },
+  {
+    "yuyu_id": "GD01-055",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD01-055 U バクゥ"
+  },
+  {
+    "yuyu_id": "GD01-063",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD01-063 U ゾノ"
+  },
+  {
+    "yuyu_id": "GD01-072",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD01-072 U ランチャーストライクガンダム(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-073",
+    "yuyu_rarity": "U",
+    "price_jpy": 120,
+    "raw_altText": "GD01-073 U ソードストライクガンダム"
+  },
+  {
+    "yuyu_id": "GD01-075",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD01-075 U ダリルバルデ(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-076",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD01-076 U ミカエリス(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-082",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD01-082 U ガンダム・エアリアル（ミラソウル社製フライトユニット装備）"
+  },
+  {
+    "yuyu_id": "GD01-088",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD01-088 U バナージ・リンクス(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-091",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD01-091 U 張五飛(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-094",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD01-094 U イザーク・ジュール"
+  },
+  {
+    "yuyu_id": "GD01-097",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD01-097 U グエル・ジェターク(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-100",
+    "yuyu_rarity": "U",
+    "price_jpy": 320,
+    "raw_altText": "GD01-100 U 覚悟の表れ(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-102",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD01-102 U 物資の輸送"
+  },
+  {
+    "yuyu_id": "GD01-107",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD01-107 U ファーストコンタクト(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-108",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD01-108 U 戦略級兵器"
+  },
+  {
+    "yuyu_id": "GD01-113",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD01-113 U 砂漠の虎"
+  },
+  {
+    "yuyu_id": "GD01-115",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD01-115 U ジオン残党軍"
+  },
+  {
+    "yuyu_id": "GD01-118",
+    "yuyu_rarity": "U",
+    "price_jpy": 420,
+    "raw_altText": "GD01-118 U 溢れる慈愛(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-121",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD01-121 U 空中換装"
+  },
+  {
+    "yuyu_id": "GD01-123",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD01-123 U ネェル・アーガマ"
+  },
+  {
+    "yuyu_id": "GD01-125",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD01-125 U ザンジバル"
+  },
+  {
+    "yuyu_id": "GD01-127",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD01-127 U ガモフ"
+  },
+  {
+    "yuyu_id": "GD01-129",
+    "yuyu_rarity": "U",
+    "price_jpy": 50,
+    "raw_altText": "GD01-129 U クサナギ"
+  },
+  {
+    "yuyu_id": "GD04-005",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-005 C ジムIII"
+  },
+  {
+    "yuyu_id": "GD04-012",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-012 C コア・ブースター（005）&コア・ブースター（006）"
+  },
+  {
+    "yuyu_id": "GD04-014",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-014 C シャッコー"
+  },
+  {
+    "yuyu_id": "GD04-015",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-015 C ガンイージ"
+  },
+  {
+    "yuyu_id": "GD04-016",
+    "yuyu_rarity": "C",
+    "price_jpy": 120,
+    "raw_altText": "GD04-016 C ゾロアット（リガ・ミリティア仕様）"
+  },
+  {
+    "yuyu_id": "GD04-026",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-026 C ドップ（ガルマ・ザビ専用）"
+  },
+  {
+    "yuyu_id": "GD04-027",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-027 C ビグロ"
+  },
+  {
+    "yuyu_id": "GD04-028",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-028 C ザクレロ"
+  },
+  {
+    "yuyu_id": "GD04-029",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-029 C ガンダムデュナメス（GNフルシールド）"
+  },
+  {
+    "yuyu_id": "GD04-030",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-030 C デミトレーナー チュチュ専用機"
+  },
+  {
+    "yuyu_id": "GD04-031",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-031 C ハインドリー"
+  },
+  {
+    "yuyu_id": "GD04-032",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-032 C エグザベ専用ギャン（ハクジ装備）（GQ）"
+  },
+  {
+    "yuyu_id": "GD04-043",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-043 C ズサ（袖付き仕様）"
+  },
+  {
+    "yuyu_id": "GD04-044",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-044 C ガディール"
+  },
+  {
+    "yuyu_id": "GD04-045",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-045 C ガンダムスローネツヴァイ"
+  },
+  {
+    "yuyu_id": "GD04-046",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-046 C ガンダムデュナメス"
+  },
+  {
+    "yuyu_id": "GD04-047",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-047 C ガンダムヴァーチェ"
+  },
+  {
+    "yuyu_id": "GD04-048",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-048 C ハンブラビ（GQ）"
+  },
+  {
+    "yuyu_id": "GD04-058",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-058 C ガンダムX（ジャミル機）"
+  },
+  {
+    "yuyu_id": "GD04-059",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-059 C ドートレスHMCワイズワラビー"
+  },
+  {
+    "yuyu_id": "GD04-060",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-060 C エスペランサ"
+  },
+  {
+    "yuyu_id": "GD04-061",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-061 C Gファルコン"
+  },
+  {
+    "yuyu_id": "GD04-062",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-062 C ガナーザクウォーリア（ルナマリア・ホーク専用機）"
+  },
+  {
+    "yuyu_id": "GD04-063",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-063 C GNアーマー TYPE-E"
+  },
+  {
+    "yuyu_id": "GD04-064",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-064 C ガンダムエクシア"
+  },
+  {
+    "yuyu_id": "GD04-076",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-076 C ヒップヘビー"
+  },
+  {
+    "yuyu_id": "GD04-077",
+    "yuyu_rarity": "C",
+    "price_jpy": 120,
+    "raw_altText": "GD04-077 C フラット（ミリシャ仕様）"
+  },
+  {
+    "yuyu_id": "GD04-078",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-078 C ボルジャーノン"
+  },
+  {
+    "yuyu_id": "GD04-079",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-079 C アグリッサ"
+  },
+  {
+    "yuyu_id": "GD04-080",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-080 C アルヴァトーレ"
+  },
+  {
+    "yuyu_id": "GD04-084",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-084 C スレッガー・ロウ"
+  },
+  {
+    "yuyu_id": "GD04-088",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-088 C トクワン"
+  },
+  {
+    "yuyu_id": "GD04-092",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-092 C ミハエル・トリニティ"
+  },
+  {
+    "yuyu_id": "GD04-096",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-096 C エニル・エル"
+  },
+  {
+    "yuyu_id": "GD04-100",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-100 C ソシエ・ハイム"
+  },
+  {
+    "yuyu_id": "GD04-103",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-103 C 精神的支柱"
+  },
+  {
+    "yuyu_id": "GD04-104",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-104 C シュラク隊の防壁"
+  },
+  {
+    "yuyu_id": "GD04-107",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-107 C 宿命の戦い"
+  },
+  {
+    "yuyu_id": "GD04-108",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-108 C 地球の魔女"
+  },
+  {
+    "yuyu_id": "GD04-111",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-111 C トリニティ"
+  },
+  {
+    "yuyu_id": "GD04-112",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-112 C 目付け役"
+  },
+  {
+    "yuyu_id": "GD04-115",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-115 C バックアップ"
+  },
+  {
+    "yuyu_id": "GD04-116",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-116 C 頼れる兄貴分"
+  },
+  {
+    "yuyu_id": "GD04-119",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-119 C 孤軍奮闘"
+  },
+  {
+    "yuyu_id": "GD04-120",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-120 C 機械人形部隊"
+  },
+  {
+    "yuyu_id": "GD04-122",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-122 C ジャブロー"
+  },
+  {
+    "yuyu_id": "GD04-124",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-124 C 第9戦術試験区域"
+  },
+  {
+    "yuyu_id": "GD04-126",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-126 C イズマ･コロニー"
+  },
+  {
+    "yuyu_id": "GD04-128",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-128 C アーモリーワン"
+  },
+  {
+    "yuyu_id": "GD04-130",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD04-130 C インダストリアル7"
+  },
+  {
+    "yuyu_id": "GD03-011",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-011 C ジム・スナイパーII"
+  },
+  {
+    "yuyu_id": "GD03-012",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-012 C メッサーラ（MA形態）"
+  },
+  {
+    "yuyu_id": "GD03-013",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-013 C ハイザック"
+  },
+  {
+    "yuyu_id": "GD03-014",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-014 C ハイザック・カスタム"
+  },
+  {
+    "yuyu_id": "GD03-015",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-015 C バウンド・ドック"
+  },
+  {
+    "yuyu_id": "GD03-016",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-016 C フルアーマー・ユニコーンガンダム（ユニコーンモード）"
+  },
+  {
+    "yuyu_id": "GD03-027",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-027 C ズゴックE"
+  },
+  {
+    "yuyu_id": "GD03-028",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-028 C マグアナック（アウダ機）"
+  },
+  {
+    "yuyu_id": "GD03-029",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-029 C ガンダムヘビーアームズ改"
+  },
+  {
+    "yuyu_id": "GD03-030",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-030 C ガンダムキュリオス（テールユニット装備）（飛行形態）"
+  },
+  {
+    "yuyu_id": "GD03-031",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-031 C ガンダムAGE-1フラット"
+  },
+  {
+    "yuyu_id": "GD03-032",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-032 C ザク フォースネークアイズ仕様［イエティ］（GQ）"
+  },
+  {
+    "yuyu_id": "GD03-043",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-043 C メッサーF02型"
+  },
+  {
+    "yuyu_id": "GD03-044",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-044 C ドートレス・フライヤー"
+  },
+  {
+    "yuyu_id": "GD03-045",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-045 C バリエント"
+  },
+  {
+    "yuyu_id": "GD03-046",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-046 C シグー"
+  },
+  {
+    "yuyu_id": "GD03-047",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-047 C ディン（指揮官用）"
+  },
+  {
+    "yuyu_id": "GD03-048",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-048 C GFreD"
+  },
+  {
+    "yuyu_id": "GD03-062",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-062 C GXビット"
+  },
+  {
+    "yuyu_id": "GD03-063",
+    "yuyu_rarity": "C",
+    "price_jpy": 50,
+    "raw_altText": "GD03-063 C 0ガンダム"
+  },
+  {
+    "yuyu_id": "GD03-064",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-064 C デファース"
+  },
+  {
+    "yuyu_id": "GD03-065",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-065 C ゼダスM"
+  },
+  {
+    "yuyu_id": "GD03-066",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-066 C ガンダム・バルバトス（第5形態／地上戦仕様）"
+  },
+  {
+    "yuyu_id": "GD03-067",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-067 C 漏影"
+  },
+  {
+    "yuyu_id": "GD03-068",
+    "yuyu_rarity": "C",
+    "price_jpy": 80,
+    "raw_altText": "GD03-068 C ガンダム・端白星"
+  },
+  {
+    "yuyu_id": "GD03-079",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-079 C Gディフェンサー"
+  },
+  {
+    "yuyu_id": "GD03-080",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-080 C ガンダム・キマリストルーパー（トルーパー形態）"
+  },
+  {
+    "yuyu_id": "GD03-081",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-081 C AEUイナクト（デモカラー）"
+  },
+  {
+    "yuyu_id": "GD03-082",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-082 C ユニオンフラッグ"
+  },
+  {
+    "yuyu_id": "GD03-083",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-083 C AEUヘリオン"
+  },
+  {
+    "yuyu_id": "GD03-086",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-086 C ヤザン・ゲーブル"
+  },
+  {
+    "yuyu_id": "GD03-087",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-087 C サラ・ザビアロフ"
+  },
+  {
+    "yuyu_id": "GD03-090",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-090 C ミハイル・カミンスキー"
+  },
+  {
+    "yuyu_id": "GD03-093",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-093 C カリス・ノーティラス"
+  },
+  {
+    "yuyu_id": "GD03-096",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-096 C ジャミル・ニート"
+  },
+  {
+    "yuyu_id": "GD03-097",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-097 C ウィスタリオ・アファム"
+  },
+  {
+    "yuyu_id": "GD03-100",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-100 C ソーマ・ピーリス"
+  },
+  {
+    "yuyu_id": "GD03-102",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-102 C 特権階級"
+  },
+  {
+    "yuyu_id": "GD03-108",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-108 C 戦場までは何マイル？"
+  },
+  {
+    "yuyu_id": "GD03-112",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-112 C 歪んだ想い"
+  },
+  {
+    "yuyu_id": "GD03-113",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-113 C 人の業"
+  },
+  {
+    "yuyu_id": "GD03-116",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-116 C 運命の先へ"
+  },
+  {
+    "yuyu_id": "GD03-117",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-117 C オルガの号令"
+  },
+  {
+    "yuyu_id": "GD03-121",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-121 C 無断出撃"
+  },
+  {
+    "yuyu_id": "GD03-122",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-122 C 老練な戦法"
+  },
+  {
+    "yuyu_id": "GD03-124",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-124 C リボーコロニー"
+  },
+  {
+    "yuyu_id": "GD03-126",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-126 C サイクロプス隊"
+  },
+  {
+    "yuyu_id": "GD03-128",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-128 C ドリテア"
+  },
+  {
+    "yuyu_id": "GD03-130",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-130 C ダウネス"
+  },
+  {
+    "yuyu_id": "GD03-132",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD03-132 C ラーディッシュ"
+  },
+  {
+    "yuyu_id": "GD02-012",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-012 C コア・ブースター"
+  },
+  {
+    "yuyu_id": "GD02-013",
+    "yuyu_rarity": "C",
+    "price_jpy": 120,
+    "raw_altText": "GD02-013 C ハイザック"
+  },
+  {
+    "yuyu_id": "GD02-014",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-014 C ガルバルディβ"
+  },
+  {
+    "yuyu_id": "GD02-015",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-015 C マラサイ"
+  },
+  {
+    "yuyu_id": "GD02-016",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-016 C バーザム"
+  },
+  {
+    "yuyu_id": "GD02-017",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-017 C デルタプラス（ウェイブライダー形態）"
+  },
+  {
+    "yuyu_id": "GD02-018",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-018 C トーラス"
+  },
+  {
+    "yuyu_id": "GD02-019",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-019 C レイダーガンダム（MA形態）"
+  },
+  {
+    "yuyu_id": "GD02-028",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-028 C マグアナック（アブドル機）"
+  },
+  {
+    "yuyu_id": "GD02-029",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-029 C ガンダムAGE-1 ノーマル"
+  },
+  {
+    "yuyu_id": "GD02-030",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-030 C ジェノアス"
+  },
+  {
+    "yuyu_id": "GD02-031",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-031 C ガンダムAGE-1 タイタス"
+  },
+  {
+    "yuyu_id": "GD02-032",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-032 C 白いガンダム"
+  },
+  {
+    "yuyu_id": "GD02-033",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-033 C キケロガ（MA形態）（GQ）"
+  },
+  {
+    "yuyu_id": "GD02-034",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-034 C GQuuuuuuX"
+  },
+  {
+    "yuyu_id": "GD02-035",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-035 C 軍警ザク 特殊部隊仕様"
+  },
+  {
+    "yuyu_id": "GD02-047",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-047 C ガザC"
+  },
+  {
+    "yuyu_id": "GD02-048",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-048 C ザクIII（袖付き仕様）"
+  },
+  {
+    "yuyu_id": "GD02-049",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-049 C ドートレス"
+  },
+  {
+    "yuyu_id": "GD02-050",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-050 C ガ・ゾウム（袖付き仕様）"
+  },
+  {
+    "yuyu_id": "GD02-051",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-051 C 01ガンダム"
+  },
+  {
+    "yuyu_id": "GD02-052",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-052 C ガンキャノン（GQ）"
+  },
+  {
+    "yuyu_id": "GD02-063",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-063 C ガンダムエアマスター（ファイターモード）"
+  },
+  {
+    "yuyu_id": "GD02-064",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-064 C ガンダムレオパルド"
+  },
+  {
+    "yuyu_id": "GD02-065",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-065 C ジェニス改"
+  },
+  {
+    "yuyu_id": "GD02-066",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-066 C ガフラン"
+  },
+  {
+    "yuyu_id": "GD02-067",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-067 C バクト"
+  },
+  {
+    "yuyu_id": "GD02-068",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-068 C ガンダム・バルバトス（第3形態）"
+  },
+  {
+    "yuyu_id": "GD02-079",
+    "yuyu_rarity": "C",
+    "price_jpy": 320,
+    "raw_altText": "GD02-079 C リック・ディアス"
+  },
+  {
+    "yuyu_id": "GD02-080",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-080 C ネモ"
+  },
+  {
+    "yuyu_id": "GD02-081",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-081 C メタス"
+  },
+  {
+    "yuyu_id": "GD02-082",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-082 C シュヴァルベ・グレイズ（ガエリオ機）"
+  },
+  {
+    "yuyu_id": "GD02-083",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-083 C グレイズリッター（地上戦仕様）"
+  },
+  {
+    "yuyu_id": "GD02-084",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-084 C ディランザ ラウダ専用機"
+  },
+  {
+    "yuyu_id": "GD02-087",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-087 C オルガ＆クロト＆シャニ"
+  },
+  {
+    "yuyu_id": "GD02-090",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-090 C シャリア・ブル（GQ）"
+  },
+  {
+    "yuyu_id": "GD02-093",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-093 C オルバ・フロスト"
+  },
+  {
+    "yuyu_id": "GD02-096",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-096 C デシル・ガレット"
+  },
+  {
+    "yuyu_id": "GD02-099",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-099 C ガエリオ・ボードウィン"
+  },
+  {
+    "yuyu_id": "GD02-102",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-102 C マウアーの信念"
+  },
+  {
+    "yuyu_id": "GD02-106",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-106 C 白い狼"
+  },
+  {
+    "yuyu_id": "GD02-109",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-109 C 消えぬ執念"
+  },
+  {
+    "yuyu_id": "GD02-115",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-115 C 家族への想い"
+  },
+  {
+    "yuyu_id": "GD02-116",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-116 C 仲間意識"
+  },
+  {
+    "yuyu_id": "GD02-120",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-120 C パイロットへの志願"
+  },
+  {
+    "yuyu_id": "GD02-122",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-122 C アレキサンドリア"
+  },
+  {
+    "yuyu_id": "GD02-124",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-124 C ディーヴァ"
+  },
+  {
+    "yuyu_id": "GD02-126",
+    "yuyu_rarity": "C",
+    "price_jpy": 50,
+    "raw_altText": "GD02-126 C シュウジの隠れ家"
+  },
+  {
+    "yuyu_id": "GD02-128",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-128 C ハンマーヘッド"
+  },
+  {
+    "yuyu_id": "GD02-130",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD02-130 C スレイプニル"
+  },
+  {
+    "yuyu_id": "GD01-013",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-013 C ガンダム(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-014",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-014 C Gスカイ・イージー"
+  },
+  {
+    "yuyu_id": "GD01-015",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-015 C ボール(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-016",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-016 C ジェガン(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-017",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-017 C スタークジェガン"
+  },
+  {
+    "yuyu_id": "GD01-018",
+    "yuyu_rarity": "C",
+    "price_jpy": 120,
+    "raw_altText": "GD01-018 C リゼル(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-020",
+    "yuyu_rarity": "C",
+    "price_jpy": 120,
+    "raw_altText": "GD01-020 C アンクシャ"
+  },
+  {
+    "yuyu_id": "GD01-021",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-021 C パイシーズ"
+  },
+  {
+    "yuyu_id": "GD01-022",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-022 C キャンサー"
+  },
+  {
+    "yuyu_id": "GD01-035",
+    "yuyu_rarity": "C",
+    "price_jpy": 120,
+    "raw_altText": "GD01-035 C ザクII"
+  },
+  {
+    "yuyu_id": "GD01-036",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-036 C グフ"
+  },
+  {
+    "yuyu_id": "GD01-037",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-037 C ゴッグ"
+  },
+  {
+    "yuyu_id": "GD01-039",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-039 C ドップ"
+  },
+  {
+    "yuyu_id": "GD01-040",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-040 C ウイングガンダム(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-041",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-041 C シェンロンガンダム(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-042",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-042 C リーオー（デュオ機）"
+  },
+  {
+    "yuyu_id": "GD01-043",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-043 C マグアナック（ラシード機）"
+  },
+  {
+    "yuyu_id": "GD01-056",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-056 C ギラ・ドーガ（袖付き仕様）"
+  },
+  {
+    "yuyu_id": "GD01-057",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-057 C ドライセン（袖付き仕様）"
+  },
+  {
+    "yuyu_id": "GD01-058",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-058 C ガルスK"
+  },
+  {
+    "yuyu_id": "GD01-059",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-059 C ゼー・ズール"
+  },
+  {
+    "yuyu_id": "GD01-060",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-060 C ザク・マリナー"
+  },
+  {
+    "yuyu_id": "GD01-061",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-061 C ザウート"
+  },
+  {
+    "yuyu_id": "GD01-062",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-062 C グーン"
+  },
+  {
+    "yuyu_id": "GD01-064",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-064 C ディン"
+  },
+  {
+    "yuyu_id": "GD01-077",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-077 C ストライクガンダム(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-078",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-078 C ミストラル"
+  },
+  {
+    "yuyu_id": "GD01-079",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-079 C スカイグラスパー"
+  },
+  {
+    "yuyu_id": "GD01-080",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-080 C スカイグラスパー（カガリ機）"
+  },
+  {
+    "yuyu_id": "GD01-081",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-081 C M1アストレイ(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-083",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-083 C ディランザ グエル専用機"
+  },
+  {
+    "yuyu_id": "GD01-084",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-084 C ベギルペンデ"
+  },
+  {
+    "yuyu_id": "GD01-085",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-085 C デミギャリソン"
+  },
+  {
+    "yuyu_id": "GD01-086",
+    "yuyu_rarity": "C",
+    "price_jpy": 420,
+    "raw_altText": "GD01-086 C ガンダム・ルブリス"
+  },
+  {
+    "yuyu_id": "GD01-089",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-089 C リディ・マーセナス(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-092",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-092 C マ・クベ"
+  },
+  {
+    "yuyu_id": "GD01-095",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-095 C ディアッカ・エルスマン"
+  },
+  {
+    "yuyu_id": "GD01-098",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-098 C エラン・ケレス（強化人士4号）"
+  },
+  {
+    "yuyu_id": "GD01-103",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-103 C 歯車の意地"
+  },
+  {
+    "yuyu_id": "GD01-104",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-104 C 革命の気配"
+  },
+  {
+    "yuyu_id": "GD01-109",
+    "yuyu_rarity": "C",
+    "price_jpy": 50,
+    "raw_altText": "GD01-109 C 勝利と敗北の軌跡"
+  },
+  {
+    "yuyu_id": "GD01-110",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-110 C ラシードの指示"
+  },
+  {
+    "yuyu_id": "GD01-114",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-114 C トリントン基地襲撃"
+  },
+  {
+    "yuyu_id": "GD01-116",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-116 C 隠密作戦"
+  },
+  {
+    "yuyu_id": "GD01-120",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-120 C 艦砲射撃(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-122",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-122 C 暗躍するもの"
+  },
+  {
+    "yuyu_id": "GD01-124",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-124 C サイド7(GD01収録)"
+  },
+  {
+    "yuyu_id": "GD01-126",
+    "yuyu_rarity": "C",
+    "price_jpy": 50,
+    "raw_altText": "GD01-126 C 砂漠地下基地"
+  },
+  {
+    "yuyu_id": "GD01-128",
+    "yuyu_rarity": "C",
+    "price_jpy": 120,
+    "raw_altText": "GD01-128 C 資源衛星パラオ"
+  },
+  {
+    "yuyu_id": "GD01-130",
+    "yuyu_rarity": "C",
+    "price_jpy": 30,
+    "raw_altText": "GD01-130 C 第13戦術試験区域"
+  },
+  {
+    "yuyu_id": "GD01-002",
+    "yuyu_rarity": "SP",
+    "price_jpy": 8980,
+    "raw_altText": "GD01-002 SP ユニコーンガンダム（デストロイモード）(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-026",
+    "yuyu_rarity": "SP",
+    "price_jpy": 5980,
+    "raw_altText": "GD03-026 SP ガンダムデュナメス(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-039",
+    "yuyu_rarity": "SP",
+    "price_jpy": 3480,
+    "raw_altText": "GD03-039 SP 赤いガンダム(パラレル)"
+  },
+  {
+    "yuyu_id": "GD03-056",
+    "yuyu_rarity": "SP",
+    "price_jpy": 14800,
+    "raw_altText": "GD03-056 SP ガンダム・バルバトスアダプト(パラレル)"
+  },
+  {
+    "yuyu_id": "ST04-001",
+    "yuyu_rarity": "SP",
+    "price_jpy": 14800,
+    "raw_altText": "ST04-001 SP エールストライクガンダム(パラレル)"
+  },
+  {
+    "yuyu_id": "GD01-100",
+    "yuyu_rarity": "SP",
+    "price_jpy": 5980,
+    "raw_altText": "GD01-100 SP 覚悟の表れ(パラレル)"
+  },
+  {
+    "yuyu_id": "GD01-107",
+    "yuyu_rarity": "SP",
+    "price_jpy": 6980,
+    "raw_altText": "GD01-107 SP ファーストコンタクト(パラレル)"
+  },
+  {
+    "yuyu_id": "GD01-111",
+    "yuyu_rarity": "SP",
+    "price_jpy": 9980,
+    "raw_altText": "GD01-111 SP エースの戦い(パラレル)"
+  },
+  {
+    "yuyu_id": "GD01-118",
+    "yuyu_rarity": "SP",
+    "price_jpy": 8980,
+    "raw_altText": "GD01-118 SP 溢れる慈愛(パラレル)"
+  },
+  {
+    "yuyu_id": "ST05-010",
+    "yuyu_rarity": "SP",
+    "price_jpy": 1780,
+    "raw_altText": "ST05-010 SP 三日月・オーガス(パラレル)"
+  },
+  {
+    "yuyu_id": "ST05-013",
+    "yuyu_rarity": "SP",
+    "price_jpy": 320,
+    "raw_altText": "ST05-013 SP 鉄と血と(パラレル)"
+  },
+  {
+    "yuyu_id": "ST05-014",
+    "yuyu_rarity": "SP",
+    "price_jpy": 8980,
+    "raw_altText": "ST05-014 SP 致命の一撃(パラレル)"
+  }
+]
