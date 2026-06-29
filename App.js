@@ -44,7 +44,7 @@ if (typeof document !== 'undefined') {
 
 // ====== 組件層 (Component Scope) ======
 export default function App() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
   const [showPrice, setShowPrice] = useState(true); // 🌟 價格顯示開關
 
   const styles = useMemo(() => getStyles(isDarkMode), [isDarkMode]);
