@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
-import { getStyles } from '../styles';
+import styles from '../styles';
 
-const RangeTrack = ({ label, range, setRange, minVal = 0, maxVal = 9, onReset, isMobile, isDarkMode }) => {
-  const styles = getStyles(isDarkMode);
+const RangeTrack = ({ label, range, setRange, minVal = 0, maxVal = 9, onReset, isMobile }) => {
   const numbers = Array.from({ length: maxVal - minVal + 1 }, (_, i) => minVal + i);
   const isOffset = !numbers.includes(0);
   const isFullRange = range[0] === minVal && range[1] === maxVal;
