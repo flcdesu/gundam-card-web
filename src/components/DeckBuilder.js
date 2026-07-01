@@ -1,10 +1,9 @@
 import React, { useState, useMemo, useRef, useCallback } from 'react';
 import { View, Text, TouchableOpacity, FlatList, Image, ScrollView, TextInput, Modal } from 'react-native';
 import { getStyles } from '../styles';
-import { cardImages } from '../data/cardDatabase';
+import { cardImages, AVAILABLE_SETS } from '../data/cardDatabase';
 import { 
-  COLOR_TRANSLATION_MAP, COLOR_OPTIONS, TYPE_OPTIONS, RARITY_OPTIONS,
-  KEYWORD_OPTIONS, TIMING_OPTIONS
+  COLOR_TRANSLATION_MAP, COLOR_OPTIONS, TYPE_OPTIONS, RARITY_OPTIONS
 } from '../constants';
 
 const EXCLUDED_TYPES = ['RESOURCE', 'EX BASE', 'EX RESOURCE'];
@@ -38,6 +37,12 @@ const DeckBuilder = ({
   const [filterColors, setFilterColors] = useState(['all']);
   const [filterTypes, setFilterTypes] = useState(['all']);
   const [filterRarity, setFilterRarity] = useState('all');
+  
+  // 🌟 新增的進階篩選狀態
+  const [filterVersions, setFilterVersions] = useState(['all']);
+  const [filterAcq, setFilterAcq] = useState(['all']);
+  const [selectedSet, setSelectedSet] = useState('all');
+  const [isSetDropdownOpen, setIsSetDropdownOpen] = useState(false); // 🌟 新增下拉選單開關
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   // ====== Derived ======
@@ -64,9 +69,48 @@ const DeckBuilder = ({
   // ====== Filtered Card Pool ======
   const availableCards = useMemo(() => {
     let cards = cardsData.filter(c => !EXCLUDED_TYPES.includes(c.type));
-    // Exclude beta/reprint/limited/promo alt — show only base versions (Normal)
-    cards = cards.filter(c => !c._isAltArt && !c._isReprint);
     
+    // 🌟 1. 卡圖 (Versions) 與 入手 (Acquisition)
+    const noVersionFilter = filterVersions.includes('all');
+    const noAcqFilter = filterAcq.includes('all');
+    const noSetFilter = selectedSet === 'all';
+
+    if (noVersionFilter && noAcqFilter && noSetFilter) {
+        // 為了不讓卡池被 4 張一樣的卡淹沒，如果什麼都沒選，預設隱藏異畫與重印
+        cards = cards.filter(c => !c._isAltArt && !c._isReprint);
+    } else {
+        if (!noVersionFilter) {
+            cards = cards.filter(c => {
+                if (filterVersions.includes('Normal') && !c._isAltArt) return true;
+                if (filterVersions.includes('Alt') && c._isAltArt) return true;
+                if (filterVersions.includes('Alt+') && (c.id || '').includes('_PLUS') && !(c.id || '').includes('_PLUSPLUS')) return true;
+                if (filterVersions.includes('Alt++') && (c.id || '').includes('_PLUSPLUS')) return true;
+                if (filterVersions.includes('Alt_SEC') && (c.id || '').includes('_SEC')) return true;
+                return false;
+            });
+        }
+        if (!noAcqFilter) {
+            cards = cards.filter(c => {
+                const isRegular = !c.isBetaCard && !c._isReprint && !c.isLimitedCard && !c.isPromoCard;
+                if (filterAcq.includes('Regular') && isRegular) return true;
+                if (filterAcq.includes('Beta') && c.isBetaCard) return true;
+                if (filterAcq.includes('Reprint') && c._isReprint) return true;
+                if (filterAcq.includes('Limited') && c.isLimitedCard) return true;
+                if (filterAcq.includes('Promo') && c.isPromoCard) return true;
+                return false;
+            });
+        }
+    }
+
+    // 🌟 2. 收錄彈 (Set)
+    if (!noSetFilter) {
+        cards = cards.filter(c => {
+            const normSet = (c.set || '').replace(/\[beta\]/gi, 'LIMITED BOX Ver.β');
+            return normSet === selectedSet;
+        });
+    }
+
+    // 3. 原本的篩選 (顏色、種類、稀有度、搜尋)
     if (!filterColors.includes('all')) cards = cards.filter(c => filterColors.includes(c.color));
     if (!filterTypes.includes('all')) {
       cards = cards.filter(c => {
@@ -91,7 +135,7 @@ const DeckBuilder = ({
       });
     }
     return cards;
-  }, [cardsData, filterColors, filterTypes, filterRarity, searchText, language]);
+  }, [cardsData, filterColors, filterTypes, filterRarity, filterVersions, filterAcq, selectedSet, searchText, language]);
 
   // ====== Deck Actions ======
   const addCard = useCallback((card) => {
@@ -201,6 +245,12 @@ const DeckBuilder = ({
 
   // ====== Filter types for builder (no Resource/EX) ======
   const builderTypeOptions = TYPE_OPTIONS.filter(t => !['RESOURCE', 'EX BASE', 'EX RESOURCE'].includes(t.value));
+  
+  // 🌟 給新篩選器用的常數陣列
+  // 🌟 修正：先濾掉底層自帶的 'all'，再統一由我們加上去，保證不會重複！
+  const displaySets = useMemo(() => ['all', ...new Set((AVAILABLE_SETS || []).filter(s => s !== 'all').map(s => (s || '').replace(/\[beta\]/gi, 'LIMITED BOX Ver.β')))], []);
+  const ACQ_OPTIONS = [ { value: 'Regular', label: '常規' }, { value: 'Beta', label: 'BETA', activeBg: '#f97316', activeText: '#fff' }, { value: 'Reprint', label: '重印' }, { value: 'Limited', label: '限定' }, { value: 'Promo', label: '推廣' } ];
+  const VERSION_OPTIONS = [ { value: 'Normal', label: '普畫', activeBg: '#2563eb', activeText: '#fff' }, { value: 'Alt', label: '異畫 (全開)', activeBg: '#d97706', activeText: '#fff' }, { value: 'Alt+', label: '異畫+' }, { value: 'Alt++', label: '異畫++' }, { value: 'Alt_SEC', label: '異畫 (SP)' } ];
 
   // ====== Compact chip renderer ======
   const Chip = ({ label, active, onPress, activeBg, activeText }) => (
@@ -314,19 +364,88 @@ const DeckBuilder = ({
           {/* Collapsible Filter */}
           {isFilterOpen && (
             <View style={{ paddingHorizontal: 10, paddingVertical: 8, backgroundColor: dm ? '#1e293b' : '#f8fafc', borderBottomWidth: 1, borderBottomColor: dm ? '#334155' : '#e2e8f0' }}>
+              {/* 收錄彈 (下拉式選單) */}
+              <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 8, zIndex: 50 }}>
+                <Text style={{ fontSize: 10, fontWeight: 'bold', color: dm ? '#94a3b8' : '#64748b', width: 45, marginTop: 8 }}>收錄彈</Text>
+                {/* 🌟 修正：拿掉 flex: 1，給定一個剛剛好的寬度 (例如 240) */}
+                <View style={{ width: 240 }}>
+                  {/* 下拉按鈕 */}
+                  <TouchableOpacity
+                    style={{
+                      flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+                      backgroundColor: dm ? '#0f172a' : '#f1f5f9',
+                      borderWidth: 1, borderColor: dm ? '#334155' : '#e2e8f0',
+                      borderRadius: 8, paddingHorizontal: 10, paddingVertical: 6,
+                    }}
+                    onPress={() => setIsSetDropdownOpen(!isSetDropdownOpen)}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={{ fontSize: 11, fontWeight: 'bold', color: dm ? '#cbd5e1' : '#334155' }} numberOfLines={1}>
+                      {selectedSet === 'all' ? '全部收錄彈' : selectedSet}
+                    </Text>
+                    <Text style={{ fontSize: 10, color: dm ? '#64748b' : '#94a3b8' }}>
+                      {isSetDropdownOpen ? '▲' : '▼'}
+                    </Text>
+                  </TouchableOpacity>
+                  
+                  {/* 下拉選單列表 (最高 200px，內部可滑動) */}
+                  {isSetDropdownOpen && (
+                    <View style={{
+                      marginTop: 4, backgroundColor: dm ? '#1e293b' : '#ffffff',
+                      borderWidth: 1, borderColor: dm ? '#334155' : '#e2e8f0',
+                      borderRadius: 8, overflow: 'hidden', maxHeight: 200,
+                    }}>
+                      <ScrollView nestedScrollEnabled={true}>
+                        {displaySets.map(opt => (
+                          <TouchableOpacity
+                            key={opt}
+                            style={{
+                              paddingHorizontal: 12, paddingVertical: 8,
+                              backgroundColor: selectedSet === opt ? (dm ? '#38bdf8' : '#e0f2fe') : 'transparent',
+                              borderBottomWidth: 1, borderBottomColor: dm ? '#334155' : '#f1f5f9',
+                            }}
+                            onPress={() => {
+                              setSelectedSet(opt);
+                              setIsSetDropdownOpen(false); // 選完自動收合
+                            }}
+                          >
+                            <Text style={{
+                              fontSize: 11,
+                              fontWeight: selectedSet === opt ? 'bold' : 'normal',
+                              color: selectedSet === opt ? (dm ? '#0f172a' : '#0369a1') : (dm ? '#cbd5e1' : '#475569')
+                            }}>
+                              {opt === 'all' ? '全部收錄彈' : opt}
+                            </Text>
+                          </TouchableOpacity>
+                        ))}
+                      </ScrollView>
+                    </View>
+                  )}
+                </View>
+              </View>
+              {/* 卡圖 */}
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6, flexWrap: 'wrap' }}>
+                <Text style={{ fontSize: 10, fontWeight: 'bold', color: dm ? '#94a3b8' : '#64748b', width: 45 }}>卡圖</Text>
+                {VERSION_OPTIONS.map(o => <Chip key={o.value} label={o.label} active={filterVersions.includes(o.value)} activeBg={o.activeBg} activeText={o.activeText} onPress={() => toggleFilter(o.value, filterVersions, setFilterVersions)} />)}
+              </View>
+              {/* 入手 */}
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6, flexWrap: 'wrap' }}>
+                <Text style={{ fontSize: 10, fontWeight: 'bold', color: dm ? '#94a3b8' : '#64748b', width: 45 }}>入手</Text>
+                {ACQ_OPTIONS.map(o => <Chip key={o.value} label={o.label} active={filterAcq.includes(o.value)} activeBg={o.activeBg} activeText={o.activeText} onPress={() => toggleFilter(o.value, filterAcq, setFilterAcq)} />)}
+              </View>
               {/* Color */}
               <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6, flexWrap: 'wrap' }}>
-                <Text style={{ fontSize: 10, fontWeight: 'bold', color: dm ? '#94a3b8' : '#64748b', width: 35 }}>顏色</Text>
+                <Text style={{ fontSize: 10, fontWeight: 'bold', color: dm ? '#94a3b8' : '#64748b', width: 45 }}>顏色</Text>
                 {COLOR_OPTIONS.map(o => <Chip key={o.value} label={o.label} active={filterColors.includes(o.value)} activeBg={o.activeBg} activeText={o.activeText} onPress={() => toggleFilter(o.value, filterColors, setFilterColors)} />)}
               </View>
               {/* Type */}
               <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6, flexWrap: 'wrap' }}>
-                <Text style={{ fontSize: 10, fontWeight: 'bold', color: dm ? '#94a3b8' : '#64748b', width: 35 }}>種類</Text>
+                <Text style={{ fontSize: 10, fontWeight: 'bold', color: dm ? '#94a3b8' : '#64748b', width: 45 }}>種類</Text>
                 {builderTypeOptions.map(o => <Chip key={o.value} label={o.label} active={filterTypes.includes(o.value)} onPress={() => toggleFilter(o.value, filterTypes, setFilterTypes)} />)}
               </View>
               {/* Rarity */}
               <View style={{ flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' }}>
-                <Text style={{ fontSize: 10, fontWeight: 'bold', color: dm ? '#94a3b8' : '#64748b', width: 35 }}>稀有</Text>
+                <Text style={{ fontSize: 10, fontWeight: 'bold', color: dm ? '#94a3b8' : '#64748b', width: 45 }}>稀有</Text>
                 {RARITY_OPTIONS.map(o => <Chip key={o.value} label={o.label} active={filterRarity === o.value} activeBg={o.activeBg} activeText={o.activeText} onPress={() => setFilterRarity(o.value)} />)}
               </View>
             </View>
