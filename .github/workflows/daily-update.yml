@@ -1,0 +1,40 @@
+name: Daily Price Update
+
+on:
+  schedule:
+    # GitHub 使用 UTC 時間。GMT+8 的 12:00 = UTC 的 04:00
+    # Cron 格式：分 時 日 月 星期
+    - cron: '0 4 * * *'
+  # 加入 workflow_dispatch 讓你可以隨時在 GitHub 網頁上手動點擊按鈕執行！
+  workflow_dispatch: 
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # 賦予機器人推播代碼的權限
+
+    steps:
+      - name: 📥 結帳代碼 (Checkout Repository)
+        uses: actions/checkout@v3
+
+      - name: ⚙️ 設定 Node.js 環境
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18' # 使用穩定的 Node 18
+
+      - name: 📦 安裝依賴套件
+        run: npm install
+
+      - name: 🕷️ 執行自動爬蟲與掃描器
+        run: npm run update-prices
+
+      - name: 🚀 將更新的數據推播回 GitHub
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"
+          # 只將價格庫和 Excel 加入追蹤，避免動到其他源碼
+          git add src/data/prices.json excel_data/historical_prices.xlsx excel_data/missing_prices.xlsx
+          # 如果檔案有變動就 Commit，沒有變動就印出提示
+          git commit -m "🤖 Auto-update prices & history [skip ci]" || echo "今日價格無變動，略過 Commit"
+          git push
