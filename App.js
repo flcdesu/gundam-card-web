@@ -160,7 +160,12 @@ export default function App() {
       const urlParams = new URLSearchParams(window.location.search);
       let targetId = urlParams.get('card');
 
-      if (path.startsWith('/card/')) targetId = path.split('/card/')[1];
+      if (path.startsWith('/card/')) {
+        targetId = path.split('/card/')[1];
+      } else if (path === '/deckbuilder') {
+        // 🌟 網址攔截：如果網址是 /deckbuilder，就自動開啟牌組模式
+        setIsDeckMode(true); 
+      }
 
       if (targetId) {
         const decodedTargetId = decodeURIComponent(targetId).toUpperCase();
@@ -186,11 +191,24 @@ export default function App() {
     if (typeof window !== 'undefined') {
       if (selectedCard) {
         window.history.replaceState(null, '', `/card/${selectedCard.id}`);
-      } else {
+      } else if (!isDeckMode && window.location.pathname !== '/deckbuilder') {
+        // 🌟 防衝突：確保只有在「沒打開卡片」且「沒打開牌組」時，才退回首頁 /
         window.history.replaceState(null, '', '/');
       }
     }
-  }, [selectedCard]);
+  }, [selectedCard, isDeckMode]);
+
+  // 🌟 網址列同步小精靈：當 isDeckMode 改變時，自動更新網址
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if (isDeckMode) {
+        window.history.replaceState(null, '', '/deckbuilder');
+      } else if (!selectedCard && window.location.pathname === '/deckbuilder') {
+        // 關閉牌組時，如果沒有打開特定卡片，就退回首頁
+        window.history.replaceState(null, '', '/');
+      }
+    }
+  }, [isDeckMode, selectedCard]);
 
   const handleResetSearch = () => { setSearchText(''); setSelectedSet('all'); };
   
