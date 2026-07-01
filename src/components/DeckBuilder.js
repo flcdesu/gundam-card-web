@@ -201,11 +201,13 @@ const DeckBuilder = ({
       const count = Math.min(parseInt(match[1], 10), 4);
       const targetId = match[2].trim().toUpperCase();
       if (count <= 0) return;
-      // Find base card (normal version, not alt/reprint/beta)
+      
+      // 🌟 嚴格尋找最基礎的版本 (排除異畫、重印、Beta、限定卡、PR卡)
       const card = cardsData.find(c => {
         const did = (c.displayId || c.id || '').toUpperCase();
-        return did === targetId && !c._isAltArt && !c._isReprint && !c.isBetaCard;
+        return did === targetId && !c._isAltArt && !c._isReprint && !c.isBetaCard && !c.isLimitedCard && !c.isPromoCard;
       }) || cardsData.find(c => (c.displayId || c.id || '').toUpperCase() === targetId);
+      
       if (card && !EXCLUDED_TYPES.includes(card.type)) {
         const key = card.displayId || card.id;
         newMap.set(key, { card, count });
@@ -247,7 +249,6 @@ const DeckBuilder = ({
   const builderTypeOptions = TYPE_OPTIONS.filter(t => !['RESOURCE', 'EX BASE', 'EX RESOURCE'].includes(t.value));
   
   // 🌟 給新篩選器用的常數陣列
-  // 🌟 修正：先濾掉底層自帶的 'all'，再統一由我們加上去，保證不會重複！
   const displaySets = useMemo(() => ['all', ...new Set((AVAILABLE_SETS || []).filter(s => s !== 'all').map(s => (s || '').replace(/\[beta\]/gi, 'LIMITED BOX Ver.β')))], []);
   const ACQ_OPTIONS = [ { value: 'Regular', label: '常規' }, { value: 'Beta', label: 'BETA', activeBg: '#f97316', activeText: '#fff' }, { value: 'Reprint', label: '重印' }, { value: 'Limited', label: '限定' }, { value: 'Promo', label: '推廣' } ];
   const VERSION_OPTIONS = [ { value: 'Normal', label: '普畫', activeBg: '#2563eb', activeText: '#fff' }, { value: 'Alt', label: '異畫 (全開)', activeBg: '#d97706', activeText: '#fff' }, { value: 'Alt+', label: '異畫+' }, { value: 'Alt++', label: '異畫++' }, { value: 'Alt_SEC', label: '異畫 (SP)' } ];
