@@ -6,7 +6,8 @@ import {
   COLOR_TRANSLATION_MAP, COLOR_OPTIONS, TYPE_OPTIONS, RARITY_OPTIONS
 } from '../constants';
 
-const EXCLUDED_TYPES = ['RESOURCE', 'EX BASE', 'EX RESOURCE'];
+// 🌟 將 Token 類卡片徹底排除出構築器
+const EXCLUDED_TYPES = ['RESOURCE', 'EX BASE', 'EX RESOURCE', 'UNIT TOKEN', 'TOKEN'];
 const colorEmoji = { Blue: '🔵', Green: '🟢', Red: '🔴', Purple: '🟣', White: '⚪' };
 const chipBtnStyle = (active, dm, activeBg) => ({
   paddingHorizontal: 8, paddingVertical: 4, borderRadius: 10, marginRight: 4, marginBottom: 4,
@@ -38,9 +39,9 @@ const DeckBuilder = ({
   const [filterTypes, setFilterTypes] = useState(['all']);
   const [filterRarity, setFilterRarity] = useState('all');
   
-  // 🌟 新增的進階篩選狀態
-  const [filterVersions, setFilterVersions] = useState(['all']);
-  const [filterAcq, setFilterAcq] = useState(['all']);
+  // 🌟 新增的進階篩選狀態 (預設只顯示普畫與常規入手卡牌)
+  const [filterVersions, setFilterVersions] = useState(['Normal']);
+  const [filterAcq, setFilterAcq] = useState(['Regular']);
   const [selectedSet, setSelectedSet] = useState('all');
   const [isSetDropdownOpen, setIsSetDropdownOpen] = useState(false); // 🌟 新增下拉選單開關
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -245,8 +246,8 @@ const DeckBuilder = ({
   // ====== Sorted deck ======
   const sortedDeck = useMemo(() => sortedDeckFn(deckEntries), [deckEntries]);
 
-  // ====== Filter types for builder (no Resource/EX) ======
-  const builderTypeOptions = TYPE_OPTIONS.filter(t => !['RESOURCE', 'EX BASE', 'EX RESOURCE'].includes(t.value));
+  // ====== Filter types for builder (no Resource/EX/Token) ======
+  const builderTypeOptions = TYPE_OPTIONS.filter(t => !EXCLUDED_TYPES.includes(t.value));
   
   // 🌟 給新篩選器用的常數陣列
   const displaySets = useMemo(() => ['all', ...new Set((AVAILABLE_SETS || []).filter(s => s !== 'all').map(s => (s || '').replace(/\[beta\]/gi, 'LIMITED BOX Ver.β')))], []);
