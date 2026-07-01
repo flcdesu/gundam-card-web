@@ -43,7 +43,7 @@ const DeckBuilder = ({
   const [filterVersions, setFilterVersions] = useState(['Normal']);
   const [filterAcq, setFilterAcq] = useState(['Regular']);
   const [selectedSet, setSelectedSet] = useState('all');
-  const [isSetDropdownOpen, setIsSetDropdownOpen] = useState(false); // 🌟 新增下拉選單開關
+  const [isSetDropdownOpen, setIsSetDropdownOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   // ====== Derived ======
@@ -77,7 +77,6 @@ const DeckBuilder = ({
     const noSetFilter = selectedSet === 'all';
 
     if (noVersionFilter && noAcqFilter && noSetFilter) {
-        // 為了不讓卡池被 4 張一樣的卡淹沒，如果什麼都沒選，預設隱藏異畫與重印
         cards = cards.filter(c => !c._isAltArt && !c._isReprint);
     } else {
         if (!noVersionFilter) {
@@ -249,7 +248,7 @@ const DeckBuilder = ({
   // ====== Filter types for builder (no Resource/EX/Token) ======
   const builderTypeOptions = TYPE_OPTIONS.filter(t => !EXCLUDED_TYPES.includes(t.value));
   
-  // 🌟 給新篩選器用的常數陣列
+  // 🌟 給新篩選器用的常數陣列 (濾掉底層自帶的 'all')
   const displaySets = useMemo(() => ['all', ...new Set((AVAILABLE_SETS || []).filter(s => s !== 'all').map(s => (s || '').replace(/\[beta\]/gi, 'LIMITED BOX Ver.β')))], []);
   const ACQ_OPTIONS = [ { value: 'Regular', label: '常規' }, { value: 'Beta', label: 'BETA', activeBg: '#f97316', activeText: '#fff' }, { value: 'Reprint', label: '重印' }, { value: 'Limited', label: '限定' }, { value: 'Promo', label: '推廣' } ];
   const VERSION_OPTIONS = [ { value: 'Normal', label: '普畫', activeBg: '#2563eb', activeText: '#fff' }, { value: 'Alt', label: '異畫 (全開)', activeBg: '#d97706', activeText: '#fff' }, { value: 'Alt+', label: '異畫+' }, { value: 'Alt++', label: '異畫++' }, { value: 'Alt_SEC', label: '異畫 (SP)' } ];
@@ -366,16 +365,18 @@ const DeckBuilder = ({
           {/* Collapsible Filter */}
           {isFilterOpen && (
             <View style={{ backgroundColor: dm ? '#1e293b' : '#f8fafc', borderBottomWidth: 1, borderBottomColor: dm ? '#334155' : '#e2e8f0' }}>
-              {/* 🌟 換成 ScrollView，並設定手機版最大高度，超過自動變滑動面板 */}
+              {/* 🌟 換成 ScrollView 並強制顯示捲軸 */}
               <ScrollView 
-                style={{ maxHeight: isMobile ? 260 : 'auto' }} 
-                contentContainerStyle={{ paddingHorizontal: 10, paddingVertical: 8 }}
-                nestedScrollEnabled={true} // 確保裡面的下拉選單也能滑動
+                style={{ maxHeight: isMobile ? 280 : undefined }} // 稍微加高一點到 280
+                contentContainerStyle={{ paddingHorizontal: 10, paddingVertical: 8, paddingBottom: 20 }} // 底部多一點留白防截斷
+                nestedScrollEnabled={true} 
+                showsVerticalScrollIndicator={true} // 🌟 強制顯示垂直捲軸
+                persistentScrollbar={true} // 🌟 讓捲軸常駐 (部分平台支援)
               >
                 {/* 收錄彈 (下拉式選單) */}
                 <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 8, zIndex: 50 }}>
                   <Text style={{ fontSize: 10, fontWeight: 'bold', color: dm ? '#94a3b8' : '#64748b', width: 45, marginTop: 8 }}>收錄彈</Text>
-                  <View style={{ width: isMobile ? '80%' : 240 }}> {/* 🌟 順手優化：手機版改用比例寬度防破版 */}
+                  <View style={{ width: isMobile ? '80%' : 240 }}>
                     {/* 下拉按鈕 */}
                     <TouchableOpacity
                       style={{
@@ -430,7 +431,6 @@ const DeckBuilder = ({
                     )}
                   </View>
                 </View>
-
                 {/* 卡圖 */}
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6, flexWrap: 'wrap' }}>
                   <Text style={{ fontSize: 10, fontWeight: 'bold', color: dm ? '#94a3b8' : '#64748b', width: 45 }}>卡圖</Text>
