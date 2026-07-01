@@ -769,7 +769,6 @@ export default function App() {
       <View style={{ zIndex: 100 }}>
         
         {/* 上半部：標題列 (維持原本的深色) */}
-        {/* 🌟 修改：將 flexDirection 改為 'column'，並設定 alignItems: 'flex-start' 讓元素靠左上下排列 */}
         <View style={{ backgroundColor: isDarkMode ? '#020617' : '#20353f', paddingVertical: 12, paddingHorizontal: 20, flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', gap: 6 }}>
           
           <TouchableOpacity style={styles.titleContainer} onPress={() => Linking.openURL('https://www.youtube.com/@FLCdesu')} activeOpacity={0.8}>
@@ -802,9 +801,52 @@ export default function App() {
               ▶️ 支持開發者：加入FLC頻道會員
             </Text>
           </TouchableOpacity>
-          
         </View>
 
+        {/* 🌟 剛才不小心刪掉的下半部：功能面板回來啦！ */}
+        <View style={{ 
+          backgroundColor: isDarkMode ? '#0f172a' : '#f8fafc', 
+          borderBottomWidth: 1,
+          borderBottomColor: isDarkMode ? '#1e293b' : '#e2e8f0',
+          flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 8, gap: 10 
+        }}>
+          
+          {/* 極簡 ￥ 開關 */}
+          <TouchableOpacity 
+            style={[styles.langBtn, { backgroundColor: showPrice ? (isDarkMode ? '#fbbf24' : '#f59e0b') : (isDarkMode ? '#334155' : '#cbd5e1') }]} 
+            onPress={() => setShowPrice(!showPrice)} 
+            activeOpacity={0.8}
+          >
+            <Text style={{ fontSize: 14, fontWeight: '900', color: showPrice ? (isDarkMode ? '#000' : '#fff') : (isDarkMode ? '#94a3b8' : '#64748b') }}>￥</Text>
+          </TouchableOpacity>
+
+          {/* 牌組構築器 */}
+          <TouchableOpacity 
+            style={[styles.langBtn, { backgroundColor: isDeckMode ? (isDarkMode ? '#38bdf8' : '#0ea5e9') : (isDarkMode ? '#334155' : '#cbd5e1') }]} 
+            onPress={() => setIsDeckMode(!isDeckMode)} 
+            activeOpacity={0.8}
+          >
+            <Text style={{ fontSize: 12, fontWeight: '900', color: isDeckMode ? (isDarkMode ? '#000' : '#fff') : (isDarkMode ? '#94a3b8' : '#64748b') }}>牌組構築</Text>
+          </TouchableOpacity>
+
+          {/* 黑夜模式切換 */}
+          <TouchableOpacity 
+            style={[styles.langBtn, { backgroundColor: isDarkMode ? '#334155' : 'rgba(0,0,0,0.1)' }]} 
+            onPress={() => setIsDarkMode(!isDarkMode)} 
+            activeOpacity={0.8}
+          >
+            <Text style={{ fontSize: 15 }}>{isDarkMode ? '🌙' : '☀️'}</Text>
+          </TouchableOpacity>
+
+          {/* 語系切換 */}
+          <View style={styles.langButtonGroup}>
+            <TouchableOpacity style={[styles.langBtn, language === 'hk' ? styles.langBtnActive : styles.langBtnInactive]} onPress={() => setLanguage('hk')} activeOpacity={0.8}><Text style={styles.langBtnText}>港譯</Text></TouchableOpacity>
+            <TouchableOpacity style={[styles.langBtn, language === 'tw' ? styles.langBtnActive : styles.langBtnInactive]} onPress={() => setLanguage('tw')} activeOpacity={0.8}><Text style={styles.langBtnText}>台譯</Text></TouchableOpacity>
+          </View>
+        </View>
+      </View> {/* 🌟 這是剛才遺失的最外層結尾括號！ */}
+
+      {/* 這裡接回你原本的 isDeckMode 判斷式 */}
       {isDeckMode ? (
         <DeckBuilder
           filteredCards={cardsData}
