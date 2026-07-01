@@ -367,11 +367,15 @@ const DeckBuilder = ({
             <View style={{ backgroundColor: dm ? '#1e293b' : '#f8fafc', borderBottomWidth: 1, borderBottomColor: dm ? '#334155' : '#e2e8f0' }}>
               {/* 🌟 換成 ScrollView 並強制顯示捲軸 */}
               <ScrollView 
-                style={{ maxHeight: isMobile ? 280 : undefined }} // 稍微加高一點到 280
-                contentContainerStyle={{ paddingHorizontal: 10, paddingVertical: 8, paddingBottom: 20 }} // 底部多一點留白防截斷
+                style={{ maxHeight: isMobile ? 260 : undefined }} // 微調一下箱子高度，視覺更俐落
+                contentContainerStyle={{ 
+                  paddingHorizontal: 10, 
+                  paddingVertical: 8, 
+                  paddingBottom: isMobile ? 120 : 20 // 🌟 魔法氣墊：手機版底部加入超大留白，讓面板「永遠可以往上推」！
+                }} 
                 nestedScrollEnabled={true} 
-                showsVerticalScrollIndicator={true} // 🌟 強制顯示垂直捲軸
-                persistentScrollbar={true} // 🌟 讓捲軸常駐 (部分平台支援)
+                showsVerticalScrollIndicator={true} 
+                persistentScrollbar={true} 
               >
                 {/* 收錄彈 (下拉式選單) */}
                 <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 8, zIndex: 50 }}>
