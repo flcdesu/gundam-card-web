@@ -365,9 +365,99 @@ const DeckBuilder = ({
 
           {/* Collapsible Filter */}
           {isFilterOpen && (
-            <View style={{ paddingHorizontal: 10, paddingVertical: 8, backgroundColor: dm ? '#1e293b' : '#f8fafc', borderBottomWidth: 1, borderBottomColor: dm ? '#334155' : '#e2e8f0' }}>
-              {/* 收錄彈 (下拉式選單) */}
-              <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 8, zIndex: 50 }}>
+            <View style={{ backgroundColor: dm ? '#1e293b' : '#f8fafc', borderBottomWidth: 1, borderBottomColor: dm ? '#334155' : '#e2e8f0' }}>
+              {/* 🌟 換成 ScrollView，並設定手機版最大高度，超過自動變滑動面板 */}
+              <ScrollView 
+                style={{ maxHeight: isMobile ? 260 : 'auto' }} 
+                contentContainerStyle={{ paddingHorizontal: 10, paddingVertical: 8 }}
+                nestedScrollEnabled={true} // 確保裡面的下拉選單也能滑動
+              >
+                {/* 收錄彈 (下拉式選單) */}
+                <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 8, zIndex: 50 }}>
+                  <Text style={{ fontSize: 10, fontWeight: 'bold', color: dm ? '#94a3b8' : '#64748b', width: 45, marginTop: 8 }}>收錄彈</Text>
+                  <View style={{ width: isMobile ? '80%' : 240 }}> {/* 🌟 順手優化：手機版改用比例寬度防破版 */}
+                    {/* 下拉按鈕 */}
+                    <TouchableOpacity
+                      style={{
+                        flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+                        backgroundColor: dm ? '#0f172a' : '#f1f5f9',
+                        borderWidth: 1, borderColor: dm ? '#334155' : '#e2e8f0',
+                        borderRadius: 8, paddingHorizontal: 10, paddingVertical: 6,
+                      }}
+                      onPress={() => setIsSetDropdownOpen(!isSetDropdownOpen)}
+                      activeOpacity={0.7}
+                    >
+                      <Text style={{ fontSize: 11, fontWeight: 'bold', color: dm ? '#cbd5e1' : '#334155' }} numberOfLines={1}>
+                        {selectedSet === 'all' ? '全部收錄彈' : selectedSet}
+                      </Text>
+                      <Text style={{ fontSize: 10, color: dm ? '#64748b' : '#94a3b8' }}>
+                        {isSetDropdownOpen ? '▲' : '▼'}
+                      </Text>
+                    </TouchableOpacity>
+                    
+                    {/* 下拉選單列表 */}
+                    {isSetDropdownOpen && (
+                      <View style={{
+                        marginTop: 4, backgroundColor: dm ? '#1e293b' : '#ffffff',
+                        borderWidth: 1, borderColor: dm ? '#334155' : '#e2e8f0',
+                        borderRadius: 8, overflow: 'hidden', maxHeight: 200,
+                      }}>
+                        <ScrollView nestedScrollEnabled={true}>
+                          {displaySets.map(opt => (
+                            <TouchableOpacity
+                              key={opt}
+                              style={{
+                                paddingHorizontal: 12, paddingVertical: 8,
+                                backgroundColor: selectedSet === opt ? (dm ? '#38bdf8' : '#e0f2fe') : 'transparent',
+                                borderBottomWidth: 1, borderBottomColor: dm ? '#334155' : '#f1f5f9',
+                              }}
+                              onPress={() => {
+                                setSelectedSet(opt);
+                                setIsSetDropdownOpen(false);
+                              }}
+                            >
+                              <Text style={{
+                                fontSize: 11,
+                                fontWeight: selectedSet === opt ? 'bold' : 'normal',
+                                color: selectedSet === opt ? (dm ? '#0f172a' : '#0369a1') : (dm ? '#cbd5e1' : '#475569')
+                              }}>
+                                {opt === 'all' ? '全部收錄彈' : opt}
+                              </Text>
+                            </TouchableOpacity>
+                          ))}
+                        </ScrollView>
+                      </View>
+                    )}
+                  </View>
+                </View>
+                {/* 卡圖 */}
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6, flexWrap: 'wrap' }}>
+                  <Text style={{ fontSize: 10, fontWeight: 'bold', color: dm ? '#94a3b8' : '#64748b', width: 45 }}>卡圖</Text>
+                  {VERSION_OPTIONS.map(o => <Chip key={o.value} label={o.label} active={filterVersions.includes(o.value)} activeBg={o.activeBg} activeText={o.activeText} onPress={() => toggleFilter(o.value, filterVersions, setFilterVersions)} />)}
+                </View>
+                {/* 入手 */}
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6, flexWrap: 'wrap' }}>
+                  <Text style={{ fontSize: 10, fontWeight: 'bold', color: dm ? '#94a3b8' : '#64748b', width: 45 }}>入手</Text>
+                  {ACQ_OPTIONS.map(o => <Chip key={o.value} label={o.label} active={filterAcq.includes(o.value)} activeBg={o.activeBg} activeText={o.activeText} onPress={() => toggleFilter(o.value, filterAcq, setFilterAcq)} />)}
+                </View>
+                {/* Color */}
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6, flexWrap: 'wrap' }}>
+                  <Text style={{ fontSize: 10, fontWeight: 'bold', color: dm ? '#94a3b8' : '#64748b', width: 45 }}>顏色</Text>
+                  {COLOR_OPTIONS.map(o => <Chip key={o.value} label={o.label} active={filterColors.includes(o.value)} activeBg={o.activeBg} activeText={o.activeText} onPress={() => toggleFilter(o.value, filterColors, setFilterColors)} />)}
+                </View>
+                {/* Type */}
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6, flexWrap: 'wrap' }}>
+                  <Text style={{ fontSize: 10, fontWeight: 'bold', color: dm ? '#94a3b8' : '#64748b', width: 45 }}>種類</Text>
+                  {builderTypeOptions.map(o => <Chip key={o.value} label={o.label} active={filterTypes.includes(o.value)} onPress={() => toggleFilter(o.value, filterTypes, setFilterTypes)} />)}
+                </View>
+                {/* Rarity */}
+                <View style={{ flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' }}>
+                  <Text style={{ fontSize: 10, fontWeight: 'bold', color: dm ? '#94a3b8' : '#64748b', width: 45 }}>稀有</Text>
+                  {RARITY_OPTIONS.map(o => <Chip key={o.value} label={o.label} active={filterRarity === o.value} activeBg={o.activeBg} activeText={o.activeText} onPress={() => setFilterRarity(o.value)} />)}
+                </View>
+              </ScrollView>
+            </View>
+          )}
                 <Text style={{ fontSize: 10, fontWeight: 'bold', color: dm ? '#94a3b8' : '#64748b', width: 45, marginTop: 8 }}>收錄彈</Text>
                 {/* 🌟 修正：拿掉 flex: 1，給定一個剛剛好的寬度 (例如 240) */}
                 <View style={{ width: 240 }}>
