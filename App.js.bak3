@@ -39,10 +39,8 @@ import {
 import { resolveCardTypes, getAliasNames } from './src/logic/searchHelpers';
 import CardGridItem from './src/components/CardGridItem';
 import RangeTrack from './src/components/RangeTrack';
-import FilterPanel from './src/components/FilterPanel';
 import { renderInteractiveText, shouldShowResonanceButton } from './src/components/InteractiveText';
 import CardPriceWidget from './src/components/CardPriceWidget';
-import DeckBuilder from './src/components/DeckBuilder';
 
 // ====== 外層 (Global Scope) ======
 const safeKeywordImages = keywordImages || {};
@@ -64,7 +62,6 @@ if (typeof document !== 'undefined') {
 export default function App() {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [showPrice, setShowPrice] = useState(true); // 🌟 價格顯示開關
-  const [isDeckMode, setIsDeckMode] = useState(false); // 🌟 牌組構築模式
 
   const styles = useMemo(() => getStyles(isDarkMode), [isDarkMode]);
 
@@ -737,6 +734,35 @@ export default function App() {
     styles,
   };
 
+  const renderKeywordChip = (opt) => {
+    const isActive = selectedKeywords.includes(opt.value);
+    const isInputKw = opt.value === '支援' || opt.value === '突破' || opt.value === '修復';
+
+    if (!isInputKw) {
+      return (
+        <TouchableOpacity key={opt.value} style={[styles.filterChip, isActive && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleSelection(opt.value, selectedKeywords, setSelectedKeywords)}>
+          <Text style={[styles.chipText, isActive && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+        </TouchableOpacity>
+      );
+    } else {
+      const val = opt.value === '支援' ? supportValue : opt.value === '突破' ? breakthroughValue : repairValue;
+      const setVal = opt.value === '支援' ? setSupportValue : opt.value === '突破' ? setBreakthroughValue : setRepairValue;
+      return (
+        <View key={opt.value} style={[styles.filterChipWithInput, isActive && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]}>
+          <TouchableOpacity style={styles.filterChipInner} onPress={() => toggleSelection(opt.value, selectedKeywords, setSelectedKeywords)}>
+            <Text style={[styles.chipText, isActive && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+          </TouchableOpacity>
+          <TextInput
+            style={[styles.keywordValInput, isActive && styles.keywordValInputActive]} maxLength={1} keyboardType="numeric" placeholder="X" placeholderTextColor={isActive ? '#94a3b8' : '#cbd5e1'} value={val}
+            onChangeText={(t) => {
+              const clean = t.replace(/[^0-9]/g, ''); setVal(clean);
+              if (clean !== '' && !isActive) toggleSelection(opt.value, selectedKeywords, setSelectedKeywords);
+            }}
+          />
+        </View>
+      );
+    }
+  };
 
 
   return (
@@ -780,17 +806,6 @@ export default function App() {
             </Text>
           </TouchableOpacity>
 
-          {/* 🌟 牌組構築器 */}
-          <TouchableOpacity 
-            style={[styles.langBtn, { backgroundColor: isDeckMode ? (isDarkMode ? '#38bdf8' : '#0ea5e9') : (isDarkMode ? '#334155' : '#cbd5e1') }]} 
-            onPress={() => setIsDeckMode(!isDeckMode)} 
-            activeOpacity={0.8}
-          >
-            <Text style={{ fontSize: 12, fontWeight: '900', color: isDeckMode ? (isDarkMode ? '#000' : '#fff') : (isDarkMode ? '#94a3b8' : '#64748b') }}>
-              牌組構築
-            </Text>
-          </TouchableOpacity>
-
           {/* 🌟 黑夜模式切換 */}
           <TouchableOpacity 
             style={[styles.langBtn, { backgroundColor: isDarkMode ? '#334155' : 'rgba(0,0,0,0.1)' }]} 
@@ -808,18 +823,6 @@ export default function App() {
         </View>
       </View>
 
-      {isDeckMode ? (
-        <DeckBuilder
-          filteredCards={cardsData}
-          cardsData={cardsData}
-          language={language}
-          isDarkMode={isDarkMode}
-          isMobile={isMobile}
-          screenWidth={screenWidth}
-          onClose={() => setIsDeckMode(false)}
-        />
-      ) : (
-      <>
       <View style={[styles.searchBarSection, isMobile && { paddingVertical: 10, paddingHorizontal: 12 }]}>
         <View style={styles.mainControlContainer}>
           <View style={[styles.topSearchSection, isMobile && { flexDirection: 'column', alignItems: 'stretch', gap: 8, paddingVertical: 10, paddingHorizontal: 15 }]}>
@@ -895,33 +898,320 @@ export default function App() {
             </View>
           </View>
 
+          <View 
+            style={[styles.bottomFilterSection, !isFilterPanelOpen && { paddingVertical: 10 }]}
+            onTouchStart={(e) => { panelSwipeStartY.current = e.nativeEvent.pageY; }}
+            onTouchEnd={(e) => {
+              if (!panelSwipeStartY.current || !isFilterPanelOpen) return;
+                const distance = e.nativeEvent.pageY - panelSwipeStartY.current;
+                if (distance > 40) setIsFilterPanelOpen(false);
+                panelSwipeStartY.current = null;
+              }}
+          >
+            {isFilterPanelOpen && isMobile && (
+              <View style={styles.dragHandleContainer}>
+                <View style={styles.dragHandlePill} />
+              </View>
+            )}
+            <View style={[styles.panelHeaderRow, isFilterPanelOpen && { marginBottom: 12 }]}>
+              <TouchableOpacity style={styles.panelTitleToggleClickable} onPress={() => setIsFilterPanelOpen(!isFilterPanelOpen)} activeOpacity={0.7}>
+                <Text style={styles.panelMainTitle}>篩選卡牌</Text>
+                <Text style={styles.panelToggleIndicatorText}>{isFilterPanelOpen ? '▲ 收起' : '▼ 展開'}</Text>
+              </TouchableOpacity>
+              
+              {isFilterPanelOpen && (
+                <TouchableOpacity style={styles.panelResetBtn} onPress={handleResetFilters}>
+                  <Text style={styles.panelResetBtnText}>重置面板</Text>
+                </TouchableOpacity>
+              )}
+            </View>
 
-          <FilterPanel
-            filterState={{
-              selectedColors, selectedTypes, selectedRarity, selectedVersions,
-              includeRegular, includeBeta, includeReprint, includeLimited, includePromo,
-              selectedResonance, resonanceMatchId,
-              selectedKeywords, selectedTimings,
-              supportValue, breakthroughValue, repairValue,
-              traitSearchText, isTraitExactMatch,
-              lvRange, costRange, apRange, hpRange,
-              selectedSeries, isSeriesExpanded, seriesOptions,
-              isFilterPanelOpen,
-            }}
-            filterActions={{
-              setSelectedColors, setSelectedTypes, setSelectedRarity,
-              setIncludeRegular, setIncludeBeta, setIncludeReprint, setIncludeLimited, setIncludePromo,
-              setSelectedResonance, setResonanceMatchId,
-              setSelectedKeywords, setSelectedTimings,
-              setSupportValue, setBreakthroughValue, setRepairValue,
-              setTraitSearchText, setIsTraitExactMatch,
-              setLvRange, setCostRange, setApRange, setHpRange,
-              setSelectedSeries, setIsSeriesExpanded,
-              setIsFilterPanelOpen,
-              toggleSelection, toggleVersionSelection, handleResetFilters,
-            }}
-            isMobile={isMobile} isDarkMode={isDarkMode} screenWidth={screenWidth}
-          />
+            {isFilterPanelOpen && (
+              <ScrollView style={isMobile ? styles.mobilePanelVerticalContainer : null} nestedScrollEnabled={true} showsVerticalScrollIndicator={true}>
+                <View style={styles.filterColumnsContainer}>
+                  <View style={[styles.filterLeftColumn, screenWidth > 900 && styles.filterLeftColumnBorder]}>
+                    
+                    {/* 🌟 登場作品篩選 */}
+                    <View style={[styles.panelRow, {flexDirection: 'column', alignItems: 'stretch'}]}>
+                      <TouchableOpacity 
+                        style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 8, borderBottomWidth: 1, borderBottomColor: isDarkMode ? '#475569' : '#eee', marginBottom: 10 }}
+                        onPress={() => setIsSeriesExpanded(!isSeriesExpanded)}
+                        activeOpacity={0.7}
+                      >
+                        <Text style={styles.panelLabel}>登場作品 : <Text style={{color: isDarkMode ? '#38bdf8' : '#007BFF'}}>{selectedSeries}</Text></Text>
+                        <Text style={{ fontSize: 16, color: isDarkMode ? '#94a3b8' : '#666', fontWeight: 'bold' }}>{isSeriesExpanded ? '▲' : '▼'}</Text>
+                      </TouchableOpacity>
+                      
+                      {isSeriesExpanded && (
+                        <View style={styles.chipContainerRow}>
+                          {seriesOptions.map(series => (
+                            <TouchableOpacity
+                              key={series}
+                              style={[styles.filterChip, selectedSeries === series && { backgroundColor: isDarkMode ? '#38bdf8' : '#334155', borderColor: isDarkMode ? '#38bdf8' : '#334155' }]}
+                              onPress={() => { setSelectedSeries(series); setIsSeriesExpanded(false); }}
+                            >
+                              <Text style={[styles.chipText, selectedSeries === series && { color: isDarkMode ? '#0f172a' : '#fff', fontWeight: 'bold' }]}>
+                                {series}
+                              </Text>
+                            </TouchableOpacity>
+                          ))}
+                        </View>
+                      )}
+                    </View>
+
+                    <View style={styles.panelRow}>
+                      <Text style={styles.panelLabel}>顏色</Text>
+                      {isMobile ? (
+                        <View style={styles.mobileGradientContainer}>
+                          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.mobileHorizontalScroll}>
+                            {COLOR_OPTIONS.map((opt) => (
+                              <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedColors.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleSelection(opt.value, selectedColors, setSelectedColors)}>
+                                <Text style={[styles.chipText, selectedColors.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+                              </TouchableOpacity>
+                            ))}
+                          </ScrollView>
+                        </View>
+                      ) : (
+                        <View style={styles.chipContainerRow}>
+                          {COLOR_OPTIONS.map((opt) => (
+                            <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedColors.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleSelection(opt.value, selectedColors, setSelectedColors)}>
+                              <Text style={[styles.chipText, selectedColors.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+                            </TouchableOpacity>
+                          ))}
+                        </View>
+                      )}
+                    </View>
+
+                    <View style={styles.panelRow}>
+                      <Text style={styles.panelLabel}>種類</Text>
+                      {isMobile ? (
+                        <View style={styles.mobileGradientContainer}>
+                          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.mobileHorizontalScroll}>
+                            {TYPE_OPTIONS.map((opt) => (
+                              <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedTypes.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleSelection(opt.value, selectedTypes, setSelectedTypes)}>
+                                <Text style={[styles.chipText, selectedTypes.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+                              </TouchableOpacity>
+                            ))}
+                          </ScrollView>
+                        </View>
+                      ) : (
+                        <View style={styles.typeRowsContainer}>
+                          <View style={[styles.chipContainerRow, { marginBottom: 6 }]}>
+                            {TYPE_OPTIONS.slice(0, 5).map((opt) => (
+                              <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedTypes.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleSelection(opt.value, selectedTypes, setSelectedTypes)}>
+                                <Text style={[styles.chipText, selectedTypes.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+                              </TouchableOpacity>
+                            ))}
+                          </View>
+                          <View style={styles.chipContainerRow}>
+                            {TYPE_OPTIONS.slice(5).map((opt) => (
+                              <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedTypes.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleSelection(opt.value, selectedTypes, setSelectedTypes)}>
+                                <Text style={[styles.chipText, selectedTypes.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+                              </TouchableOpacity>
+                            ))}
+                          </View>
+                        </View>
+                      )}
+                    </View>
+
+                    <View style={styles.panelRow}>
+                      <Text style={styles.panelLabel}>稀有</Text>
+                      {isMobile ? (
+                        <View style={styles.mobileGradientContainer}>
+                          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.mobileHorizontalScroll}>
+                            {RARITY_OPTIONS.map((opt) => (
+                              <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedRarity === opt.value && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => setSelectedRarity(opt.value)}>
+                                <Text style={[styles.chipText, selectedRarity === opt.value && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+                              </TouchableOpacity>
+                            ))}
+                          </ScrollView>
+                        </View>
+                      ) : (
+                        <View style={styles.chipContainerRow}>
+                          {RARITY_OPTIONS.map((opt) => (
+                            <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedRarity === opt.value && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => setSelectedRarity(opt.value)}>
+                              <Text style={[styles.chipText, selectedRarity === opt.value && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+                            </TouchableOpacity>
+                          ))}
+                        </View>
+                      )}
+                    </View>
+
+                    <View style={styles.panelRow}>
+                      <Text style={styles.panelLabel}>卡圖</Text>
+                      {isMobile ? (
+                        <View style={styles.mobileGradientContainer}>
+                          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.mobileHorizontalScroll}>
+                            {VERSION_OPTIONS.map((opt) => (
+                              <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedVersions.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleVersionSelection(opt.value)}>
+                                <Text style={[styles.chipText, selectedVersions.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+                              </TouchableOpacity>
+                            ))}
+                          </ScrollView>
+                        </View>
+                      ) : (
+                        <View style={styles.chipContainerRow}>
+                          {VERSION_OPTIONS.map((opt) => (
+                            <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedVersions.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleVersionSelection(opt.value)}>
+                              <Text style={[styles.chipText, selectedVersions.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+                            </TouchableOpacity>
+                          ))}
+                        </View>
+                      )}
+                    </View>
+                    
+                    <View style={styles.panelRow}>
+                      <Text style={styles.panelLabel}>入手</Text>
+                      {isMobile ? (
+                        <View style={styles.mobileGradientContainer}>
+                          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.mobileHorizontalScroll}>
+                            <TouchableOpacity style={[styles.reprintTickbox, includeRegular && styles.reprintTickboxActive]} onPress={() => setIncludeRegular(!includeRegular)} activeOpacity={0.8}><Text style={[styles.reprintTickboxText, includeRegular && styles.reprintTickboxTextActive]}>{includeRegular ? '☑' : '☐'} 常規</Text></TouchableOpacity>
+                            <TouchableOpacity style={[styles.reprintTickbox, includeBeta && styles.reprintTickboxActive]} onPress={() => setIncludeBeta(!includeBeta)} activeOpacity={0.8}><Text style={[styles.reprintTickboxText, includeBeta && styles.reprintTickboxTextActive]}>{includeBeta ? '☑' : '☐'} BETA</Text></TouchableOpacity>
+                            <TouchableOpacity style={[styles.reprintTickbox, includeReprint && styles.reprintTickboxActive]} onPress={() => setIncludeReprint(!includeReprint)} activeOpacity={0.8}><Text style={[styles.reprintTickboxText, includeReprint && styles.reprintTickboxTextActive]}>{includeReprint ? '☑' : '☐'} 重印</Text></TouchableOpacity>
+                            <TouchableOpacity style={[styles.reprintTickbox, includeLimited && styles.reprintTickboxActive]} onPress={() => setIncludeLimited(!includeLimited)} activeOpacity={0.8}><Text style={[styles.reprintTickboxText, includeLimited && styles.reprintTickboxTextActive]}>{includeLimited ? '☑' : '☐'} 限定</Text></TouchableOpacity>
+                            <TouchableOpacity style={[styles.reprintTickbox, includePromo && styles.reprintTickboxActive]} onPress={() => setIncludePromo(!includePromo)} activeOpacity={0.8}><Text style={[styles.reprintTickboxText, includePromo && styles.reprintTickboxTextActive]}>{includePromo ? '☑' : '☐'} 推廣</Text></TouchableOpacity>
+                          </ScrollView>
+                        </View>
+                      ) : (
+                        <View style={styles.chipContainerRow}>
+                          <TouchableOpacity style={[styles.reprintTickbox, includeRegular && styles.reprintTickboxActive]} onPress={() => setIncludeRegular(!includeRegular)} activeOpacity={0.8}><Text style={[styles.reprintTickboxText, includeRegular && styles.reprintTickboxTextActive]}>{includeRegular ? '☑' : '☐'} 常規</Text></TouchableOpacity>
+                          <TouchableOpacity style={[styles.reprintTickbox, includeBeta && styles.reprintTickboxActive]} onPress={() => setIncludeBeta(!includeBeta)} activeOpacity={0.8}><Text style={[styles.reprintTickboxText, includeBeta && styles.reprintTickboxTextActive]}>{includeBeta ? '☑' : '☐'} BETA</Text></TouchableOpacity>
+                          <TouchableOpacity style={[styles.reprintTickbox, includeReprint && styles.reprintTickboxActive]} onPress={() => setIncludeReprint(!includeReprint)} activeOpacity={0.8}><Text style={[styles.reprintTickboxText, includeReprint && styles.reprintTickboxTextActive]}>{includeReprint ? '☑' : '☐'} 重印</Text></TouchableOpacity>
+                          <TouchableOpacity style={[styles.reprintTickbox, includeLimited && styles.reprintTickboxActive]} onPress={() => setIncludeLimited(!includeLimited)} activeOpacity={0.8}><Text style={[styles.reprintTickboxText, includeLimited && styles.reprintTickboxTextActive]}>{includeLimited ? '☑' : '☐'} 限定</Text></TouchableOpacity>
+                          <TouchableOpacity style={[styles.reprintTickbox, includePromo && styles.reprintTickboxActive]} onPress={() => setIncludePromo(!includePromo)} activeOpacity={0.8}><Text style={[styles.reprintTickboxText, includePromo && styles.reprintTickboxTextActive]}>{includePromo ? '☑' : '☐'} 推廣</Text></TouchableOpacity>
+                        </View>
+                      )}
+                    </View>
+
+                    <View style={styles.panelRow}>
+                      <Text style={styles.panelLabel}>共鳴</Text>
+                      {isMobile ? (
+                        <View style={styles.mobileGradientContainer}>
+                          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.mobileHorizontalScroll}>
+                            {RESONANCE_OPTIONS.map((opt) => (
+                              <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedResonance === opt.value && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => setSelectedResonance(opt.value)}>
+                                <Text style={[styles.chipText, selectedResonance === opt.value && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+                              </TouchableOpacity>
+                            ))}
+                          </ScrollView>
+                        </View>
+                      ) : (
+                        <View style={styles.chipContainerRow}>
+                          {RESONANCE_OPTIONS.map((opt) => (
+                            <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedResonance === opt.value && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => setSelectedResonance(opt.value)}>
+                              <Text style={[styles.chipText, selectedResonance === opt.value && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+                            </TouchableOpacity>
+                          ))}
+                        </View>
+                      )}
+                    </View>
+
+                    <View style={[styles.panelRow, { marginTop: 4 }]}>
+                      <Text style={styles.panelLabel}>符合共鳴</Text>
+                      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <TextInput style={[styles.traitShortInput, { width: 140 }]} placeholder="卡牌編號" placeholderTextColor={isDarkMode ? '#64748b' : '#94a3b8'} value={resonanceMatchId} onChangeText={setResonanceMatchId} />
+                        <TouchableOpacity style={styles.traitResetButton} activeOpacity={0.8} onPress={() => setResonanceMatchId('')}>
+                          <Text style={styles.traitResetButtonText}>重置</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  </View>
+
+                  <View style={styles.filterRightColumn}>
+                    <View style={styles.panelRow}>
+                      <Text style={styles.panelLabel}>特徵</Text>
+                      <View style={{flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 6}}>
+                        <TextInput style={[styles.traitShortInput, { width: 160, marginRight: 0 }]} placeholder="輸入特徵 (例：地球聯邦)" placeholderTextColor={isDarkMode ? '#64748b' : '#94a3b8'} value={traitSearchText} onChangeText={setTraitSearchText} />
+                        <TouchableOpacity style={styles.traitResetButton} activeOpacity={0.8} onPress={() => { setTraitSearchText(''); setIsTraitExactMatch(false); }}>
+                          <Text style={styles.traitResetButtonText}>重置</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={[styles.exactMatchBtn, isTraitExactMatch && styles.exactMatchBtnActive, {marginLeft: 0}]} onPress={() => setIsTraitExactMatch(!isTraitExactMatch)} activeOpacity={0.8}><Text style={[styles.exactMatchBtnText, isTraitExactMatch && styles.exactMatchBtnTextActive]}>✓ 完全符合</Text></TouchableOpacity>
+                      </View>
+                    </View>
+
+                    <View style={styles.panelRow}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', width: 75, flexShrink: 0 }}>
+                        <Text style={[styles.panelLabel, { width: 'auto' }]}>關鍵字</Text>
+                        <TouchableOpacity style={[styles.trackResetBtn, { marginLeft: 4, width: 20, height: 20 }]} onPress={() => { setSelectedKeywords(['all']); setSupportValue(''); setBreakthroughValue(''); setRepairValue(''); }} activeOpacity={0.7}><Text style={{fontSize: 12, fontWeight: 'bold'}}>↺</Text></TouchableOpacity>
+                      </View>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, overflow: 'hidden' }}>
+                        {isMobile ? (
+                          <View style={styles.mobileGradientContainer}>
+                            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.mobileHorizontalScroll}>
+                              {KEYWORD_OPTIONS.map(renderKeywordChip)}
+                            </ScrollView>
+                          </View>
+                        ) : (
+                          <View style={styles.typeRowsContainer}>
+                            <View style={[styles.chipContainerRow, { marginBottom: 6 }]}>
+                              {KEYWORD_OPTIONS.slice(0, 5).map(renderKeywordChip)}
+                            </View>
+                            <View style={styles.chipContainerRow}>
+                              {KEYWORD_OPTIONS.slice(5).map(renderKeywordChip)}
+                            </View>
+                          </View>
+                        )}
+                      </View>
+                    </View>
+
+                    <View style={styles.panelRow}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', width: 75, flexShrink: 0 }}>
+                        <Text style={[styles.panelLabel, { width: 'auto' }]}>時機</Text>
+                        <TouchableOpacity style={[styles.trackResetBtn, { marginLeft: 4, width: 20, height: 20 }]} onPress={() => { setSelectedTimings(['all']); }} activeOpacity={0.7}><Text style={{fontSize: 12, fontWeight: 'bold'}}>↺</Text></TouchableOpacity>
+                      </View>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, overflow: 'hidden' }}>
+                        {isMobile ? (
+                          <View style={styles.mobileGradientContainer}>
+                            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.mobileHorizontalScroll}>
+                              {TIMING_OPTIONS.map((opt) => (
+                                <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedTimings.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleSelection(opt.value, selectedTimings, setSelectedTimings)}>
+                                  <Text style={[styles.chipText, selectedTimings.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+                                </TouchableOpacity>
+                              ))}
+                            </ScrollView>
+                          </View>
+                        ) : (
+                          <View style={styles.typeRowsContainer}>
+                            <View style={[styles.chipContainerRow, { marginBottom: 6 }]}>
+                              {TIMING_OPTIONS.slice(0, 5).map((opt) => (
+                                <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedTimings.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleSelection(opt.value, selectedTimings, setSelectedTimings)}>
+                                  <Text style={[styles.chipText, selectedTimings.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+                                </TouchableOpacity>
+                              ))}
+                            </View>
+                            <View style={styles.chipContainerRow}>
+                              {TIMING_OPTIONS.slice(5).map((opt) => (
+                                <TouchableOpacity key={opt.value} style={[styles.filterChip, selectedTimings.includes(opt.value) && { backgroundColor: opt.activeBg, borderColor: opt.activeBg }]} onPress={() => toggleSelection(opt.value, selectedTimings, setSelectedTimings)}>
+                                  <Text style={[styles.chipText, selectedTimings.includes(opt.value) && { color: opt.activeText, fontWeight: 'bold' }]}>{opt.label}</Text>
+                                </TouchableOpacity>
+                              ))}
+                            </View>
+                          </View>
+                        )}
+                      </View>
+                    </View>
+
+                    <View style={styles.rangeTracksWrapper}>
+                      <RangeTrack label="Lv." range={lvRange} setRange={setLvRange} minVal={0} maxVal={9} onReset={() => setLvRange([0, 9])} isMobile={isMobile} isDarkMode={isDarkMode} />
+                      <RangeTrack label="COST" range={costRange} setRange={setCostRange} minVal={0} maxVal={9} onReset={() => setCostRange([0, 9])} isMobile={isMobile} isDarkMode={isDarkMode} />
+                      <RangeTrack label="AP" range={apRange} setRange={setApRange} minVal={0} maxVal={9} onReset={() => setApRange([0, 9])} isMobile={isMobile} isDarkMode={isDarkMode} />
+                      <RangeTrack label="HP" range={hpRange} setRange={setHpRange} minVal={0} maxVal={9} onReset={() => setHpRange([0, 9])} isMobile={isMobile} isDarkMode={isDarkMode} />
+                    </View>
+                  </View>
+                </View>
+              </ScrollView>
+            )}
+
+            {isFilterPanelOpen && isMobile && (
+              <TouchableOpacity 
+                style={[styles.bottomDragSpace, { paddingBottom: 15, paddingTop: 15 }]} 
+                activeOpacity={0.6}
+                onPress={() => setIsFilterPanelOpen(false)}
+              >
+                <View style={styles.dragHandlePill} />
+              </TouchableOpacity>
+            )}
+          </View>
 
         </View>
       </View>
@@ -943,8 +1233,6 @@ export default function App() {
           contentContainerStyle={{ paddingBottom: 20 }}
         />
       </View>
-      </>
-      )}
 
       <Modal visible={selectedCard !== null} animationType="fade" transparent={true}>
         {selectedCard && (
