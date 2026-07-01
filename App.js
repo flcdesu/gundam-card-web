@@ -769,7 +769,9 @@ export default function App() {
       <View style={{ zIndex: 100 }}>
         
         {/* 上半部：標題列 (維持原本的深色) */}
-        <View style={{ backgroundColor: isDarkMode ? '#020617' : '#20353f', paddingVertical: 12, paddingHorizontal: 20, flexDirection: 'row', alignItems: 'center' }}>
+        {/* 🌟 修改：將 flexDirection 改為 'column'，並設定 alignItems: 'flex-start' 讓元素靠左上下排列 */}
+        <View style={{ backgroundColor: isDarkMode ? '#020617' : '#20353f', paddingVertical: 12, paddingHorizontal: 20, flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', gap: 6 }}>
+          
           <TouchableOpacity style={styles.titleContainer} onPress={() => Linking.openURL('https://www.youtube.com/@FLCdesu')} activeOpacity={0.8}>
             <Text style={[styles.titleTextMain, isMobile && { fontSize: 16 }]} numberOfLines={1} adjustsFontSizeToFit>
                {isMobile ? "GCG中文資料庫 by " : "GUNDAM CARD GAME中文卡效資料庫 by "}
@@ -777,54 +779,31 @@ export default function App() {
             <Text style={[styles.titleLink, isMobile && { fontSize: 16 }]}>FLC</Text>
             <Image source={{ uri: 'https://cdn-icons-png.flaticon.com/512/1384/1384060.png' }} style={styles.youtubeLogo} resizeMode="contain" />
           </TouchableOpacity>
-        </View>
 
-        {/* 下半部：功能面板 (換成對比色，帶有微妙的陰影) */}
-        <View style={{ 
-          backgroundColor: isDarkMode ? '#0f172a' : '#f8fafc', 
-          borderBottomWidth: 1,
-          borderBottomColor: isDarkMode ? '#1e293b' : '#e2e8f0',
-          flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 8, gap: 10 
-        }}>
+          {/* ====== 🌟 新增：頻道會員推廣連結 ====== */}
+          <TouchableOpacity 
+            onPress={() => Linking.openURL('https://www.youtube.com/@FLCdesu/join')}
+            style={{ 
+              paddingHorizontal: 10,
+              paddingVertical: 4,
+              backgroundColor: isDarkMode ? 'rgba(16, 185, 129, 0.15)' : 'rgba(16, 185, 129, 0.1)', // 微透的專屬綠色背景
+              borderRadius: 6,
+              borderWidth: 1,
+              borderColor: isDarkMode ? 'rgba(16, 185, 129, 0.3)' : 'rgba(16, 185, 129, 0.2)', // 淡淡的邊框增加質感
+              alignSelf: 'flex-start' // 讓背景框只包覆文字寬度
+            }}
+            activeOpacity={0.7}
+          >
+            <Text style={{ 
+              fontSize: 11, 
+              fontWeight: 'bold', 
+              color: isDarkMode ? '#34d399' : '#10b981' // 頻道會員經典綠色
+            }}>
+              ▶️ 支持開發者：加入FLC頻道會員
+            </Text>
+          </TouchableOpacity>
           
-          {/* 🌟 極簡 ￥ 開關 */}
-          <TouchableOpacity 
-            style={[styles.langBtn, { backgroundColor: showPrice ? (isDarkMode ? '#fbbf24' : '#f59e0b') : (isDarkMode ? '#334155' : '#cbd5e1') }]} 
-            onPress={() => setShowPrice(!showPrice)} 
-            activeOpacity={0.8}
-          >
-            <Text style={{ fontSize: 14, fontWeight: '900', color: showPrice ? (isDarkMode ? '#000' : '#fff') : (isDarkMode ? '#94a3b8' : '#64748b') }}>
-              ￥
-            </Text>
-          </TouchableOpacity>
-
-          {/* 🌟 牌組構築器 */}
-          <TouchableOpacity 
-            style={[styles.langBtn, { backgroundColor: isDeckMode ? (isDarkMode ? '#38bdf8' : '#0ea5e9') : (isDarkMode ? '#334155' : '#cbd5e1') }]} 
-            onPress={() => setIsDeckMode(!isDeckMode)} 
-            activeOpacity={0.8}
-          >
-            <Text style={{ fontSize: 12, fontWeight: '900', color: isDeckMode ? (isDarkMode ? '#000' : '#fff') : (isDarkMode ? '#94a3b8' : '#64748b') }}>
-              牌組構築
-            </Text>
-          </TouchableOpacity>
-
-          {/* 🌟 黑夜模式切換 */}
-          <TouchableOpacity 
-            style={[styles.langBtn, { backgroundColor: isDarkMode ? '#334155' : 'rgba(0,0,0,0.1)' }]} 
-            onPress={() => setIsDarkMode(!isDarkMode)} 
-            activeOpacity={0.8}
-          >
-            <Text style={{ fontSize: 15 }}>{isDarkMode ? '🌙' : '☀️'}</Text>
-          </TouchableOpacity>
-
-          {/* 🌟 語系切換 */}
-          <View style={styles.langButtonGroup}>
-            <TouchableOpacity style={[styles.langBtn, language === 'hk' ? styles.langBtnActive : styles.langBtnInactive]} onPress={() => setLanguage('hk')} activeOpacity={0.8}><Text style={styles.langBtnText}>港譯</Text></TouchableOpacity>
-            <TouchableOpacity style={[styles.langBtn, language === 'tw' ? styles.langBtnActive : styles.langBtnInactive]} onPress={() => setLanguage('tw')} activeOpacity={0.8}><Text style={styles.langBtnText}>台譯</Text></TouchableOpacity>
-          </View>
         </View>
-      </View>
 
       {isDeckMode ? (
         <DeckBuilder
