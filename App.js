@@ -1125,7 +1125,7 @@ export default function App() {
                                         setTraitSearchText(trait); setSelectedTypes(['PILOT', 'COMMAND_PILOT']);
                                         setIsTraitExactMatch(true); 
                                     }}>
-                                        特征〔{trait}〕
+                                        特徴〔{trait}〕
                                     </Text>
                                  );
                               }
