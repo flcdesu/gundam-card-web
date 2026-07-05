@@ -11,7 +11,7 @@ import {
 } from './src/constants';
 import { cardsData, cardImages, keywordImages, AVAILABLE_SETS } from './src/data/cardDatabase';
 // 🌟 引入我們剛剛寫好的網站文字內容
-import { ABOUT_SECTIONS, DISCLAIMER_SECTIONS } from './src/data/siteContent';
+import { ABOUT_US_TEXT, DISCLAIMER_TEXT } from './src/data/siteContent';
 
 // ==========================================
 // 🌟 數據層治本攔截：在 React 啟動前，一次性清洗所有底層資料！
@@ -823,88 +823,22 @@ export default function App() {
           </View>
           
           {/* 文字內容區 */}
-          <ScrollView contentContainerStyle={{ padding: isMobile ? 14 : 20, paddingBottom: 60 }}>
+          <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 60 }}>
             <View style={{
               backgroundColor: isDarkMode ? '#1e293b' : '#ffffff',
               borderWidth: 1,
               borderColor: isDarkMode ? '#334155' : '#e2e8f0',
               borderRadius: 12,
-              padding: isMobile ? 18 : 28,
-              maxWidth: 800,
-              alignSelf: 'center',
-              width: '100%',
+              padding: 24
             }}>
-              {/* 頁面標題 */}
-              <Text style={{ color: isDarkMode ? '#f8fafc' : '#1e293b', fontWeight: '900', fontSize: isMobile ? 20 : 24, marginBottom: 6 }}>
+              <Text style={{ color: isDarkMode ? '#f8fafc' : '#1e293b', fontWeight: '900', fontSize: 22, marginBottom: 16 }}>
                 {currentPage === 'about' ? '關於本網' : '免責聲明與版權宣告'}
               </Text>
-              <View style={{ height: 3, width: 40, backgroundColor: isDarkMode ? '#38bdf8' : '#0ea5e9', borderRadius: 2, marginBottom: 20 }} />
-
-              {/* 🌟 結構化段落渲染 */}
-              {(currentPage === 'about' ? ABOUT_SECTIONS : DISCLAIMER_SECTIONS).map((section, idx) => {
-                const dm = isDarkMode;
-                switch (section.type) {
-                  case 'intro':
-                    return <Text key={idx} style={{ color: dm ? '#94a3b8' : '#64748b', fontSize: 15, lineHeight: 26, marginBottom: 16, fontStyle: 'italic' }}>{section.text}</Text>;
-                  case 'meta':
-                    return <Text key={idx} style={{ color: dm ? '#64748b' : '#94a3b8', fontSize: 12, marginBottom: 16 }}>{section.text}</Text>;
-                  case 'heading':
-                    return (
-                      <View key={idx} style={{ marginTop: 24, marginBottom: 12, flexDirection: 'row', alignItems: 'center' }}>
-                        <View style={{ width: 4, height: 20, backgroundColor: dm ? '#38bdf8' : '#0ea5e9', borderRadius: 2, marginRight: 10 }} />
-                        <Text style={{ color: dm ? '#f8fafc' : '#1e293b', fontWeight: '800', fontSize: 17 }}>{section.text}</Text>
-                      </View>
-                    );
-                  case 'feature':
-                    return (
-                      <View key={idx} style={{ backgroundColor: dm ? '#0f172a' : '#f8fafc', borderRadius: 10, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: dm ? '#334155' : '#e2e8f0' }}>
-                        <Text style={{ color: dm ? '#38bdf8' : '#0ea5e9', fontWeight: '800', fontSize: 14, marginBottom: 6 }}>{section.title}</Text>
-                        <Text style={{ color: dm ? '#cbd5e1' : '#475569', fontSize: 13, lineHeight: 22 }}>{section.text}</Text>
-                      </View>
-                    );
-                  case 'list':
-                    return (
-                      <View key={idx} style={{ marginBottom: 12, paddingLeft: 8 }}>
-                        {section.items.map((item, j) => (
-                          <View key={j} style={{ flexDirection: 'row', marginBottom: 6, alignItems: 'flex-start' }}>
-                            <Text style={{ color: dm ? '#38bdf8' : '#0ea5e9', fontSize: 13, marginRight: 8, marginTop: 1 }}>•</Text>
-                            <Text style={{ color: dm ? '#cbd5e1' : '#475569', fontSize: 13, lineHeight: 22, flex: 1 }}>{item}</Text>
-                          </View>
-                        ))}
-                      </View>
-                    );
-                  case 'contacts':
-                    return (
-                      <View key={idx} style={{ marginBottom: 12 }}>
-                        {section.items.map((c, j) => (
-                          <View key={j} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8, backgroundColor: dm ? '#0f172a' : '#f1f5f9', padding: 10, borderRadius: 8 }}>
-                            <Text style={{ color: dm ? '#94a3b8' : '#64748b', fontWeight: '700', fontSize: 12, width: 80 }}>{c.label}</Text>
-                            <Text style={{ color: dm ? '#38bdf8' : '#0ea5e9', fontSize: 13, fontWeight: '600' }}>{c.value}</Text>
-                          </View>
-                        ))}
-                      </View>
-                    );
-                  default:
-                    return <Text key={idx} style={{ color: dm ? '#cbd5e1' : '#475569', fontSize: 13, lineHeight: 24, marginBottom: 12 }}>{section.text}</Text>;
-                }
-              })}
-            </View>
-
-            {/* 底部導航連結 */}
-            <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 24, marginTop: 24 }}>
-              {currentPage !== 'about' && (
-                <TouchableOpacity onPress={() => setCurrentPage('about')}>
-                  <Text style={{ color: isDarkMode ? '#38bdf8' : '#0ea5e9', fontWeight: 'bold', fontSize: 13 }}>關於本網</Text>
-                </TouchableOpacity>
-              )}
-              {currentPage !== 'disclaimer' && (
-                <TouchableOpacity onPress={() => setCurrentPage('disclaimer')}>
-                  <Text style={{ color: isDarkMode ? '#38bdf8' : '#0ea5e9', fontWeight: 'bold', fontSize: 13 }}>免責聲明</Text>
-                </TouchableOpacity>
-              )}
-              <TouchableOpacity onPress={() => setCurrentPage('home')}>
-                <Text style={{ color: isDarkMode ? '#94a3b8' : '#64748b', fontWeight: 'bold', fontSize: 13 }}>返回主頁</Text>
-              </TouchableOpacity>
+              
+              {/* 🌟 動態顯示對應的文字，並保留原有的換行排版 */}
+              <Text style={{ color: isDarkMode ? '#cbd5e1' : '#475569', fontSize: 14, lineHeight: 26 }}>
+                {currentPage === 'about' ? ABOUT_US_TEXT : DISCLAIMER_TEXT}
+              </Text>
             </View>
           </ScrollView>
         </View>
@@ -1008,7 +942,6 @@ export default function App() {
             isMobile={isMobile}
             screenWidth={screenWidth}
             onClose={() => setIsDeckMode(false)}
-            onNavigate={(page) => { setIsDeckMode(false); setCurrentPage(page); }}
           />
         ) : (
         <>

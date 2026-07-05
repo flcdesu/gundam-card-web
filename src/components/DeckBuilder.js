@@ -20,7 +20,7 @@ const chipTxtStyle = (active, dm, activeText) => ({
 });
 
 const DeckBuilder = ({ 
-  language, isDarkMode, isMobile, screenWidth, onClose, cardsData
+  language, isDarkMode, isMobile, screenWidth, onClose, cardsData, onNavigate
 }) => {
   const styles = getStyles(isDarkMode);
   const dm = isDarkMode;
@@ -494,6 +494,23 @@ const DeckBuilder = ({
           />
         </View>
       </View>
+
+      {/* ====== Footer Links ====== */}
+      {onNavigate && (
+        <View style={{
+          flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 20,
+          paddingVertical: 10, borderTopWidth: 1,
+          borderTopColor: dm ? '#1e293b' : '#e2e8f0',
+          backgroundColor: dm ? '#0f172a' : '#f8fafc',
+        }}>
+          <TouchableOpacity onPress={() => onNavigate('about')}>
+            <Text style={{ color: dm ? '#64748b' : '#94a3b8', fontWeight: 'bold', fontSize: 11 }}>關於本網</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => onNavigate('disclaimer')}>
+            <Text style={{ color: dm ? '#64748b' : '#94a3b8', fontWeight: 'bold', fontSize: 11 }}>免責聲明</Text>
+          </TouchableOpacity>
+        </View>
+      )}
 
       {/* ====== Text Export Modal ====== */}
       <Modal visible={showTextExportModal} transparent animationType="fade">
