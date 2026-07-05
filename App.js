@@ -10,6 +10,8 @@ import {
   TYPE_NAME_MAP
 } from './src/constants';
 import { cardsData, cardImages, keywordImages, AVAILABLE_SETS } from './src/data/cardDatabase';
+// 🌟 引入我們剛剛寫好的網站文字內容
+import { ABOUT_US_TEXT, DISCLAIMER_TEXT } from './src/data/siteContent';
 
 // ==========================================
 // 🌟 數據層治本攔截：在 React 啟動前，一次性清洗所有底層資料！
@@ -833,9 +835,9 @@ export default function App() {
                 {currentPage === 'about' ? '關於本網' : '免責聲明與版權宣告'}
               </Text>
               
-              {/* ⚠️ 這裡就是準備填入 Txt 文字的地方 ⚠️ */}
-              <Text style={{ color: isDarkMode ? '#cbd5e1' : '#475569', fontSize: 15, lineHeight: 28 }}>
-                準備中
+              {/* 🌟 動態顯示對應的文字，並保留原有的換行排版 */}
+              <Text style={{ color: isDarkMode ? '#cbd5e1' : '#475569', fontSize: 14, lineHeight: 26 }}>
+                {currentPage === 'about' ? ABOUT_US_TEXT : DISCLAIMER_TEXT}
               </Text>
             </View>
           </ScrollView>
