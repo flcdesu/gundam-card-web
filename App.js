@@ -63,8 +63,11 @@ if (typeof document !== 'undefined') {
 // ====== 組件層 (Component Scope) ======
 export default function App() {
   const [isDarkMode, setIsDarkMode] = useState(true);
-  const [showPrice, setShowPrice] = useState(true); // 🌟 價格顯示開關
-  const [isDeckMode, setIsDeckMode] = useState(false); // 🌟 牌組構築模式
+  const [showPrice, setShowPrice] = useState(true); 
+  const [isDeckMode, setIsDeckMode] = useState(false); 
+  
+  // 🌟 頁面狀態：'home'主頁, 'about'關於本網, 'disclaimer'免責聲明
+  const [currentPage, setCurrentPage] = useState('home');
 
   const styles = useMemo(() => getStyles(isDarkMode), [isDarkMode]);
 
@@ -163,8 +166,11 @@ export default function App() {
       if (path.startsWith('/card/')) {
         targetId = path.split('/card/')[1];
       } else if (path === '/deckbuilder') {
-        // 🌟 網址攔截：如果網址是 /deckbuilder，就自動開啟牌組模式
         setIsDeckMode(true); 
+      } else if (path === '/about') {
+        setCurrentPage('about'); 
+      } else if (path === '/disclaimer') {
+        setCurrentPage('disclaimer'); 
       }
 
       if (targetId) {
@@ -187,28 +193,22 @@ export default function App() {
     }
   }, [cardsData]);
 
+  // 🌟 終極網址列同步小精靈：處理所有頁面與卡牌狀態
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      if (selectedCard) {
-        window.history.replaceState(null, '', `/card/${selectedCard.id}`);
-      } else if (!isDeckMode && window.location.pathname !== '/deckbuilder') {
-        // 🌟 防衝突：確保只有在「沒打開卡片」且「沒打開牌組」時，才退回首頁 /
-        window.history.replaceState(null, '', '/');
-      }
-    }
-  }, [selectedCard, isDeckMode]);
-
-  // 🌟 網址列同步小精靈：當 isDeckMode 改變時，自動更新網址
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      if (isDeckMode) {
+      if (currentPage === 'about') {
+        window.history.replaceState(null, '', '/about');
+      } else if (currentPage === 'disclaimer') {
+        window.history.replaceState(null, '', '/disclaimer');
+      } else if (isDeckMode) {
         window.history.replaceState(null, '', '/deckbuilder');
-      } else if (!selectedCard && window.location.pathname === '/deckbuilder') {
-        // 關閉牌組時，如果沒有打開特定卡片，就退回首頁
+      } else if (selectedCard) {
+        window.history.replaceState(null, '', `/card/${selectedCard.id}`);
+      } else {
         window.history.replaceState(null, '', '/');
       }
     }
-  }, [isDeckMode, selectedCard]);
+  }, [currentPage, isDeckMode, selectedCard]);
 
   const handleResetSearch = () => { setSearchText(''); setSelectedSet('all'); };
   
@@ -755,236 +755,324 @@ export default function App() {
     styles,
   };
 
-
+  // ====== 🌟 渲染頁尾 (Footer) ======
+  const renderFooter = () => (
+    <View style={{
+      backgroundColor: isDarkMode ? '#1e293b' : '#e2e8f0',
+      alignItems: 'center',
+      borderTopWidth: 1,
+      borderColor: isDarkMode ? '#334155' : '#cbd5e1',
+      paddingVertical: 40,
+      paddingHorizontal: 20,
+      marginTop: 20
+    }}>
+      <View style={{
+        backgroundColor: isDarkMode ? '#d97706' : '#f59e0b',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 20,
+        width: 40,
+        height: 40,
+        marginBottom: 12
+      }}>
+        <Text style={{ color: '#fff', fontWeight: '900', fontSize: 16 }}>FLC</Text>
+      </View>
+      <Text style={{
+        color: isDarkMode ? '#94a3b8' : '#64748b',
+        textAlign: 'center',
+        fontSize: 12,
+        lineHeight: 18,
+        marginBottom: 16
+      }}>
+        GCG 中文資料庫 — 非官方粉絲社群工具{'\n'}
+        © 2026 GCG 中文資料庫. 卡片版權歸原版權所有者所有
+      </Text>
+      <View style={{ flexDirection: 'row', gap: 20 }}>
+        <TouchableOpacity onPress={() => { setCurrentPage('about'); if (flatListRef.current) flatListRef.current.scrollToOffset({ offset: 0, animated: false }); }}>
+          <Text style={{ color: isDarkMode ? '#94a3b8' : '#64748b', fontWeight: 'bold', fontSize: 12 }}>關於本網</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => { setCurrentPage('disclaimer'); if (flatListRef.current) flatListRef.current.scrollToOffset({ offset: 0, animated: false }); }}>
+          <Text style={{ color: isDarkMode ? '#94a3b8' : '#64748b', fontWeight: 'bold', fontSize: 12 }}>免責聲明</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
 
   return (
     <SafeAreaView style={styles.container}>
-      {isSetDropdownOpen && (
-        <TouchableWithoutFeedback onPress={() => setIsSetDropdownOpen(false)}>
-          <View style={styles.fullScreenOverlay} />
-        </TouchableWithoutFeedback>
-      )}
-
-      {/* 🌟 重新設計的頂部區域 */}
-      <View style={{ zIndex: 100 }}>
-        
-        {/* 上半部：標題列 (維持原本的深色) */}
-        <View style={{ backgroundColor: isDarkMode ? '#020617' : '#20353f', paddingVertical: 12, paddingHorizontal: 20, flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', gap: 6 }}>
-          
-          <TouchableOpacity style={styles.titleContainer} onPress={() => Linking.openURL('https://www.youtube.com/@FLCdesu')} activeOpacity={0.8}>
-            <Text style={[styles.titleTextMain, isMobile && { fontSize: 16 }]} numberOfLines={1} adjustsFontSizeToFit>
-               {isMobile ? "GCG中文資料庫 by " : "GUNDAM CARD GAME中文卡效資料庫 by "}
+      
+      {/* 🌟 獨立文字頁面 UI 攔截 (關於本網、免責聲明) */}
+      {currentPage !== 'home' ? (
+        <View style={{ flex: 1, backgroundColor: isDarkMode ? '#0f172a' : '#f8fafc' }}>
+          {/* 簡易頂部導航 */}
+          <View style={{
+            backgroundColor: isDarkMode ? '#020617' : '#20353f',
+            flexDirection: 'row',
+            alignItems: 'center',
+            paddingVertical: 16,
+            paddingHorizontal: 20
+          }}>
+            <TouchableOpacity onPress={() => setCurrentPage('home')} style={{ padding: 8, backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 8 }}>
+              <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 14 }}>← 返回主頁</Text>
+            </TouchableOpacity>
+            <Text style={{ color: '#fff', fontWeight: '900', fontSize: 16, marginLeft: 16 }}>
+              {currentPage === 'about' ? '關於本網' : '免責聲明'}
             </Text>
-            <Text style={[styles.titleLink, isMobile && { fontSize: 16 }]}>FLC</Text>
-            <Image source={{ uri: 'https://cdn-icons-png.flaticon.com/512/1384/1384060.png' }} style={styles.youtubeLogo} resizeMode="contain" />
-          </TouchableOpacity>
-
-          {/* ====== 🌟 新增：頻道會員推廣連結 ====== */}
-          <TouchableOpacity 
-            onPress={() => Linking.openURL('https://www.youtube.com/@FLCdesu/join')}
-            style={{ 
-              paddingHorizontal: 10,
-              paddingVertical: 4,
-              backgroundColor: isDarkMode ? 'rgba(16, 185, 129, 0.15)' : 'rgba(16, 185, 129, 0.1)', // 微透的專屬綠色背景
-              borderRadius: 6,
+          </View>
+          
+          {/* 文字內容區 */}
+          <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 60 }}>
+            <View style={{
+              backgroundColor: isDarkMode ? '#1e293b' : '#ffffff',
               borderWidth: 1,
-              borderColor: isDarkMode ? 'rgba(16, 185, 129, 0.3)' : 'rgba(16, 185, 129, 0.2)', // 淡淡的邊框增加質感
-              alignSelf: 'flex-start' // 讓背景框只包覆文字寬度
-            }}
-            activeOpacity={0.7}
-          >
-            <Text style={{ 
-              fontSize: 11, 
-              fontWeight: 'bold', 
-              color: isDarkMode ? '#34d399' : '#10b981' // 頻道會員經典綠色
+              borderColor: isDarkMode ? '#334155' : '#e2e8f0',
+              borderRadius: 12,
+              padding: 24
             }}>
-              ▶️ 支持開發者：加入FLC頻道會員
-            </Text>
-          </TouchableOpacity>
+              <Text style={{ color: isDarkMode ? '#f8fafc' : '#1e293b', fontWeight: '900', fontSize: 22, marginBottom: 16 }}>
+                {currentPage === 'about' ? '關於本網' : '免責聲明與版權宣告'}
+              </Text>
+              
+              {/* ⚠️ 這裡就是準備填入 Txt 文字的地方 ⚠️ */}
+              <Text style={{ color: isDarkMode ? '#cbd5e1' : '#475569', fontSize: 15, lineHeight: 28 }}>
+                準備中
+              </Text>
+            </View>
+          </ScrollView>
         </View>
-
-        {/* 🌟 剛才不小心刪掉的下半部：功能面板回來啦！ */}
-        <View style={{ 
-          backgroundColor: isDarkMode ? '#0f172a' : '#f8fafc', 
-          borderBottomWidth: 1,
-          borderBottomColor: isDarkMode ? '#1e293b' : '#e2e8f0',
-          flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 8, gap: 10 
-        }}>
-          
-          {/* 極簡 ￥ 開關 */}
-          <TouchableOpacity 
-            style={[styles.langBtn, { backgroundColor: showPrice ? (isDarkMode ? '#fbbf24' : '#f59e0b') : (isDarkMode ? '#334155' : '#cbd5e1') }]} 
-            onPress={() => setShowPrice(!showPrice)} 
-            activeOpacity={0.8}
-          >
-            <Text style={{ fontSize: 14, fontWeight: '900', color: showPrice ? (isDarkMode ? '#000' : '#fff') : (isDarkMode ? '#94a3b8' : '#64748b') }}>￥</Text>
-          </TouchableOpacity>
-
-          {/* 牌組構築器 */}
-          <TouchableOpacity 
-            style={[styles.langBtn, { backgroundColor: isDeckMode ? (isDarkMode ? '#38bdf8' : '#0ea5e9') : (isDarkMode ? '#334155' : '#cbd5e1') }]} 
-            onPress={() => setIsDeckMode(!isDeckMode)} 
-            activeOpacity={0.8}
-          >
-            <Text style={{ fontSize: 12, fontWeight: '900', color: isDeckMode ? (isDarkMode ? '#000' : '#fff') : (isDarkMode ? '#94a3b8' : '#64748b') }}>牌組構築</Text>
-          </TouchableOpacity>
-
-          {/* 黑夜模式切換 */}
-          <TouchableOpacity 
-            style={[styles.langBtn, { backgroundColor: isDarkMode ? '#334155' : 'rgba(0,0,0,0.1)' }]} 
-            onPress={() => setIsDarkMode(!isDarkMode)} 
-            activeOpacity={0.8}
-          >
-            <Text style={{ fontSize: 15 }}>{isDarkMode ? '🌙' : '☀️'}</Text>
-          </TouchableOpacity>
-
-          {/* 語系切換 */}
-          <View style={styles.langButtonGroup}>
-            <TouchableOpacity style={[styles.langBtn, language === 'hk' ? styles.langBtnActive : styles.langBtnInactive]} onPress={() => setLanguage('hk')} activeOpacity={0.8}><Text style={styles.langBtnText}>港譯</Text></TouchableOpacity>
-            <TouchableOpacity style={[styles.langBtn, language === 'tw' ? styles.langBtnActive : styles.langBtnInactive]} onPress={() => setLanguage('tw')} activeOpacity={0.8}><Text style={styles.langBtnText}>台譯</Text></TouchableOpacity>
-          </View>
-        </View>
-      </View> {/* 🌟 這是剛才遺失的最外層結尾括號！ */}
-
-      {/* 這裡接回你原本的 isDeckMode 判斷式 */}
-      {isDeckMode ? (
-        <DeckBuilder
-          filteredCards={cardsData}
-          cardsData={cardsData}
-          language={language}
-          isDarkMode={isDarkMode}
-          isMobile={isMobile}
-          screenWidth={screenWidth}
-          onClose={() => setIsDeckMode(false)}
-        />
       ) : (
-      <>
-      <View style={[styles.searchBarSection, isMobile && { paddingVertical: 10, paddingHorizontal: 12 }]}>
-        <View style={styles.mainControlContainer}>
-          <View style={[styles.topSearchSection, isMobile && { flexDirection: 'column', alignItems: 'stretch', gap: 8, paddingVertical: 10, paddingHorizontal: 15 }]}>
-            {!isMobile && (
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                 <Text style={styles.searchBarMainTitle}>卡牌搜索</Text>
-                 <View style={styles.verticalDivider} />
-              </View>
-            )}
-            
-            <View style={[styles.topSearchInputs, isMobile && { flexDirection: 'row', flexWrap: 'wrap', width: '100%', gap: 8, zIndex: 10005 }]}>
-              <View style={[styles.dropdownWrapper, isMobile && { flex: 1, zIndex: 10006 }]}>
-                <TouchableOpacity style={[styles.dropdownBtn, isMobile && { width: '100%', height: 34 }]} onPress={() => setIsSetDropdownOpen(!isSetDropdownOpen)} activeOpacity={0.8}>
-                  <Text style={styles.dropdownBtnText} numberOfLines={1}>{selectedSet === 'all' ? '收錄彈' : selectedSet}</Text>
-                  <Text style={styles.dropdownArrow}>▼</Text>
-                </TouchableOpacity>
-                {isSetDropdownOpen && (
-                  <View style={[styles.dropdownList, isMobile && { width: '100%' }]}>
-                    <ScrollView style={{ maxHeight: 250 }} nestedScrollEnabled={true} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={true} persistentScrollbar={true} className="custom-scrollbar">
-                      {/* 🌟 改用我們洗乾淨的下拉選單陣列 */}
-                      {CLEANED_AVAILABLE_SETS.map((setOpt) => (
-                        <TouchableOpacity 
-                          key={setOpt} 
-                          style={[styles.dropdownItem, selectedSet === setOpt && styles.dropdownItemActive]} 
-                          onPress={() => { 
-                            setSelectedSet(setOpt); 
-                            setIsSetDropdownOpen(false);
-                            
-                            if (setOpt && setOpt.includes('Ver.β')) {
-                              setIncludeRegular(false);
-                              setIncludeBeta(true);
-                            } else {
-                              setIncludeRegular(true);
-                              setIncludeBeta(false);
-                            }
-                          }}
-                        >
-                          <Text style={[styles.dropdownItemText, selectedSet === setOpt && { color: '#fff', fontWeight: 'bold' }]}>{setOpt === 'all' ? '收錄彈' : setOpt}</Text>
-                        </TouchableOpacity>
-                      ))}
-                    </ScrollView>
-                    {isMobile && (
-                      <View style={styles.dropdownScrollHint} pointerEvents="none">
-                        <Text style={styles.dropdownScrollHintText}>▼ 向下滑動</Text>
-                      </View>
-                    )}
-                  </View>
-                )}
-              </View>
+      /* 🌟 首頁與卡池內容 */
+      <View style={{ flex: 1 }}>
+        {isSetDropdownOpen && (
+          <TouchableWithoutFeedback onPress={() => setIsSetDropdownOpen(false)}>
+            <View style={styles.fullScreenOverlay} />
+          </TouchableWithoutFeedback>
+        )}
 
-              <TouchableOpacity style={[styles.officialResetButton, isMobile && { width: 65, height: 34 }]} activeOpacity={0.8} onPress={handleResetSearch}>
-                <Text style={styles.officialResetButtonText}>重置</Text>
-              </TouchableOpacity>
-
-              <View style={[styles.searchInputWrapper, isMobile && { flexBasis: '100%', height: 36, zIndex: 1 }]}>
-                <TextInput style={styles.officialSearchInput} placeholder="卡牌編號、卡牌名稱" placeholderTextColor="#8899a6" value={searchText} onChangeText={setSearchText} onSubmitEditing={processSmartSearch} />
-                <TouchableOpacity style={[styles.searchIconButton, isMobile && { height: 26 }]} activeOpacity={0.8} onPress={processSmartSearch}><Text style={styles.searchIconText}>搜尋</Text></TouchableOpacity>
-              </View>
-            </View>
+        {/* 🌟 重新設計的頂部區域 */}
+        <View style={{ zIndex: 100 }}>
+          
+          {/* 上半部：標題列 (維持原本的深色) */}
+          <View style={{ backgroundColor: isDarkMode ? '#020617' : '#20353f', paddingVertical: 12, paddingHorizontal: 20, flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', gap: 6 }}>
             
-            <View style={[styles.masterResetContainer, isMobile && { marginLeft: 0, justifyContent: 'space-between', width: '100%', gap: 6, zIndex: 1 }]}>
-              {lastState && (
-                <TouchableOpacity style={[styles.backToCardBtn, isMobile && { height: 32, paddingHorizontal: 10 }]} onPress={restoreHistoryState} activeOpacity={0.8}>
-                  <Text style={[styles.backToCardBtnText, isMobile && { fontSize: 11 }]}>🔙 返回 ({lastState.card.displayId || lastState.card.id})</Text>
-                </TouchableOpacity>
-              )}
-              <TouchableOpacity style={[styles.scrollToTopBtn, isMobile && { height: 32, paddingHorizontal: 12, flex: 1 }]} onPress={() => flatListRef.current?.scrollToOffset({ offset: 0, animated: true })}>
-                <Text style={[styles.scrollToTopBtnText, isMobile && { fontSize: 11 }]}>⬆ 回頂端</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={[styles.masterResetBtn, isMobile && { height: 32, paddingHorizontal: 12, flex: 1 }]} onPress={handleResetEverything}>
-                <Text style={[styles.masterResetBtnText, isMobile && { fontSize: 11 }]}>重置全部</Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity style={styles.titleContainer} onPress={() => Linking.openURL('https://www.youtube.com/@FLCdesu')} activeOpacity={0.8}>
+              <Text style={[styles.titleTextMain, isMobile && { fontSize: 16 }]} numberOfLines={1} adjustsFontSizeToFit>
+                 {isMobile ? "GCG中文資料庫 by " : "GUNDAM CARD GAME中文卡效資料庫 by "}
+              </Text>
+              <Text style={[styles.titleLink, isMobile && { fontSize: 16 }]}>FLC</Text>
+              <Image source={{ uri: 'https://cdn-icons-png.flaticon.com/512/1384/1384060.png' }} style={styles.youtubeLogo} resizeMode="contain" />
+            </TouchableOpacity>
+
+            {/* ====== 🌟 頻道會員推廣連結 ====== */}
+            <TouchableOpacity 
+              onPress={() => Linking.openURL('https://www.youtube.com/@FLCdesu/join')}
+              style={{ 
+                paddingHorizontal: 10,
+                paddingVertical: 4,
+                backgroundColor: isDarkMode ? 'rgba(16, 185, 129, 0.15)' : 'rgba(16, 185, 129, 0.1)',
+                borderRadius: 6,
+                borderWidth: 1,
+                borderColor: isDarkMode ? 'rgba(16, 185, 129, 0.3)' : 'rgba(16, 185, 129, 0.2)', 
+                alignSelf: 'flex-start' 
+              }}
+              activeOpacity={0.7}
+            >
+              <Text style={{ 
+                fontSize: 11, 
+                fontWeight: 'bold', 
+                color: isDarkMode ? '#34d399' : '#10b981' 
+              }}>
+                ▶️ 支持開發者：加入FLC頻道會員
+              </Text>
+            </TouchableOpacity>
           </View>
 
+          {/* 🌟 剛才不小心刪掉的下半部：功能面板回來啦！ */}
+          <View style={{ 
+            backgroundColor: isDarkMode ? '#0f172a' : '#f8fafc', 
+            borderBottomWidth: 1,
+            borderBottomColor: isDarkMode ? '#1e293b' : '#e2e8f0',
+            flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 8, gap: 10 
+          }}>
+            
+            {/* 極簡 ￥ 開關 */}
+            <TouchableOpacity 
+              style={[styles.langBtn, { backgroundColor: showPrice ? (isDarkMode ? '#fbbf24' : '#f59e0b') : (isDarkMode ? '#334155' : '#cbd5e1') }]} 
+              onPress={() => setShowPrice(!showPrice)} 
+              activeOpacity={0.8}
+            >
+              <Text style={{ fontSize: 14, fontWeight: '900', color: showPrice ? (isDarkMode ? '#000' : '#fff') : (isDarkMode ? '#94a3b8' : '#64748b') }}>￥</Text>
+            </TouchableOpacity>
 
-          <FilterPanel
-            filterState={{
-              selectedColors, selectedTypes, selectedRarity, selectedVersions,
-              includeRegular, includeBeta, includeReprint, includeLimited, includePromo,
-              selectedResonance, resonanceMatchId,
-              selectedKeywords, selectedTimings,
-              supportValue, breakthroughValue, repairValue,
-              traitSearchText, isTraitExactMatch,
-              lvRange, costRange, apRange, hpRange,
-              selectedSeries, isSeriesExpanded, seriesOptions,
-              isFilterPanelOpen,
-            }}
-            filterActions={{
-              setSelectedColors, setSelectedTypes, setSelectedRarity,
-              setIncludeRegular, setIncludeBeta, setIncludeReprint, setIncludeLimited, setIncludePromo,
-              setSelectedResonance, setResonanceMatchId,
-              setSelectedKeywords, setSelectedTimings,
-              setSupportValue, setBreakthroughValue, setRepairValue,
-              setTraitSearchText, setIsTraitExactMatch,
-              setLvRange, setCostRange, setApRange, setHpRange,
-              setSelectedSeries, setIsSeriesExpanded,
-              setIsFilterPanelOpen,
-              toggleSelection, toggleVersionSelection, handleResetFilters,
-            }}
-            isMobile={isMobile} isDarkMode={isDarkMode} screenWidth={screenWidth}
+            {/* 牌組構築器 */}
+            <TouchableOpacity 
+              style={[styles.langBtn, { backgroundColor: isDeckMode ? (isDarkMode ? '#38bdf8' : '#0ea5e9') : (isDarkMode ? '#334155' : '#cbd5e1') }]} 
+              onPress={() => setIsDeckMode(!isDeckMode)} 
+              activeOpacity={0.8}
+            >
+              <Text style={{ fontSize: 12, fontWeight: '900', color: isDeckMode ? (isDarkMode ? '#000' : '#fff') : (isDarkMode ? '#94a3b8' : '#64748b') }}>牌組構築</Text>
+            </TouchableOpacity>
+
+            {/* 黑夜模式切換 */}
+            <TouchableOpacity 
+              style={[styles.langBtn, { backgroundColor: isDarkMode ? '#334155' : 'rgba(0,0,0,0.1)' }]} 
+              onPress={() => setIsDarkMode(!isDarkMode)} 
+              activeOpacity={0.8}
+            >
+              <Text style={{ fontSize: 15 }}>{isDarkMode ? '🌙' : '☀️'}</Text>
+            </TouchableOpacity>
+
+            {/* 語系切換 */}
+            <View style={styles.langButtonGroup}>
+              <TouchableOpacity style={[styles.langBtn, language === 'hk' ? styles.langBtnActive : styles.langBtnInactive]} onPress={() => setLanguage('hk')} activeOpacity={0.8}><Text style={styles.langBtnText}>港譯</Text></TouchableOpacity>
+              <TouchableOpacity style={[styles.langBtn, language === 'tw' ? styles.langBtnActive : styles.langBtnInactive]} onPress={() => setLanguage('tw')} activeOpacity={0.8}><Text style={styles.langBtnText}>台譯</Text></TouchableOpacity>
+            </View>
+          </View>
+        </View> 
+
+        {/* 這裡接回你原本的 isDeckMode 判斷式 */}
+        {isDeckMode ? (
+          <DeckBuilder
+            filteredCards={cardsData}
+            cardsData={cardsData}
+            language={language}
+            isDarkMode={isDarkMode}
+            isMobile={isMobile}
+            screenWidth={screenWidth}
+            onClose={() => setIsDeckMode(false)}
           />
+        ) : (
+        <>
+        <View style={[styles.searchBarSection, isMobile && { paddingVertical: 10, paddingHorizontal: 12 }]}>
+          <View style={styles.mainControlContainer}>
+            <View style={[styles.topSearchSection, isMobile && { flexDirection: 'column', alignItems: 'stretch', gap: 8, paddingVertical: 10, paddingHorizontal: 15 }]}>
+              {!isMobile && (
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                   <Text style={styles.searchBarMainTitle}>卡牌搜索</Text>
+                   <View style={styles.verticalDivider} />
+                </View>
+              )}
+              
+              <View style={[styles.topSearchInputs, isMobile && { flexDirection: 'row', flexWrap: 'wrap', width: '100%', gap: 8, zIndex: 10005 }]}>
+                <View style={[styles.dropdownWrapper, isMobile && { flex: 1, zIndex: 10006 }]}>
+                  <TouchableOpacity style={[styles.dropdownBtn, isMobile && { width: '100%', height: 34 }]} onPress={() => setIsSetDropdownOpen(!isSetDropdownOpen)} activeOpacity={0.8}>
+                    <Text style={styles.dropdownBtnText} numberOfLines={1}>{selectedSet === 'all' ? '收錄彈' : selectedSet}</Text>
+                    <Text style={styles.dropdownArrow}>▼</Text>
+                  </TouchableOpacity>
+                  {isSetDropdownOpen && (
+                    <View style={[styles.dropdownList, isMobile && { width: '100%' }]}>
+                      <ScrollView style={{ maxHeight: 250 }} nestedScrollEnabled={true} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={true} persistentScrollbar={true} className="custom-scrollbar">
+                        {/* 🌟 改用我們洗乾淨的下拉選單陣列 */}
+                        {CLEANED_AVAILABLE_SETS.map((setOpt) => (
+                          <TouchableOpacity 
+                            key={setOpt} 
+                            style={[styles.dropdownItem, selectedSet === setOpt && styles.dropdownItemActive]} 
+                            onPress={() => { 
+                              setSelectedSet(setOpt); 
+                              setIsSetDropdownOpen(false);
+                              
+                              if (setOpt && setOpt.includes('Ver.β')) {
+                                setIncludeRegular(false);
+                                setIncludeBeta(true);
+                              } else {
+                                setIncludeRegular(true);
+                                setIncludeBeta(false);
+                              }
+                            }}
+                          >
+                            <Text style={[styles.dropdownItemText, selectedSet === setOpt && { color: '#fff', fontWeight: 'bold' }]}>{setOpt === 'all' ? '收錄彈' : setOpt}</Text>
+                          </TouchableOpacity>
+                        ))}
+                      </ScrollView>
+                      {isMobile && (
+                        <View style={styles.dropdownScrollHint} pointerEvents="none">
+                          <Text style={styles.dropdownScrollHintText}>▼ 向下滑動</Text>
+                        </View>
+                      )}
+                    </View>
+                  )}
+                </View>
 
+                <TouchableOpacity style={[styles.officialResetButton, isMobile && { width: 65, height: 34 }]} activeOpacity={0.8} onPress={handleResetSearch}>
+                  <Text style={styles.officialResetButtonText}>重置</Text>
+                </TouchableOpacity>
+
+                <View style={[styles.searchInputWrapper, isMobile && { flexBasis: '100%', height: 36, zIndex: 1 }]}>
+                  <TextInput style={styles.officialSearchInput} placeholder="卡牌編號、卡牌名稱" placeholderTextColor="#8899a6" value={searchText} onChangeText={setSearchText} onSubmitEditing={processSmartSearch} />
+                  <TouchableOpacity style={[styles.searchIconButton, isMobile && { height: 26 }]} activeOpacity={0.8} onPress={processSmartSearch}><Text style={styles.searchIconText}>搜尋</Text></TouchableOpacity>
+                </View>
+              </View>
+              
+              <View style={[styles.masterResetContainer, isMobile && { marginLeft: 0, justifyContent: 'space-between', width: '100%', gap: 6, zIndex: 1 }]}>
+                {lastState && (
+                  <TouchableOpacity style={[styles.backToCardBtn, isMobile && { height: 32, paddingHorizontal: 10 }]} onPress={restoreHistoryState} activeOpacity={0.8}>
+                    <Text style={[styles.backToCardBtnText, isMobile && { fontSize: 11 }]}>🔙 返回 ({lastState.card.displayId || lastState.card.id})</Text>
+                  </TouchableOpacity>
+                )}
+                <TouchableOpacity style={[styles.scrollToTopBtn, isMobile && { height: 32, paddingHorizontal: 12, flex: 1 }]} onPress={() => flatListRef.current?.scrollToOffset({ offset: 0, animated: true })}>
+                  <Text style={[styles.scrollToTopBtnText, isMobile && { fontSize: 11 }]}>⬆ 回頂端</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.masterResetBtn, isMobile && { height: 32, paddingHorizontal: 12, flex: 1 }]} onPress={handleResetEverything}>
+                  <Text style={[styles.masterResetBtnText, isMobile && { fontSize: 11 }]}>重置全部</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+
+            <FilterPanel
+              filterState={{
+                selectedColors, selectedTypes, selectedRarity, selectedVersions,
+                includeRegular, includeBeta, includeReprint, includeLimited, includePromo,
+                selectedResonance, resonanceMatchId,
+                selectedKeywords, selectedTimings,
+                supportValue, breakthroughValue, repairValue,
+                traitSearchText, isTraitExactMatch,
+                lvRange, costRange, apRange, hpRange,
+                selectedSeries, isSeriesExpanded, seriesOptions,
+                isFilterPanelOpen,
+              }}
+              filterActions={{
+                setSelectedColors, setSelectedTypes, setSelectedRarity,
+                setIncludeRegular, setIncludeBeta, setIncludeReprint, setIncludeLimited, setIncludePromo,
+                setSelectedResonance, setResonanceMatchId,
+                setSelectedKeywords, setSelectedTimings,
+                setSupportValue, setBreakthroughValue, setRepairValue,
+                setTraitSearchText, setIsTraitExactMatch,
+                setLvRange, setCostRange, setApRange, setHpRange,
+                setSelectedSeries, setIsSeriesExpanded,
+                setIsFilterPanelOpen,
+                toggleSelection, toggleVersionSelection, handleResetFilters,
+              }}
+              isMobile={isMobile} isDarkMode={isDarkMode} screenWidth={screenWidth}
+            />
+
+          </View>
         </View>
-      </View>
 
-      <View style={[styles.content, isMobile && { padding: 5 }]}>
-        <FlatList
-          ref={flatListRef}
-          onScroll={(e) => setCurrentScrollY(e.nativeEvent.contentOffset.y)}
-          onScrollBeginDrag={() => {
-            if (isMobile && isFilterPanelOpen) setIsFilterPanelOpen(false); 
-          }}
-          scrollEventThrottle={16}
-          key={numColumns} 
-          data={filteredCards} 
-          keyExtractor={(item, index) => item.id || index.toString()}
-          renderItem={({ item }) => <CardGridItem item={item} dynamicCardWidth={dynamicCardWidth} language={language} onPress={(i) => { setSelectedCard(i); }} isMobile={isMobile} isDarkMode={isDarkMode} showPrice={showPrice} />}
-          numColumns={numColumns} 
-          ListEmptyComponent={<Text style={styles.emptyText}>找不到符合的卡片</Text>} 
-          contentContainerStyle={{ paddingBottom: 20 }}
-        />
+        <View style={[styles.content, isMobile && { padding: 5 }]}>
+          <FlatList
+            ref={flatListRef}
+            onScroll={(e) => setCurrentScrollY(e.nativeEvent.contentOffset.y)}
+            onScrollBeginDrag={() => {
+              if (isMobile && isFilterPanelOpen) setIsFilterPanelOpen(false); 
+            }}
+            scrollEventThrottle={16}
+            key={numColumns} 
+            data={filteredCards} 
+            keyExtractor={(item, index) => item.id || index.toString()}
+            renderItem={({ item }) => <CardGridItem item={item} dynamicCardWidth={dynamicCardWidth} language={language} onPress={(i) => { setSelectedCard(i); }} isMobile={isMobile} isDarkMode={isDarkMode} showPrice={showPrice} />}
+            numColumns={numColumns} 
+            ListEmptyComponent={<Text style={styles.emptyText}>找不到符合的卡片</Text>} 
+            contentContainerStyle={{ paddingBottom: 20 }}
+            ListFooterComponent={renderFooter} // 🌟 在卡池最底下掛載 Footer
+          />
+        </View>
+        </>
+        )}
       </View>
-      </>
       )}
 
+      {/* 🌟 卡牌詳情 Modal (原封不動保留) */}
       <Modal visible={selectedCard !== null} animationType="fade" transparent={true}>
         {selectedCard && (
           <View style={[styles.modalOverlay, isMobile && { padding: 10 }]}>
