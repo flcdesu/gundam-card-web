@@ -1,6 +1,7 @@
 // 卡牌資料生成引擎 — 異畫卡與重印卡全自動解構
 import rawCardsData from '../../cards.json';
 import { cardImages, keywordImages } from '../../imageDictionary';
+import reprintSeriesData from './reprintSeries.json';
 
 const generateFullCardDatabase = () => {
   const baseCards = rawCardsData.map(card => {
@@ -126,14 +127,25 @@ const generateFullCardDatabase = () => {
          }
       }
 
+      // 🌟 重印卡作品覆寫：查 reprintSeries.json
+      const reprintOverride = reprintSeriesData[imageKey];
+      const finalSeriesSource = reprintOverride ? reprintOverride.series_source : baseCard.series_source;
+      const finalSeriesHk = reprintOverride ? reprintOverride.series_hk : baseCard.series_hk;
+      const finalSeriesTw = reprintOverride ? reprintOverride.series_tw : baseCard.series_tw;
+      const finalSeriesSort = reprintOverride ? reprintOverride.series_sort : baseCard.series_sort;
+
       generatedCards.push({
         ...baseCard,
         id: imageKey,                               
         displayId: baseCard.displayId, 
         set: finalSet,
-        set_hk: finalSetHk,  // 覆寫港譯入手情報
-        set_tw: finalSetTw,  // 覆寫台譯入手情報
+        set_hk: finalSetHk,
+        set_tw: finalSetTw,
         rarity: finalRarity,
+        series_source: finalSeriesSource,
+        series_hk: finalSeriesHk,
+        series_tw: finalSeriesTw,
+        series_sort: finalSeriesSort,
         _isAltArt: isAltArt,
         _isReprint: isReprint,
         isBetaCard: baseCard.isBetaCard || false,

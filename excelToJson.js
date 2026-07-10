@@ -207,3 +207,31 @@ const finalData = Object.values(cardMap).map(card => {
 
 fs.writeFileSync('cards.json', JSON.stringify(finalData, null, 2));
 console.log(`✅ 大成功！常規、BETA、特別卡已全數整合完畢，共處理了 ${finalData.length} 張卡片！`);
+
+// 🌟 讀取重印卡作品覆寫表，輸出為 JSON 供 cardDatabase.js 使用
+const REPRINT_SERIES_PATH = './excel_data/reprint_series.xlsx';
+if (fs.existsSync(REPRINT_SERIES_PATH)) {
+  const wb = xlsx.readFile(REPRINT_SERIES_PATH);
+  const ws = wb.Sheets[wb.SheetNames[0]];
+  const rows = xlsx.utils.sheet_to_json(ws);
+  const reprintMap = {};
+  rows.forEach(row => {
+    const imgId = row['重印卡圖片ID'];
+    const jpSeries = row['實際重印作品(日文)'];
+    if (imgId && jpSeries) {
+      const entry = { series_source: jpSeries };
+      if (seriesMap[jpSeries]) {
+        entry.series_hk = seriesMap[jpSeries].hk;
+        entry.series_tw = seriesMap[jpSeries].tw;
+        entry.series_sort = seriesMap[jpSeries].sort;
+      } else {
+        entry.series_hk = jpSeries;
+        entry.series_tw = jpSeries;
+        entry.series_sort = 999;
+      }
+      reprintMap[imgId] = entry;
+    }
+  });
+  fs.writeFileSync('./src/data/reprintSeries.json', JSON.stringify(reprintMap, null, 2));
+  console.log(`📎 重印卡作品覆寫表已輸出：${Object.keys(reprintMap).length} 筆`);
+}
