@@ -1272,26 +1272,29 @@ export default function App() {
                            const text = selectedCard[`link_${language}`];
                            if (!text || text.trim() === '' || text.trim() === '-') return <Text style={styles.sectionBodyText}>-</Text>;
                            let processedText = text;
-                           // 把 「人名」和 〔特徵〕 都保留，不提前 return
+                           if (processedText.includes('特徵') || processedText.includes('特徴')) {
+                              const matchedTrait = processedText.match(/〔([^〕]+)〕/);
+                              if (matchedTrait) {
+                                 const trait = matchedTrait[1];
+                                 return (
+                                    <Text style={styles.interactiveBoldToken} onPress={() => {
+                                        executeRedirect(); handleResetSearch(); handleResetFilters();
+                                        setTraitSearchText(trait); setSelectedTypes(['PILOT', 'COMMAND_PILOT']);
+                                        setIsTraitExactMatch(true); 
+                                    }}>
+                                        特徴〔{trait}〕
+                                    </Text>
+                                 );
+                              }
+                           }
                            if (!processedText.includes('〔') && !processedText.includes('「') && !processedText.includes('〕') && !processedText.includes('」')) {
                                processedText = `「${processedText}」`;
                            }
-                           const parts = processedText.split(/(特徴?〔[^〕]+〕|〔[^〕]+〕|「[^」]+」)/g);
+                           const parts = processedText.split(/(〔[^〕]+〕|「[^」]+」)/g);
                            return (
                              <Text style={styles.sectionBodyText}>
                                 {parts.map((part, index) => {
-                                    if (/^特徴?〔[^〕]+〕$/.test(part)) {
-                                        const trait = part.match(/〔([^〕]+)〕/)[1];
-                                        return (
-                                            <Text key={index} style={styles.interactiveBoldToken} onPress={() => {
-                                                executeRedirect(); handleResetSearch(); handleResetFilters();
-                                                setTraitSearchText(trait); setSelectedTypes(['PILOT', 'COMMAND_PILOT']);
-                                                setIsTraitExactMatch(true); 
-                                            }}>
-                                                {part}
-                                            </Text>
-                                        );
-                                    } else if (part.startsWith('〔') && part.endsWith('〕')) {
+                                    if (part.startsWith('〔') && part.endsWith('〕')) {
                                         const trait = part.slice(1, -1);
                                         return (
                                             <Text key={index} style={styles.interactiveBoldToken} onPress={() => {
