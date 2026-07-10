@@ -1,6 +1,5 @@
 const xlsx = require('xlsx');
 const fs = require('fs');
-const path = require('path');
 
 // 🌟 1. 讀取並建立作品譯名字典
 const seriesDictWorkbook = xlsx.readFile('./excel_data/series_dict.xlsx');
@@ -17,23 +16,6 @@ seriesDictData.forEach(row => {
         };
     }
 });
-
-// 🌟 2. 讀取日文卡表作為「出自作品」的 fallback 來源
-const JP_MASTER_PATH = 'C:\\Users\\FLC\\OneDrive\\ドキュメント\\FLC\\Gundam Card Game\\ガンダムカードゲーム.xlsx';
-const jpSeriesLookup = {};
-if (fs.existsSync(JP_MASTER_PATH)) {
-    const jpWb = xlsx.readFile(JP_MASTER_PATH);
-    const jpWs = jpWb.Sheets[jpWb.SheetNames[0]];
-    const jpData = xlsx.utils.sheet_to_json(jpWs);
-    jpData.forEach(row => {
-        const id = row['カード番号'];
-        const series = row['出典タイトル'];
-        if (id && series) jpSeriesLookup[String(id).trim()] = String(series).trim();
-    });
-    console.log(`📚 日文卡表載入完成：${Object.keys(jpSeriesLookup).length} 筆作品映射`);
-} else {
-    console.warn(`⚠️ 找不到日文卡表: ${JP_MASTER_PATH}，登場作品將僅依賴 Excel 的「出自作品」欄位`);
-}
 
 const HK_EXCEL_PATH = './excel_data/gcg_cardlist_hk.xlsx';
 const TW_EXCEL_PATH = './excel_data/gcg_cardlist_tw.xlsx';
@@ -62,15 +44,8 @@ function readExcel(filePath, langPrefix, isBeta = false) {
       else if (localizedMapping[key]) newRow[`${localizedMapping[key]}_${langPrefix}`] = row[key];
     }
 
-    // 🌟 查字典並寫入雙語作品名與排序
-    // 優先：Excel「出自作品」欄位 → fallback：日文卡表「出典タイトル」
-    let sourceSeries = row['出自作品'] ? String(row['出自作品']).trim() : '';
-    if ((!sourceSeries || sourceSeries === '-' || sourceSeries === '0') && newRow.id) {
-        // 從日文卡表 fallback（用原始 id，不含 _BETA 後綴）
-        const lookupId = newRow.id.replace('_BETA', '');
-        const jpSeries = jpSeriesLookup[lookupId];
-        if (jpSeries) sourceSeries = jpSeries;
-    }
+    // 🌟 新增：查字典並寫入雙語作品名與排序
+    const sourceSeries = row['出自作品'] ? String(row['出自作品']).trim() : '';
     if (sourceSeries && sourceSeries !== '-' && sourceSeries !== '0') {
         newRow.series_source = sourceSeries;
         if (seriesMap[sourceSeries]) {
