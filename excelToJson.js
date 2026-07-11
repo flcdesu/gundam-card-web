@@ -19,7 +19,7 @@ seriesDictData.forEach(row => {
 });
 
 // 🌟 2. 讀取日文卡表作為「出自作品」的 fallback 來源
-const JP_MASTER_PATH = 'C:\\Users\\FLC\\OneDrive\\ドキュメント\\FLC\\Gundam Card Game\\ガンダムカードゲーム.xlsx';
+const JP_MASTER_PATH = './excel_data/GCG_cardlist_jp.xlsx';
 const jpSeriesLookup = {};
 if (fs.existsSync(JP_MASTER_PATH)) {
     const jpWb = xlsx.readFile(JP_MASTER_PATH);
